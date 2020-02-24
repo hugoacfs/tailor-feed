@@ -1,0 +1,225 @@
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  font-size: 15px;
+  font-family: 'Roboto', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  height: auto;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-align: center;
+  -ms-flex-pack: center;
+  -webkit-box-align: center;
+  align-items: end;
+  -webkit-box-pack: center;
+  justify-content: center;
+  padding-top: 0px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+/* SCROLLBAR */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* END SCROLLBAR */
+.navbar-logo {
+  max-width: 35px;
+}
+
+.page-header {
+  /* background-image: linear-gradient(to bottom,#002338 0,#08507b 100%); */
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 15px;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.toast {
+  z-index: 1500;
+}
+
+.button-form {
+  display: contents;
+}
+
+.spacer {
+  height: 60px;
+}
+
+#wrapper {
+  width: 100%;
+  align-items: end;
+}
+
+#admin-nav {
+  min-height: 80vh;
+}
+
+/* Preferences Btns*/
+.toggle-handle,
+.toggle {
+  border-radius: 20px !important;
+}
+
+.search-item {
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.nodecoration:hover,
+.nodecoration {
+  text-decoration: none;
+}
+
+/* navbar adjustments */
+.mynav .navbar-toggler {
+  color: #f8f9fa !important;
+  border-color: #f8f9fa !important;
+  line-height: inherit !important;
+  padding: .375rem .75rem !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  border-radius: .25rem !important;
+}
+
+.mynav .navbar-toggler:hover {
+  color: #000 !important;
+  box-shadow: none !important;
+}
+
+.burger {
+  max-width: 22.5px;
+  vertical-align: middle;
+}
+
+/* TIMELINE */
+/* custom css */
+.timeline-badge {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 1em;
+  text-align: center;
+  float: right;
+  position: inherit;
+  z-index: 100;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.timeline-img {
+  position: relative;
+  top: -90%;
+  border-radius: 100%;
+}
+
+.thin-hr {
+  background-color: #2125293b;
+  margin: 0;
+}
+
+#beta-badge {
+  font-size: small;
+  vertical-align: text-top;
+  background-color: blueviolet;
+}
+
+.hide-input {
+  display: none;
+}
+
+.preferences-btn-text {
+  display: none;
+}
+
+.menu-fa,
+.btn-fa {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  content: "";
+  line-height: inherit !important;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .preferences-btn-text {
+    display: inline;
+  }
+}
+
+/* fixed table header https://stackoverflow.com/questions/21168521/table-fixed-header-and-scrollable-body 2nd */
+.tableFixHead {
+  overflow-y: auto;
+  height: 100px;
+}
+
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  background-color: #e9ecef;
+}
+
+.tableFixHead thead {
+  border-radius: .25rem;
+}
