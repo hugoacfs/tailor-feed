@@ -30,6 +30,7 @@ $CFG->fbapisettings = array(
 /**
  * The autoloader for the News API classes.
  */
+define('CLASS_LOADER', true);
 spl_autoload_register(
     function ($class_name) {
         global $CFG;
