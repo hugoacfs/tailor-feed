@@ -16,3 +16,16 @@ Tailor-feed is a news aggregation tool built on PHP. It utilises social media as
 </p>
 
 Tailor-feed is still under development, and a stable version is not yet ready.
+
+Installation guide:
+1.  Download or clone repository;
+2.  Import the lastest SQL found in install/;
+3.  Inser a default user of 'default' username into `users` table;
+4.  Insert a source of type 'twitter' into `sources` table;
+5.  Configure your config.php file:
+    a.  Add your DB details to the CFG std class;
+    b.  Add your twitterdev keys to point to your application;
+    c.1.  Choose an authentication method, or create your own, then add it to the CFG std class (Authentication available: SIMPLESAML or LOCAL - used for local development);
+    c.2.  If you've chosen 'local', go to api/helper.php and configure the localSignIn() function to match your username, name is optional.
+
+And that's it.
