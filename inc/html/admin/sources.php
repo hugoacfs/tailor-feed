@@ -33,7 +33,7 @@ if (!defined('CONFIG_PROTECTION')) {
         <input id="search-area-admin" type="text" class="form-control" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table tableFixHead table-striped">
+        <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
             <thead>
                 <tr">
                     <th scope="col">Reference</th>

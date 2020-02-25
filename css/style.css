@@ -217,9 +217,5 @@ body {
 .tableFixHead thead th {
   position: sticky;
   top: 0;
-  background-color: #e9ecef;
-}
-
-.tableFixHead thead {
-  border-radius: .25rem;
+  background-color: #252525;
 }

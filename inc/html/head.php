@@ -32,6 +32,13 @@ if (!defined('CONFIG_PROTECTION')) {
     <script src="vendor/bootstrap4-toggle-master/js/bootstrap4-toggle.js"></script>
     <!-- LODASH MIN JS -->
     <script src="vendor/lodash/lodash.js"></script>
+    <?php
+    // https://github.hubspot.com/sortable/api/themes/
+    if ($pageId === 'admin') {
+        echo '<script src="vendor/sortable/js/sortable.min.js"></script>';
+        echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-dark.css" />';
+    }
+    ?>
 </head>
 <script>
     $(document).ready(function() {
