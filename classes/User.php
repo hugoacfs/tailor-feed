@@ -41,7 +41,7 @@ class User
         global $DB;
         $fetchUser = $DB->fetchUserByUsername($userName);
         $fetchedUser = $fetchUser->fetch();
-        $this->dbId = $fetchedUser['id'];
+        $this->dbId = intval($fetchedUser['id']);
         $this->userName = $userName;
         $this->givenName = $fetchedUser['givenname'];
         $this->subscribedList = array();
