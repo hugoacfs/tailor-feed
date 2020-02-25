@@ -10,7 +10,32 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
-$table = $_GET['table'] ?? '';
+$table = $_GET['table'] ?? null;
+if ($table) {
+    if (isset($_POST['button-hide'])) {
+        $DB->updateSourceStatusById(intval($_POST['button-hide']), $_SESSION['userid']);
+        // btnDelete
+    } elseif (isset($_POST['button-show'])) {
+        // Assume btnSubmit
+        $DB->updateSourceStatusById(intval($_POST['button-show']), $_SESSION['userid']);
+    }
+    $action = $_POST['action'] ?? null;
+    if ($action === 'update-source') {
+        unset($_POST['action']);
+        $DB->updateSourceById($_POST, $_SESSION['userid']);
+    } elseif ($action === 'add-source') {
+        unset($_POST['action']);
+        $DB->insertSource($_POST, $_SESSION['userid']);
+    } elseif ($action === 'update-topic') {
+        unset($_POST['action']);
+        $DB->updateTopicById($_POST, $_SESSION['userid']);
+    } elseif ($action === 'add-topic') {
+        unset($_POST['action']);
+        $DB->insertTopic($_POST, $_SESSION['userid']);
+    }
+}
+
+unset($_POST);
 ?>
 <script>
     //prevents form resubmission
@@ -61,18 +86,19 @@ $table = $_GET['table'] ?? '';
         <div class="col-10 ">
             <?php
             if ($table === 'sources') {
-                require $CFG->dirroot . '/inc/html/admin/sources-table.php';
+                require $CFG->dirroot . '/inc/html/admin/sources.php';
             } elseif ($table === 'topics') {
-                require $CFG->dirroot . '/inc/html/admin/topics-table.php';
+                require $CFG->dirroot . '/inc/html/admin/topics.php';
             } else {
-                require $CFG->dirroot . '/inc/html/admin/admin-home.php';
+                require $CFG->dirroot . '/inc/html/admin/home.php';
             }
             ?>
         </div>
     </div>
 </div>
 <?php
-require $CFG->dirroot . '/inc/html/admin/modal-edit.php';
+require $CFG->dirroot . '/inc/html/admin/modal.php';
 ?>
 </body>
+
 </html>
