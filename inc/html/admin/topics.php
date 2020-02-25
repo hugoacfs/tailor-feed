@@ -4,20 +4,6 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-
-if (isset($_POST['button-hide'])) {
-    $DB->updateSourceStatusById(intval($_POST['button-hide']), $_SESSION['userid']);
-    // btnDelete
-} elseif (isset($_POST['button-show'])) {
-    // Assume btnSubmit
-    $DB->updateSourceStatusById(intval($_POST['button-show']), $_SESSION['userid']);
-}
-if (isset($_POST['id'])) {
-    print_r($_POST);
-    $array = $_POST;
-    $DB->updateSourceById($array, $_SESSION['userid']);
-}
-unset($_POST);
 ?>
 <script>
     $(document).ready(function() {
@@ -36,7 +22,7 @@ unset($_POST);
                 <a href="admin.php">Admin</a>
             </li>
             <li class="breadcrumb-item active">
-                Sources
+                Topics
             </li>
         </ol>
     </nav>
@@ -50,9 +36,8 @@ unset($_POST);
         <table class="table tableFixHead table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Reference</th>
-                    <th scope="col">Screen name</th>
-                    <th scope="col">Type</th>
+                    <th scope="col">Reference Name</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Status</th>
                     <th scope="col">Update</th>
                     <th scope="col">Show/Hide</th>
@@ -60,26 +45,25 @@ unset($_POST);
             </thead>
             <tbody>
                 <?php
-                $sources = $DB->fetchAllSources();
+                $topics = $DB->fetchAllTopics();
                 $count = 0;
-                foreach ($sources as $source) {
+                foreach ($topics as $topic) {
                     $count += 1;
-                    $id = $source['id'];
-                    $reference = $source['reference'];
-                    $screenname = $source['screenname'];
-                    $type = $source['type'];
-                    $status = $source['status'];
-                    echo '<tr>';
+                    $id = $topic['id'];
+                    $reference = $topic['name'];
+                    $description = $topic['description'];
+                    $status = $topic['status'];
+                    // $status = 'active';
+                    echo '<tr id="row-' . $id . '">';
                     echo '<td style="display: none;">' . $id . '</td>';
-                    echo '<td>' . $reference . '</td>';
-                    echo '<td>' . $screenname . '</td>';
-                    echo '<td>' . $type . '</td>';
-                    echo '<td>' . $status . '</td>';
+                    echo '<td class="reference">' . $reference . '</td>';
+                    echo '<td class="description">' . $description . '</td>';
+                    echo '<td class="status">' . ucfirst($status) . '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" data-target="#edit-modal" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
+                    echo '<button data-toggle="modal" value="' . $id . '" onClick="updateTopic(' . $id . ')" data-target="#modal" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
+                    echo '<form class="button-form" method="POST" action="admin.php">';
                     if ($status === 'active') {
                         echo '<button name="button-hide" value="' . $id . '" type="submit" class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
                     } else {
@@ -90,15 +74,19 @@ unset($_POST);
                     echo '</tr>';
                 }
                 ?>
-
             </tbody>
         </table>
     </div>
     <hr>
     <div class="btn-group btn-group " role="group">
-        <button class="btn btn-success " type="button">
+        <button data-toggle="modal" class="add-topic btn btn-success " data-target="#modal" onClick="addNewTopic()" type="button">
             <i class="fas fa-plus mr-1"></i>
-            Add source
+            Add topic
         </button>
     </div>
 </div>
+<script>
+    $('.add-source .btn .btn-success').click(function() {
+        $('form[name="modalForm"]').submit();
+    });
+</script>

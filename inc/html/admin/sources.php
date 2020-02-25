@@ -4,20 +4,6 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-// To add functionality
-// if (isset($_POST['button-hide'])) {
-//     $DB->updateTopicStatusById(intval($_POST['button-hide']));
-//     // btnDelete
-// } elseif (isset($_POST['button-show'])) {
-//     // Assume btnSubmit
-//     $DB->updateTopicStatusById(intval($_POST['button-show']));
-// }
-// if (isset($_POST['id'])) {
-//     print_r($_POST);
-//     $array = $_POST;
-//     $DB->updateTopicById($array);
-// }
-unset($_POST);
 ?>
 <script>
     $(document).ready(function() {
@@ -36,7 +22,7 @@ unset($_POST);
                 <a href="admin.php">Admin</a>
             </li>
             <li class="breadcrumb-item active">
-                Topics
+                Sources
             </li>
         </ol>
     </nav>
@@ -49,35 +35,36 @@ unset($_POST);
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
         <table class="table tableFixHead table-striped">
             <thead>
-                <tr>
+                <tr">
                     <th scope="col">Reference</th>
                     <th scope="col">Screen name</th>
+                    <th scope="col">Type</th>
                     <th scope="col">Status</th>
                     <th scope="col">Update</th>
                     <th scope="col">Show/Hide</th>
-                </tr>
+                    </tr>
             </thead>
             <tbody>
                 <?php
-                $topics = $DB->fetchAllTopics();
+                $sources = $DB->fetchAllSources();
                 $count = 0;
-                foreach ($topics as $topic) {
+                foreach ($sources as $source) {
                     $count += 1;
-                    $id = $topic['id'];
-                    $reference = $topic['name'];
-                    $screenname = $topic['description'];
-                    $status = $topic['status'];
-                    // $status = 'active';
-                    echo '<tr>';
-                    echo '<td style="display: none;">' . $id . '</td>';
-                    echo '<td>' . $reference . '</td>';
-                    echo '<td>' . $screenname . '</td>';
-                    echo '<td>' . $status . '</td>';
+                    $id = $source['id'];
+                    $reference = $source['reference'];
+                    $screenname = $source['screenname'];
+                    $type = $source['type'];
+                    $status = $source['status'];
+                    echo '<tr id="row-' . $id . '">';
+                    echo '<td class="reference">' . $reference . '</td>';
+                    echo '<td class="screenname">' . $screenname . '</td>';
+                    echo '<td class="type">' . ucfirst($type) . '</td>';
+                    echo '<td class="status">' . ucfirst($status) . '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" data-target="#edit-modal" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
+                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSource(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<form class="button-form" method="POST" action="admin.php">';
+                    echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
                     if ($status === 'active') {
                         echo '<button name="button-hide" value="' . $id . '" type="submit" class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
                     } else {
@@ -92,4 +79,16 @@ unset($_POST);
             </tbody>
         </table>
     </div>
+    <hr>
+    <div class="btn-group btn-group " role="group">
+        <button data-toggle="modal" class="add-source btn btn-success " data-target="#modal" onClick="addNewSource()" type="button">
+            <i class="fas fa-plus mr-1"></i>
+            Add source
+        </button>
+    </div>
 </div>
+<script>
+    $('.add-source .btn .btn-success').click(function() {
+        $('form[name="modalForm"]').submit();
+    });
+</script>

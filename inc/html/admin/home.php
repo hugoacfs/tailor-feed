@@ -22,23 +22,27 @@ if (!defined('CONFIG_PROTECTION')) {
                     <?php
                     $fetch = $DB->fetchAdminLog();
                     foreach ($fetch as $row) {
-                        $log = json_decode($row['description']);
-                        $action = $log->action;
-                        $sourceId = $log->sourceId;
+                        $adminId = $row['userid'];
+                        $action = $row['action'];
+                        $targetId = $row['targetid'];
+                        $timestamp = $row['creationdate'];
+                        $target = $row['target'];
+                        $reference = $DB->fetchSourceReferenceById($targetId)->fetch()['reference'];
+                        $adminName = $DB->fetchUserById($adminId)->fetch()['givenname'];
                         echo '
                         <h5 class="card-subtitle mb-2 text-muted">
                             <a href="#" target="uni_news" class=" card-link">
-                                Updating Source # ' . $sourceId . '  
+                                ' . ucfirst($action) . ' action by ' . ucfirst($adminName) . '  
                                 <i class="fas fa-cogs"></i>
                             </a>
                         </h5>
                         <p>
                             <small class="text-muted">
                                 <i class="glyphicon glyphicon-time"></i>
-                                <i class="far fa-clock"> </i> ' . timeAgo($row['creationdate']) . '
+                                <i class="far fa-clock"> </i> ' . timeAgo($timestamp) . '
                             </small>
                         </p>
-                        <p class="card-text">' . $action . ' </p><hr>';
+                        <p class="card-text">' . ucfirst($action) . '->' . $target . '->' . $reference . ' </p><hr>';
                     }
                     ?>
                 </div>
