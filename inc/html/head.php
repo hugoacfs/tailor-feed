@@ -9,7 +9,13 @@ if (!defined('CONFIG_PROTECTION')) {
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php
+    if (!defined('DESKTOP_VIEW')) {
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+    } else {
+        echo '<meta name="viewport" content="width=1024">';
+    }
+    ?>
     <link rel="icon" href="img/favicon.ico" type="image/gif" sizes="16x16">
     <title><?php echo $title; ?></title>
     <!-- BOOTSTRAP CSS -->
