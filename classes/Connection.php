@@ -177,11 +177,13 @@ class Connection
         foreach ($media as $m) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `media_links` 
-                (`articleid`, `url`) 
+                (`articleid`, `url`, `type`) 
                 VALUES 
-                (?, ?)"
+                (?, ?, ?)"
             );
-            $stmt->execute([$articleid, $m]);
+            $url = $m['url'];
+            $type = $m['type'];
+            $stmt->execute([$articleid, $url, $type]);
         }
     }
 
