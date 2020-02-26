@@ -1,5 +1,6 @@
 <?php
 define('CONFIG_PROTECTION', false);
+define('DESKTOP_VIEW', true);
 $title = 'Admin Menu';
 $pageId = 'admin';
 require_once __DIR__ . '/config.php';
@@ -12,29 +13,45 @@ if (!isAdminLoggedIn()) {
 }
 $table = $_GET['table'] ?? null;
 if ($table) {
-    if (isset($_POST['button-hide'])) {
-        $DB->updateSourceStatusById(intval($_POST['button-hide']), $_SESSION['userid']);
-        // btnDelete
-    } elseif (isset($_POST['button-show'])) {
-        // Assume btnSubmit
-        $DB->updateSourceStatusById(intval($_POST['button-show']), $_SESSION['userid']);
-    }
     $action = $_POST['action'] ?? null;
-    if ($action === 'update-source') {
-        unset($_POST['action']);
-        $DB->updateSourceById($_POST, $_SESSION['userid']);
-    } elseif ($action === 'add-source') {
-        unset($_POST['action']);
-        $DB->insertSource($_POST, $_SESSION['userid']);
-    } elseif ($action === 'update-topic') {
-        unset($_POST['action']);
-        $DB->updateTopicById($_POST, $_SESSION['userid']);
-    } elseif ($action === 'add-topic') {
-        unset($_POST['action']);
-        $DB->insertTopic($_POST, $_SESSION['userid']);
+    unset($_POST['action']);
+    if ($action) {
+        $actionArray = $_POST;
+        unset($_POST);
+        $adminId = $_SESSION['userid'];
+        $taskSuccess = performAdminTask($action, $actionArray, $adminId) ?? null;
+        $message = '';
+        if ($action === 'add-source') {
+            $message = 'added a new source.';
+        } elseif ($action === 'add-topic') {
+            $message = 'added a new topic.';
+        } elseif ($action === 'update-source') {
+            $message = 'updated the source`s details.';
+        } elseif ($action === 'update-topic') {
+            $message = 'updated the topic`s details.';
+        } elseif ($action === 'suspend-source' || $action === 'activate-source') {
+            $message = 'updated the source status.';
+        }elseif ($action === 'suspend-topic' || $action === 'activate-topic') {
+            $message = 'updated the topic status.';
+        }
+        $title = 'success';
+        $status = 'You successfully';
+        if (!$taskSuccess) {
+            $title = 'warning';
+            $status = 'Something went wrong when performing the previous task.';
+            $message = '';
+        }
+        echo '
+                <div class="fixed-bottom mx-auto mb-2">
+                    <div class="alert alert-' . $title . ' alert-dismissible fade show" role="alert">
+                    <strong>' . ucfirst($title) . '!</strong> ' . $status . ' ' . $message . '
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                </div>';
     }
 }
-
 unset($_POST);
 ?>
 <script>

@@ -255,3 +255,21 @@ function buildUserProfile(string $username, string $givenname)
     $DB->updateLastLogin($username);
     $DB->userPreferencesCrudQuery('source', $defaultSource, $userId, 'insert');
 }
+function performAdminTask(string $action, array $actionArray, int $adminId): bool
+{
+    global $DB;
+    if ($action === 'update-source') {
+        return $DB->updateSourceById($actionArray, $adminId);
+    } elseif ($action === 'add-source') {
+        return $DB->insertSource($actionArray, $adminId);
+    } elseif ($action === 'update-topic') {
+        return $DB->updateTopicById($actionArray, $adminId);
+    } elseif ($action === 'add-topic') {
+        return $DB->insertTopic($actionArray, $adminId);
+    } elseif ($action === 'suspend-source' || $action ===  'activate-source') {
+        return $DB->updateSourceStatusById(intval($actionArray['id']), $adminId);
+    } elseif ($action === 'suspend-topic' || $action ===  'activate-topic') {
+        return $DB->updateTopicStatusById(intval($actionArray['id']), $adminId);
+    }
+    return false;
+}

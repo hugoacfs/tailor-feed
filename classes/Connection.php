@@ -432,6 +432,31 @@ class Connection
         // $this->insertAdminLog($adminId, $now, $logDescription);
         return $success;
     }
+    public function updateTopicStatusById(int $topicId, int $adminId): bool
+    {
+        $id = intval($topicId);
+        $sql_string = "SELECT `status` FROM `topics` WHERE `id` = $id";
+        $logDescription = new stdClass;
+        $logDescription->action = 'Topic Status Update';
+        $logDescription->topicId = $id;
+        $fetch = $this->PDOquery($sql_string);
+        $fetched = $fetch->fetch();
+        $stmt = $this->PDOprepare("UPDATE `topics` SET `status`=:newstatus WHERE `id`= :id");
+        if ($fetched['status'] === 'suspended') {
+            $newstatus = 'active';
+        } else {
+            $newstatus = 'suspended';
+        }
+        $logDescription->newstatus = $newstatus;
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        $logDescription->success = $success;
+        $logDescription = json_encode($logDescription);
+        $now = time();
+        // $this->insertAdminLog($adminId, $now, $logDescription);
+        return $success;
+    }
     // might be merged with updatetopicbyid
     public function updateSourceById(array $post, int $adminId): bool
     {
@@ -470,6 +495,7 @@ class Connection
         foreach ($post as $key => $value) {
             $updateArray[] = array($key, $value) ?? null;
         }
+        print_r($post);
         foreach ($updateArray as $item) {
             if ($item === null) {
                 continue;
@@ -484,6 +510,21 @@ class Connection
         // $this->insertAdminLog($adminId, time(), 'sources', 'update', $id);
         return true;
     }
+    public function doesSourceExist(string $reference = null, string $type = null): bool
+    {
+        $reference = $reference ?? false;
+        $type = $type ?? false;
+        if (!$reference || !$type) {
+            return false;
+        }
+        $sql_string = "SELECT * FROM `sources` WHERE `reference` = '$reference' AND `type` = '$type';";
+        $fetched = $this->PDOquery($sql_string)->fetchAll();
+        $fetchedLenght = count($fetched);
+        if($fetchedLenght != 0){
+            return true;
+        }
+        return false;
+    }
     public function insertSource(array $post, int $adminId): bool
     {
         $reference = $post['reference'] ?? false;
@@ -491,6 +532,9 @@ class Connection
         $type = $post['type'] ?? false;
         $status = $post['status'] ?? false;
         if (!$reference || !$screenname || !$type || !$status) {
+            return false;
+        }
+        if($this->doesSourceExist($reference, $type)){
             return false;
         }
         $stmt = $this->PDOprepare("INSERT INTO `sources`( `reference`, `screenname`, `type`, `status`) VALUES (:reference, :screenname, :type, :status);");

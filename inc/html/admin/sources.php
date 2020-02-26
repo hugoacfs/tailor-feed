@@ -55,6 +55,13 @@ if (!defined('CONFIG_PROTECTION')) {
                     $screenname = $source['screenname'];
                     $type = $source['type'];
                     $status = $source['status'];
+                    if ($status === 'active') {
+                        $quickAction = 'suspend-source';
+                        $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
+                    } else {
+                        $quickAction = 'activate-source';
+                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
+                    }
                     echo '<tr id="row-' . $id . '">';
                     echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
@@ -65,11 +72,9 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '</td>';
                     echo '<td style="text-align:center;">';
                     echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
-                    if ($status === 'active') {
-                        echo '<button name="button-hide" value="' . $id . '" type="submit" class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
-                    } else {
-                        echo '<button name="button-show" value="' . $id . '" type="submit" class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
-                    }
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
+                    echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';

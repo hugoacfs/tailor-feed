@@ -53,7 +53,13 @@ if (!defined('CONFIG_PROTECTION')) {
                     $reference = $topic['name'];
                     $description = $topic['description'];
                     $status = $topic['status'];
-                    // $status = 'active';
+                    if ($status === 'active') {
+                        $quickAction = 'suspend-topic';
+                        $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
+                    } else {
+                        $quickAction = 'activate-topic';
+                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
+                    }
                     echo '<tr id="row-' . $id . '">';
                     echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="description">' . $description . '</td>';
@@ -62,12 +68,10 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '<button data-toggle="modal" value="' . $id . '" onClick="updateTopic(' . $id . ')" data-target="#modal" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<form class="button-form" method="POST" action="admin.php">';
-                    if ($status === 'active') {
-                        echo '<button name="button-hide" value="' . $id . '" type="submit" class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
-                    } else {
-                        echo '<button name="button-show" value="' . $id . '" type="submit" class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
-                    }
+                    echo '<form class="button-form" method="POST" action="admin.php?table=topics">';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
+                    echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
