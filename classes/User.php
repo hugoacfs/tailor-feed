@@ -230,7 +230,7 @@ class User
                 $media = array();
                 $fetchMedia = $DB->fetchMediaUrlsPerArticleId($row['id']);
                 foreach ($fetchMedia as $m) {
-                    $media[] = $m['url'];
+                    $media[] = array('url' => $m['url'], 'type' => $m['type']);
                 }
                 $builder = array(
                     'dbId' => $row['id'],
@@ -294,7 +294,7 @@ class User
             <p><a title="Link to source." href="' . $builder['originalUrl'] . '" target="uni_news">
                 <small class="text-muted">
                     <i class="glyphicon glyphicon-time"></i>
-                    <i class="far fa-clock"> </i> ' . timeAgo($builder['timestamp']) . ' via '.$builder['type'].'
+                    <i class="far fa-clock"> </i> ' . timeAgo($builder['timestamp']) . ' via ' . $builder['type'] . '
                 </small>
                 <i class="fas fa-link fa-xs"></i>
                 </a>
@@ -342,10 +342,17 @@ class User
                 $mediaHTML = '';
                 $status = 'active';
                 foreach ($media as $m) {
-                    $mediaHTML = $mediaHTML . '
+                    if ($m['type'] === 'photo') {
+                        $mediaHTML = $mediaHTML . '
                     <div class="carousel-item ' . $status . '">
-                        <img class="img-fluid mx-auto d-block rounded " src="' . $m . '?name=small" alt="Article Image">
+                        <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" alt="Article Image">
                     </div>';
+                    } elseif ($m['type'] === 'video') {
+                        $mediaHTML = $mediaHTML . '
+                    <div class="carousel-item ' . $status . '">
+                        <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
+                    </div>';
+                    }
                     $status = '';
                     // $mediaHTML = $mediaHTML . '<img alt="Article Image" src="' . $m . '?name=small" class="media-img">';
                 }
