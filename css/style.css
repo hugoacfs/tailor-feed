@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap&subset=latin-ext');
 html,
 body {
   height: 100%;
   overflow-x: hidden;
   font-size: 15px;
-  font-family: 'Roboto', sans-serif;
+  font-family:  'Roboto', 'PT Sans', sans-serif;
   scroll-behavior: smooth;
 }
 
@@ -206,6 +207,7 @@ body {
   .preferences-btn-text {
     display: inline;
   }
+
 }
 
 /* fixed table header https://stackoverflow.com/questions/21168521/table-fixed-header-and-scrollable-body 2nd */
@@ -219,3 +221,18 @@ body {
   top: 0;
   background-color: #252525;
 }
+
+/* accessibility colour override */
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 1);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: rgba(255, 255, 255, .5);
+}
+
+.navbar .active i {
+  color: #007bff;
+}
+
+/* End accessibility */
