@@ -502,7 +502,7 @@ class Connection
             }
             $colName = $item[0];
             $newValue = $item[1];
-            $stmt = $this->PDOprepare("UPDATE `sources` SET `$colName` = :newvalue WHERE `id` = :id;");
+            $stmt = $this->PDOprepare("UPDATE `topics` SET `$colName` = :newvalue WHERE `id` = :id;");
             $stmt->bindValue('newvalue', $newValue, PDO::PARAM_STR);
             $stmt->bindValue('id', $id, PDO::PARAM_INT);
             $stmt->execute();
