@@ -322,7 +322,7 @@ class User
      * @param int page to return by, default is 1 meaning not offset
      * @return string HTML of articles subscribed by user
      */
-    public function displaySubcribedArticles(int $page = 1): string
+    public function displaySubscribedArticles(int $page = 1): string
     {
         $articlesToDisplay = $this->buildSubscribedArticles($page);
         $htmlHolder = '';
