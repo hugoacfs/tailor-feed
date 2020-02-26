@@ -66,10 +66,10 @@ unset($_POST);
     <div class="row ">
         <div class="col-2 p-0">
             <!-- sidenav -->
-            <nav id="admin-nav" class="navbar navbar-expand-md breadcrumb navbar-light align-content-start">
+            <nav id="admin-nav" class="navbar navbar-expand-md bg-dark breadcrumb align-content-start">
                 <ul class="navbar-nav flex-column ">
                     <li class="nav-item">
-                        <a class="nav nav-link text-uppercase text-muted">Admin Menu</a>
+                        <a href="admin.php" class="nav nav-link text-uppercase text-light">Admin Menu</a>
                     </li>
                     <li class="nav-item">
 
@@ -78,7 +78,9 @@ unset($_POST);
                         echo '<a href="' . $url . '" class="nav-link">';
                         ?>
                         <i class="fas fa-table" aria-hidden="true"></i>
+                        <span class="text-light">
                         Sources
+                        </span>
                         <?php
                         if ($table === 'sources') {
                             echo '<i class="fas fa-arrow-left"></i>';
@@ -89,7 +91,9 @@ unset($_POST);
                     <li class="nav-item">
                         <a href="?table=topics" class="nav-link">
                             <i class="fas fa-table" aria-hidden="true"></i>
+                            <span class="text-light">
                             Topics
+                            </span>
                             <?php
                             if ($table === 'topics') {
                                 echo '<i class="fas fa-arrow-left"></i>';
