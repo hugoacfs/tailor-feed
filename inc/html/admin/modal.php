@@ -142,8 +142,8 @@ if (!defined('CONFIG_PROTECTION')) {
 
         var actionHtml = '<div class="form-group hidden"><input type="hidden" class="form-control" name="action" id="action" value="update-topic"></div>';
 
-        var referenceValue = $('#row-' + rowId + ' .reference').html();
-        var referenceHtml = '<div class="form-group"><label for="reference">Topic Reference</label><input class="form-control" name="reference" id="reference" placeholder="' + referenceValue + '" value="' + referenceValue + '" required /></div>';
+        var nameValue = $('#row-' + rowId + ' .name').html();
+        var nameHtml = '<div class="form-group"><label for="name">Reference Name</label><input class="form-control" name="name" id="name" placeholder="#30daysofkindness" value="' + nameValue + '" required /></div>';
 
         var descriptionValue = $('#row-' + rowId + ' .description').html();
         var descriptionHtml = '<div class="form-group"><label for="description">Description</label><input class="form-control" name="description" id="description" placeholder="' + descriptionValue + '" value="' + descriptionValue + '" required /></div>';
@@ -158,12 +158,12 @@ if (!defined('CONFIG_PROTECTION')) {
 
         modalForm.append(actionHtml);
         modalForm.append(idHtml);
-        modalForm.append(referenceHtml);
+        modalForm.append(nameHtml);
         modalForm.append(descriptionHtml);
         modalForm.append(statusHtml);
         modalBody.append(modalForm);
         $('.modal-body').html(modalBody);
-        $('#modal-label').html('Editing ' + referenceValue);
+        $('#modal-label').html('Editing ' + nameValue);
         $('#submit-btn').html('Update topic');
     };
     // ADD TOPIC
@@ -173,9 +173,9 @@ if (!defined('CONFIG_PROTECTION')) {
 
         var actionHtml = '<div class="form-group hidden"><input type="hidden" class="form-control" name="action" id="action" value="add-topic"></div>';
 
-        var referenceHtml = '<div class="form-group"><label for="reference">Reference</label><input class="form-control" name="reference" id="reference" placeholder="Reference Name" value="" required /></div>';
+        var nameHtml = '<div class="form-group"><label for="name">Name</label><input class="form-control" name="name" id="name" placeholder="#30daysofkindness" value="" required /></div>';
 
-        var descriptionHTML = '<div class="form-group"><label for="description">Description</label><input class="form-control" name="description" id="description" placeholder="Description" value="" required /></div>';
+        var descriptionHTML = '<div class="form-group"><label for="description">Description</label><input class="form-control" name="description" id="description" placeholder="30 Days of Kindness March" value="" required /></div>';
 
         var statusValue = 'active';
         var statusOptions = {
@@ -186,7 +186,7 @@ if (!defined('CONFIG_PROTECTION')) {
         var statusHtml = '<div class="form-group"><label for="status">Status</label>' + statusSelect.prop('outerHTML') + '</div>';
 
         modalForm.append(actionHtml);
-        modalForm.append(referenceHtml);
+        modalForm.append(nameHtml);
         modalForm.append(descriptionHTML);
         modalForm.append(statusHtml);
         modalBody.append(modalForm);

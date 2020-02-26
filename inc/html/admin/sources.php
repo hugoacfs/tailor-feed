@@ -17,20 +17,20 @@ if (!defined('CONFIG_PROTECTION')) {
 </script>
 <div class="col-xs-12 col-sm-12 col-lg-12">
     <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
+        <ol class="breadcrumb bg-dark text-light">
+            <li class="breadcrumb-item ">
                 <a href="admin.php">Admin</a>
             </li>
-            <li class="breadcrumb-item active">
+            <li class="breadcrumb-item active text-light">
                 Sources
             </li>
         </ol>
     </nav>
     <div class="input-group mb-3">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Search</span>
+            <span class="input-group-text text-light bg-dark" id="basic-addon1">Search</span>
         </div>
-        <input id="search-area-admin" type="text" class="form-control" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
+        <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
         <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>

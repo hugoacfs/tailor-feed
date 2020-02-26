@@ -17,20 +17,20 @@ if (!defined('CONFIG_PROTECTION')) {
 </script>
 <div class="col-xs-12 col-sm-12 col-lg-12">
     <nav>
-        <ol class="breadcrumb">
+        <ol class="breadcrumb text-light bg-dark">
             <li class="breadcrumb-item">
                 <a href="admin.php">Admin</a>
             </li>
-            <li class="breadcrumb-item active">
+            <li class="breadcrumb-item active text-light">
                 Topics
             </li>
         </ol>
     </nav>
     <div class="input-group mb-3">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Search</span>
+            <span class="input-group-text text-light bg-dark" id="basic-addon1">Search</span>
         </div>
-        <input id="search-area-admin" type="text" class="form-control" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
+        <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
         <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
@@ -50,7 +50,7 @@ if (!defined('CONFIG_PROTECTION')) {
                 foreach ($topics as $topic) {
                     $count += 1;
                     $id = $topic['id'];
-                    $reference = $topic['name'];
+                    $name = $topic['name'];
                     $description = $topic['description'];
                     $status = $topic['status'];
                     if ($status === 'active') {
@@ -61,7 +61,7 @@ if (!defined('CONFIG_PROTECTION')) {
                         $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
                     }
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td class="reference">' . $reference . '</td>';
+                    echo '<td class="name">' . $name . '</td>';
                     echo '<td class="description">' . $description . '</td>';
                     echo '<td class="status">' . ucfirst($status) . '</td>';
                     echo '<td style="text-align:center;">';

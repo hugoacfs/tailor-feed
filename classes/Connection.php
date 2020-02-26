@@ -495,13 +495,15 @@ class Connection
         foreach ($post as $key => $value) {
             $updateArray[] = array($key, $value) ?? null;
         }
-        print_r($post);
         foreach ($updateArray as $item) {
             if ($item === null) {
                 continue;
             }
             $colName = $item[0];
             $newValue = $item[1];
+            if ($colName === 'name') {
+                $newValue = preg_replace("/[^a-zA-Z0-9]/", "", $newValue);
+            }
             $stmt = $this->PDOprepare("UPDATE `topics` SET `$colName` = :newvalue WHERE `id` = :id;");
             $stmt->bindValue('newvalue', $newValue, PDO::PARAM_STR);
             $stmt->bindValue('id', $id, PDO::PARAM_INT);
@@ -520,7 +522,7 @@ class Connection
         $sql_string = "SELECT * FROM `sources` WHERE `reference` = '$reference' AND `type` = '$type';";
         $fetched = $this->PDOquery($sql_string)->fetchAll();
         $fetchedLenght = count($fetched);
-        if($fetchedLenght != 0){
+        if ($fetchedLenght != 0) {
             return true;
         }
         return false;
@@ -534,7 +536,7 @@ class Connection
         if (!$reference || !$screenname || !$type || !$status) {
             return false;
         }
-        if($this->doesSourceExist($reference, $type)){
+        if ($this->doesSourceExist($reference, $type)) {
             return false;
         }
         $stmt = $this->PDOprepare("INSERT INTO `sources`( `reference`, `screenname`, `type`, `status`) VALUES (:reference, :screenname, :type, :status);");
@@ -552,11 +554,15 @@ class Connection
     public function insertTopic(array $post, int $adminId): bool
     {
         $name = $post['reference'] ?? false; //reference because of how its being posted from mdoal form
-        $description = $post['description'] ?? false;
+        if ($name) {
+            $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
+        }
+        $description = $post['description'] ?? 'No description available.';
         $status = $post['status'] ?? false;
         if (!$name || !$description || !$status) {
             return false;
         }
+        print_r($post);
         $stmt = $this->PDOprepare("INSERT INTO `topics`(`name`, `description`, `status`) VALUES (:name, :description, :status);");
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->bindValue('description', $description, PDO::PARAM_STR);

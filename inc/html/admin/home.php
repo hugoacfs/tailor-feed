@@ -7,7 +7,7 @@ if (!defined('CONFIG_PROTECTION')) {
 ?>
 <div class="col">
     <div class="table-responsive" style="max-height: 80vh;">
-        <div class="jumbotron">
+        <div class="jumbotron bg-dark text-light">
             <h2>
                 Hello, <?php echo $_SESSION['givenname']; ?>!
             </h2>
