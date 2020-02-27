@@ -7,7 +7,6 @@ session_start();
 require $CFG->dirroot . '/inc/php/authenticate.php';
 require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
-
 if (isset($_POST['submitpages'])) {
     unset($_POST['submitpages']);
     $sourcesIds = Source::getAllSourcesIds();
@@ -19,9 +18,9 @@ if (isset($_POST['submitpages'])) {
             $newSubscribeList[] = $id;
         }
     }
-    $_SESSION['currentUser']->updatePreferences($newSubscribeList, 'source');
-    $_SESSION['currentUser']->updateUserSubcribedList();
-    $_SESSION['currentUser'] = new User($_SESSION['userName']);
+    $CURRENTUSER->updatePreferences($newSubscribeList, 'source');
+    $CURRENTUSER->updateUserSubcribedList();
+    $CURRENTUSER = new User($_SESSION['userName']);
 } else {
     unset($_POST['submitpages']);
 }
@@ -37,14 +36,11 @@ if (isset($_POST['submittopics'])) {
             $newTopicsList[] = $id;
         }
     }
-    $_SESSION['currentUser']->updatePreferences($newTopicsList, 'topic');
-    $_SESSION['currentUser']->updateUserTopicsList();
-    $_SESSION['currentUser'] = new User($_SESSION['userName']);
+    $CURRENTUSER->updatePreferences($newTopicsList, 'topic');
+    $CURRENTUSER->updateUserTopicsList();
+    $CURRENTUSER = new User($_SESSION['userName']);
 } else {
     unset($_POST['submittopics']);
-}
-if (!isLoggedIn()) {
-    redirectGuestToLogin();
 }
 ?>
 <div class="row ">
@@ -56,7 +52,8 @@ if (!isLoggedIn()) {
         </div>
         <div id='news-feed' class="container card">
             <?php
-            $feed = $_SESSION['currentUser']->displaySubscribedArticles();
+            print_r($_SESSION);
+            $feed = $CURRENTUSER->displaySubscribedArticles();
             echo ($feed);
             ?>
         </div>
