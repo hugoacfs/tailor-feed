@@ -4,20 +4,23 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-if (!isLoggedIn()) {
+$isLoggedIn = $_SESSION['signedIn'] ?? false;
+$_SESSION['givenName'];
+$_SESSION['role'];
+$_SESSION['userId'];
+$_SESSION['userName'];
+if (!$isLoggedIn) {
     $loginArray = signMeIn($CFG->authmethod);
-    $_SESSION['username'] = $loginArray[0];
-    $_SESSION['givenname'] = $loginArray[1];
-    if (!doesUserExist($_SESSION['username'])) {
-        buildUserProfile($_SESSION['username'], $_SESSION['givenname']);
-        $_SESSION['welcomemessage'] = true;
-        $_SESSION['wmtimestamp'] = time();
-    }
-    $_SESSION['userid'] = getUserId($_SESSION['username']);
-    if (isUserAdmin($_SESSION['username'])) {
-        $_SESSION['role'] = 'a';
+    if ($CFG->authmethod === 'SSAML') {
+        $_SESSION['USER'] = new SSAML();
     } else {
-        $_SESSION['role'] = 'u';
+        $loginArray = Authenticate::requestUserInput();
+        $_SESSION['USER'] = new Authenticate();
     }
-    $_SESSION['currentuser'] = new User($_SESSION['username']);
+    $_SESSION['signedIn'] = $_SESSION['USER']->signedIn ?? false;
+    $_SESSION['givenName'] = $_SESSION['USER']->givenName ?? null;
+    $_SESSION['role'] = $_SESSION['USER']->role ?? null;
+    $_SESSION['userId'] = $_SESSION['USER']->userId ?? null;
+    $_SESSION['userName'] = $_SESSION['USER']->userName ?? null;
+    $_SESSION['currentUser'] = new User($_SESSION['userName']);
 }
