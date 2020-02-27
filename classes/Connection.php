@@ -354,7 +354,7 @@ class Connection
             $sql_link = '';
         }
         if (count($topicsList) > 0) {
-            $sql_string = $sql_string . "AND `t`.`status` = 'active' ";
+            $sql_string = $sql_string . " `t`.`status` = 'active' ";
             foreach ($topicsList as $topic) {
                 $topicsIds[] = $topic->dbId;
             }
