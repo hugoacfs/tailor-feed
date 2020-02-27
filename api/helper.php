@@ -122,7 +122,6 @@ function isAdminLoggedIn()
     if (!isLoggedIn()) {
         return false;
     } elseif (($role === 'a')) {
-        // if ( isset($_SESSION['username'])) {
         return true;
     } else {
         return false;
@@ -138,17 +137,13 @@ function isLoggedIn()
 }
 function redirectGuestToLogin()
 {
-    if (!isLoggedIn()) {
-        // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
-        header('Location: login.php');
-    }
+    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
+    header('Location: login.php');
 }
 function redirectUserToTimeline()
 {
-    if (!isAdminLoggedIn()) {
-        // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
-        header('Location: timeline.php');
-    }
+    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
+    header('Location: timeline.php');
 }
 
 function getSubscribedIds($array)
