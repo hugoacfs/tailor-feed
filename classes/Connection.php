@@ -335,10 +335,11 @@ class Connection
                        JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid` 
                        LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
                        LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id` 
-                       WHERE `s`.`status` = 'active' AND `t`.`status` = 'active' AND (";
+                       WHERE ";
         $topicsIds = array();
         $sourceIds = array();
         if (count($subscribedList) > 0) {
+            $sql_string = $sql_string . "`s`.`status` = 'active' ";
             foreach ($subscribedList as $source) {
                 $sourceIds[] = $source->getDbId();
             }
@@ -347,11 +348,13 @@ class Connection
             $sql_source_ids = "";
         }
         if ((count($topicsList) > 0) && count($subscribedList) > 0) {
+            $sql_string = $sql_string . "AND ";
             $sql_link = ' OR ';
         } else {
             $sql_link = '';
         }
         if (count($topicsList) > 0) {
+            $sql_string = $sql_string . "AND `t`.`status` = 'active' ";
             foreach ($topicsList as $topic) {
                 $topicsIds[] = $topic->dbId;
             }
@@ -359,7 +362,7 @@ class Connection
         } else {
             $sql_topic_ids = "";
         }
-
+        $sql_string = $sql_string . "AND (";
         $sql_where =  ") AND `creationdate` > " . $timeInterval . " 
                             ORDER BY `creationdate` DESC LIMIT " . $offset . "," . $limit;
         $sql_string = $sql_string . $sql_source_ids . $sql_link . $sql_topic_ids . $sql_where . ';';
