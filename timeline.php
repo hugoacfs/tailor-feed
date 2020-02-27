@@ -52,7 +52,6 @@ if (isset($_POST['submittopics'])) {
         </div>
         <div id='news-feed' class="container card">
             <?php
-            print_r($_SESSION);
             $feed = $CURRENTUSER->displaySubscribedArticles();
             echo ($feed);
             ?>
