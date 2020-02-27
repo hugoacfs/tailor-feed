@@ -21,7 +21,7 @@ if (isset($_POST['submitpages'])) {
     }
     $_SESSION['currentUser']->updatePreferences($newSubscribeList, 'source');
     $_SESSION['currentUser']->updateUserSubcribedList();
-    $_SESSION['currentUser'] = new User($_SESSION['username']);
+    $_SESSION['currentUser'] = new User($_SESSION['userName']);
 } else {
     unset($_POST['submitpages']);
 }
@@ -39,7 +39,7 @@ if (isset($_POST['submittopics'])) {
     }
     $_SESSION['currentUser']->updatePreferences($newTopicsList, 'topic');
     $_SESSION['currentUser']->updateUserTopicsList();
-    $_SESSION['currentUser'] = new User($_SESSION['username']);
+    $_SESSION['currentUser'] = new User($_SESSION['userName']);
 } else {
     unset($_POST['submittopics']);
 }
@@ -79,7 +79,7 @@ include $CFG->dirroot . '/inc/html/modal-topics.php';
     }
     // ajax for pages
     $(document).ready(function() {
-        var username = '<?php echo $_SESSION['username']; ?>';
+        var username = '<?php echo $_SESSION['userName']; ?>';
         var safelock = '<?php echo false; ?>';
         var loadingspinner = '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
         // Pages Hide Modal
