@@ -19,9 +19,9 @@ if (isset($_POST['submitpages'])) {
             $newSubscribeList[] = $id;
         }
     }
-    $_SESSION['currentuser']->updatePreferences($newSubscribeList, 'source');
-    $_SESSION['currentuser']->updateUserSubcribedList();
-    $_SESSION['currentuser'] = new User($_SESSION['username']);
+    $_SESSION['currentUser']->updatePreferences($newSubscribeList, 'source');
+    $_SESSION['currentUser']->updateUserSubcribedList();
+    $_SESSION['currentUser'] = new User($_SESSION['username']);
 } else {
     unset($_POST['submitpages']);
 }
@@ -37,9 +37,9 @@ if (isset($_POST['submittopics'])) {
             $newTopicsList[] = $id;
         }
     }
-    $_SESSION['currentuser']->updatePreferences($newTopicsList, 'topic');
-    $_SESSION['currentuser']->updateUserTopicsList();
-    $_SESSION['currentuser'] = new User($_SESSION['username']);
+    $_SESSION['currentUser']->updatePreferences($newTopicsList, 'topic');
+    $_SESSION['currentUser']->updateUserTopicsList();
+    $_SESSION['currentUser'] = new User($_SESSION['username']);
 } else {
     unset($_POST['submittopics']);
 }
@@ -56,7 +56,7 @@ if (!isLoggedIn()) {
         </div>
         <div id='news-feed' class="container card">
             <?php
-            $feed = $_SESSION['currentuser']->displaySubscribedArticles();
+            $feed = $_SESSION['currentUser']->displaySubscribedArticles();
             echo ($feed);
             ?>
         </div>
