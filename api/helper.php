@@ -216,7 +216,7 @@ function simpleSamlSSO()
 function localSignIn()
 {
     global $DB;
-    $array = array('admin', 'Admin');
+    $array = array('admin', 'Guest');
     $DB->updateLastLogin('admin');
     // $array = array('hsoares1', 'Hugo');
     return $array;
