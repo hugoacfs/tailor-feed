@@ -23,13 +23,17 @@ class Authenticate
         $exists = count($user) ?? false;
         if (!$newUserMode && $exists) {
             $this->passWord = $user['password'];
-            $this->signedIn = ($this->passWord === password_hash($passWord, 'PASSWORD_BCRYPT')) ?? false;
+            // echo $passWord;
+            // echo '<br>users password from input, hashed>'.password_hash($passWord, PASSWORD_BCRYPT);
+            // echo '<br>users password from DB, hashed>'.$this->passWord;
+            // echo 'is signed in>>>>' . $isSignedIn;
+            $this->signedIn = password_verify($passWord, $this->passWord);
             $this->givenName = $user['givenname'];
             $this->role = $user['role'];
             $this->userId = $user['id'];
         } elseif ($newUserMode && !$exists) {
             $this->givenName = $givenName;
-            $this->passWord = password_hash($passWord, 'PASSWORD_BCRYPT');
+            $this->passWord = password_hash($passWord, PASSWORD_BCRYPT);
             $this->role = 'u';
             $this->signedIn = $this->buildUserProfile() ?? false;
             if (!$this->signedIn) {
@@ -45,7 +49,7 @@ class Authenticate
         }
     }
 
-    public function isUserSignedIn()
+    public function getSignedIn()
     {
         return $this->signedIn;
     }
@@ -83,10 +87,6 @@ class Authenticate
     function getGivenName()
     {
         return $this->givenName;
-    }
-    function getSignedIn()
-    {
-        return $this->signedIn;
     }
     function getRole()
     {
