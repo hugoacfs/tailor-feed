@@ -17,7 +17,8 @@ if (!isset($user)) {
     die();
 }
 $user_pref_list = $user->getPreferences('topic');
-$allTopics = Article::getAllTopics();
+$active = true;
+$allTopics = Article::getAllTopics($active);
 echo '
 <div class="form-row">
     <div class="col">

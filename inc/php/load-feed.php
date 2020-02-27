@@ -21,5 +21,5 @@ if (!isset($user)) {
     echo 'No user is set.';
     die();
 }
-$newfeed = $user->displaySubcribedArticles($page);
+$newfeed = $user->displaySubscribedArticles($page);
 echo $newfeed;

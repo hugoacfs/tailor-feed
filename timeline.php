@@ -56,7 +56,7 @@ if (!isLoggedIn()) {
         </div>
         <div id='news-feed' class="container card">
             <?php
-            $feed = $_SESSION['currentuser']->displaySubcribedArticles();
+            $feed = $_SESSION['currentuser']->displaySubscribedArticles();
             echo ($feed);
             ?>
         </div>

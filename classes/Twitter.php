@@ -71,11 +71,17 @@ class Twitter extends Source
                 $media = array();
                 if ($mediaLinks != null) {
                     foreach ($mediaLinks as $m) {
+                        $type = $m->type;
                         // DEBUGGING
                         // echo'<pre>';
                         // print_r($tweet->entities);
                         // echo'</pre>';
-                        $media[] = $m->media_url_https;
+                        if ($type === 'video') {
+                            $url = $m->video_info->variants[0]->url;
+                        } elseif ($type === 'photo') {
+                            $url = $m->media_url_https;
+                        }
+                        $media[] = array('url' => $url, 'type' => $type);
                     }
                 }
                 $topics = array();

@@ -186,11 +186,15 @@ class Article
      * It returns an array containing all topics as Topic objects stdClass from the DB.
      * @return array $sources
      */
-    public static function getAllTopics(): array
+    public static function getAllTopics($active = true): array
     {
         global $DB;
         $topics = array();
-        $result = $DB->fetchAllTopics();
+        if ($active) {
+            $result = $DB->fetchAllActiveTopics();
+        } else {
+            $result = $DB->fetchAllTopics();
+        }
         foreach ($result as $row) {
             $name = $row['name'];
             $id = $row['id'];

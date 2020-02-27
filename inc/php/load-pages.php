@@ -16,7 +16,6 @@ if (!isset($user)) {
     echo 'No user is set.';
     die();
 }
-
 $user_pref_list = $user->getPreferences('source');
 $active = true;
 $allSources = Source::getAllSources($active);

@@ -17,7 +17,7 @@ require $CFG->dirroot . '/inc/html/nav.php';
         </div>
         <div id='news-feed' class="container card">
             <?php
-            $feed = (new User('default'))->displaySubcribedArticles();
+            $feed = (new User('default'))->displaySubscribedArticles();
             echo ($feed);
             ?>
         </div>

@@ -132,6 +132,15 @@ class Connection
         return $this->PDOquery($sql_string);
     }
 
+    /**
+     * TODO: Complete Documenting
+     */
+    public function fetchAllActiveTopics(): PDOStatement
+    {
+        $sql_string = "SELECT * FROM `topics` WHERE `status` = 'active'";
+        return $this->PDOquery($sql_string);
+    }
+
     public function fetchTopicId(string $name): PDOStatement
     {
         $sql_string = "SELECT `id` FROM `topics` WHERE `name` = '" . $name . "' ";
@@ -168,11 +177,13 @@ class Connection
         foreach ($media as $m) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `media_links` 
-                (`articleid`, `url`) 
+                (`articleid`, `url`, `type`) 
                 VALUES 
-                (?, ?)"
+                (?, ?, ?)"
             );
-            $stmt->execute([$articleid, $m]);
+            $url = $m['url'];
+            $type = $m['type'];
+            $stmt->execute([$articleid, $url, $type]);
         }
     }
 
@@ -320,17 +331,11 @@ class Connection
         }
         $limit = 10;
         $offset = ($offset - 1) * 10;
-        // $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource`, `ml`.`url` FROM `articles` AS `a`
-        //                JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid` 
-        //                LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
-        //                LEFT JOIN `media_links` AS `ml` ON `a`.`id` = `ml`.`articleid`
-        //                LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id` 
-        //                WHERE `s`.`status` = 'active' AND (";
         $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource` FROM `articles` AS `a`
                        JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid` 
                        LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
                        LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id` 
-                       WHERE `s`.`status` = 'active' AND (";
+                       WHERE `s`.`status` = 'active' AND `t`.`status` = 'active' AND (";
         $topicsIds = array();
         $sourceIds = array();
         if (count($subscribedList) > 0) {
