@@ -130,7 +130,7 @@ function isAdminLoggedIn()
 }
 function isLoggedIn()
 {
-    if (isset($_SESSION['username'])) {
+    if (isset($_SESSION['signedIn'])) {
         return true;
     } else {
         return false;
@@ -166,17 +166,6 @@ function getSubscribedIds($array)
     return $listOfIds;
 }
 
-function isUserAdmin($username)
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if ($fetched['role'] === 'a') {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function signMeIn($authmethod)
 {
@@ -222,39 +211,6 @@ function localSignIn()
     return $array;
 }
 
-function doesUserExist(string $username): bool
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if (is_array($fetched)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function getUserId(string $username): int
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if (is_array($fetched)) {
-        return $fetched['id'];
-    } else {
-        return 0;
-    }
-}
-
-function buildUserProfile(string $username, string $givenname)
-{
-    global $DB;
-    $DB->insertUser($username, $givenname);
-    $userId = $DB->PDOgetlastinsertid();
-    $defaultSource = 1;
-    $DB->updateLastLogin($username);
-    $DB->userPreferencesCrudQuery('source', $defaultSource, $userId, 'insert');
-}
 function performAdminTask(string $action, array $actionArray, int $adminId): bool
 {
     global $DB;
