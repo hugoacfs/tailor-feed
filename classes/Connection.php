@@ -282,7 +282,8 @@ class Connection
      */
     public function fetchUserTopicsByUserId(int $userId): PDOStatement
     {
-        $sql_string = "SELECT * FROM `subscribed_topics` AS `st` JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid` WHERE `userid` =" . $userId . " ORDER BY `t`.`name`;";
+        $sql_string = "SELECT * FROM `subscribed_topics` AS `st` JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid`
+           WHERE `userid` =" . $userId . " AND `t`.`status` = 'active' ORDER BY `t`.`name`;";
         return $this->PDOquery($sql_string);
     }
     /**
@@ -331,44 +332,35 @@ class Connection
         }
         $limit = 10;
         $offset = ($offset - 1) * 10;
-        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource` FROM `articles` AS `a`
-                       JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid` 
-                       LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
-                       LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id` 
-                       WHERE ";
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource`
+            FROM `articles` AS `a`
+                JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid`
+                LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
+                LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id`
+            WHERE `s`.`status` = 'active' AND ";
         $topicsIds = array();
         $sourceIds = array();
+        $sourceTopicsIds = [];
+        
         if (count($subscribedList) > 0) {
-            $sql_string = $sql_string . "`s`.`status` = 'active' ";
             foreach ($subscribedList as $source) {
                 $sourceIds[] = $source->getDbId();
             }
-            $sql_source_ids = "(`a`.`sourceid` IN (" . join(',', $sourceIds) . "))";
-        } else {
-            $sql_source_ids = "";
+            $sourceTopicsIds[] = " `a`.`sourceid` IN (" . join(',', $sourceIds) . ") ";
         }
-        if ((count($topicsList) > 0) && count($subscribedList) > 0) {
-            $sql_string = $sql_string . "AND ";
-            $sql_link = ' OR ';
-        } else {
-            $sql_link = '';
-        }
+
         if (count($topicsList) > 0) {
-            $sql_string = $sql_string . " `t`.`status` = 'active' ";
             foreach ($topicsList as $topic) {
                 $topicsIds[] = $topic->dbId;
             }
-            $sql_topic_ids = "(`at`.`topicid` IN (" . join(',', $topicsIds) . "))";
-        } else {
-            $sql_topic_ids = "";
+            $sourceTopicsIds[] = " `at`.`topicid` IN (" . join(',', $topicsIds) . ") ";
         }
-        $sql_string = $sql_string . "AND (";
-        $sql_where =  ") AND `creationdate` > " . $timeInterval . " 
-                            ORDER BY `creationdate` DESC LIMIT " . $offset . "," . $limit;
-        $sql_string = $sql_string . $sql_source_ids . $sql_link . $sql_topic_ids . $sql_where . ';';
-        return $this->PDOquery($sql_string);
 
-        return null;
+        $sql_sourceTopics = " ( " . join(' OR ', $sourceTopicsIds) . " ) ";
+        $sql_where =  " AND `creationdate` > " . $timeInterval . " 
+                            ORDER BY `creationdate` DESC LIMIT " . $offset . "," . $limit;
+        $sql_string .= $sql_sourceTopics . $sql_where . ';';
+        return $this->PDOquery($sql_string);
     }
     /**
      * Fetch User by Username
