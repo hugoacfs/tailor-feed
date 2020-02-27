@@ -15,7 +15,7 @@ class Authenticate
     protected $role;
     protected $error;
 
-    function __construct(string $userName, string $passWord, string $givenName = '', bool $newUserMode = false)
+    function __construct(string $userName, string $passWord, string $givenName = 'not-set', bool $newUserMode = false)
     {
         global $DB;
         $this->userName = $userName;
@@ -23,13 +23,13 @@ class Authenticate
         $exists = count($user) ?? false;
         if (!$newUserMode && $exists) {
             $this->passWord = $user['password'];
-            $this->signedIn = ($this->passWord === $passWord) ?? false;
+            $this->signedIn = ($this->passWord === password_hash($passWord, 'PASSWORD_BCRYPT')) ?? false;
             $this->givenName = $user['givenname'];
             $this->role = $user['role'];
             $this->userId = $user['id'];
         } elseif ($newUserMode && !$exists) {
             $this->givenName = $givenName;
-            $this->passWord = $passWord;
+            $this->passWord = password_hash($passWord, 'PASSWORD_BCRYPT');
             $this->role = 'u';
             $this->signedIn = $this->buildUserProfile() ?? false;
             if (!$this->signedIn) {
@@ -67,27 +67,10 @@ class Authenticate
         $fetch = $DB->fetchUserByUsername($this->userName);
         return $fetch->fetch();
     }
-    static function requestSignIn()
-    {
-        global $CFG;
-        if ($CFG->authmethod === 'SimpleSAML') {
-            return simpleSamlSSO();
-        } elseif ($CFG->authmethod === 'default') {
-            return localSignIn();
-        } else {
-            echo 'No authentication method available. Contact your administrator.';
-            return null;
-        }
-    }
     private function displayWelcomeMessage()
     {
         $_SESSION['welcomemessage'] = true;
         $_SESSION['wmtimestamp'] = time();
-    }
-    static function requestUserInput(): array
-    {
-        //add your input from user here, either from a form or statically
-        return array('username' => 'admin', 'password' => '', 'givenname' => 'Admin');
     }
     function getUserName()
     {
