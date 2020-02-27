@@ -378,6 +378,12 @@ class Connection
         $sql_string = "SELECT * FROM `users` WHERE `username` = '$username'";
         return $this->PDOquery($sql_string);
     }
+
+    public function fetchUserById(int $id): PDOStatement
+    {
+        $sql_string = "SELECT * FROM `users` WHERE `id` = $id";
+        return $this->PDOquery($sql_string);
+    }
     /**
      * Insert User by Username
      * User DB query
@@ -428,54 +434,160 @@ class Connection
         $logDescription->success = $success;
         $logDescription = json_encode($logDescription);
         $now = time();
-        $this->insertAdminLog($adminId, $now, $logDescription);
+        // $this->insertAdminLog($adminId, $now, $logDescription);
         return $success;
     }
+    public function updateTopicStatusById(int $topicId, int $adminId): bool
+    {
+        $id = intval($topicId);
+        $sql_string = "SELECT `status` FROM `topics` WHERE `id` = $id";
+        $logDescription = new stdClass;
+        $logDescription->action = 'Topic Status Update';
+        $logDescription->topicId = $id;
+        $fetch = $this->PDOquery($sql_string);
+        $fetched = $fetch->fetch();
+        $stmt = $this->PDOprepare("UPDATE `topics` SET `status`=:newstatus WHERE `id`= :id");
+        if ($fetched['status'] === 'suspended') {
+            $newstatus = 'active';
+        } else {
+            $newstatus = 'suspended';
+        }
+        $logDescription->newstatus = $newstatus;
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        $logDescription->success = $success;
+        $logDescription = json_encode($logDescription);
+        $now = time();
+        // $this->insertAdminLog($adminId, $now, $logDescription);
+        return $success;
+    }
+    // might be merged with updatetopicbyid
     public function updateSourceById(array $post, int $adminId): bool
     {
-        $id = intval($post['id']) ?? true;
-        if ($id) {
+        $id = intval($post['id']) ?? false;
+        if (!$id) {
             return false;
         }
-        $logDescription = new stdClass;
-        $logDescription->action = 'Source Update';
-        $logDescription->sourceId = $id;
+        unset($post['id']);
         $updateArray = array();
-        if (isset($post['Reference'])) {
-            $updateArray[] = array('reference', $post['Reference']);
-            $logDescription->reference = $post['Reference'];
+        foreach ($post as $key => $value) {
+            $updateArray[] = array($key, $value) ?? null;
         }
-        if (isset($post['Screen_name'])) {
-            $updateArray[] = array('screenname', $post['Screen_name']);
-            $logDescription->screenname = $post['Screen_name'];
-        }
-        if (isset($post['Type'])) {
-            $updateArray[] = array('type', $post['Type']);
-            $logDescription->type = $post['Type'];
-        }
-        if (isset($post['Status'])) {
-            $updateArray[] = array('status', $post['Status']);
-            $logDescription->status = $post['Status'];
-        }
-        print_r($updateArray);
         foreach ($updateArray as $item) {
-            $stmt = $this->PDOprepare("UPDATE `sources` SET `?`='?' WHERE `id` = $id;");
-            $stmt->execute($item[0], $item[1]);
+            if ($item === null) {
+                continue;
+            }
+            $colName = $item[0];
+            $newValue = $item[1];
+            $stmt = $this->PDOprepare("UPDATE `sources` SET `$colName` = :newvalue WHERE `id` = :id;");
+            $stmt->bindValue('newvalue', $newValue, PDO::PARAM_STR);
+            $stmt->bindValue('id', $id, PDO::PARAM_INT);
+            $stmt->execute();
         }
-        $now = time();
-        $logDescription = json_encode($logDescription);
-        $this->insertAdminLog($adminId, $now, $logDescription);
+        // $this->insertAdminLog($adminId, time(), 'sources', 'update', $id);
         return true;
     }
-    public function insertAdminLog(int $adminId, int $now, $description): bool
+    // might be merged with updatesourcesbyid
+    public function updateTopicById(array $post, int $adminId): bool
+    {
+        $id = intval($post['id']) ?? false;
+        if (!$id) {
+            return false;
+        }
+        unset($post['id']);
+        $updateArray = array();
+        foreach ($post as $key => $value) {
+            $updateArray[] = array($key, $value) ?? null;
+        }
+        foreach ($updateArray as $item) {
+            if ($item === null) {
+                continue;
+            }
+            $colName = $item[0];
+            $newValue = $item[1];
+            if ($colName === 'name') {
+                $newValue = preg_replace("/[^a-zA-Z0-9]/", "", $newValue);
+            }
+            $stmt = $this->PDOprepare("UPDATE `topics` SET `$colName` = :newvalue WHERE `id` = :id;");
+            $stmt->bindValue('newvalue', $newValue, PDO::PARAM_STR);
+            $stmt->bindValue('id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+        // $this->insertAdminLog($adminId, time(), 'sources', 'update', $id);
+        return true;
+    }
+    public function doesSourceExist(string $reference = null, string $type = null): bool
+    {
+        $reference = $reference ?? false;
+        $type = $type ?? false;
+        if (!$reference || !$type) {
+            return false;
+        }
+        $sql_string = "SELECT * FROM `sources` WHERE `reference` = '$reference' AND `type` = '$type';";
+        $fetched = $this->PDOquery($sql_string)->fetchAll();
+        $fetchedLenght = count($fetched);
+        if ($fetchedLenght != 0) {
+            return true;
+        }
+        return false;
+    }
+    public function insertSource(array $post, int $adminId): bool
+    {
+        $reference = $post['reference'] ?? false;
+        $screenname = $post['screenname'] ?? false;
+        $type = $post['type'] ?? false;
+        $status = $post['status'] ?? false;
+        if (!$reference || !$screenname || !$type || !$status) {
+            return false;
+        }
+        if ($this->doesSourceExist($reference, $type)) {
+            return false;
+        }
+        $stmt = $this->PDOprepare("INSERT INTO `sources`( `reference`, `screenname`, `type`, `status`) VALUES (:reference, :screenname, :type, :status);");
+        $stmt->bindValue('reference', $reference, PDO::PARAM_STR);
+        $stmt->bindValue('screenname', $screenname, PDO::PARAM_STR);
+        $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        $stmt->bindValue('status', $status, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        if ($success) {
+            // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
+            return true;
+        }
+        return false;
+    }
+    public function insertTopic(array $post, int $adminId): bool
+    {
+        $name = $post['reference'] ?? false; //reference because of how its being posted from mdoal form
+        if ($name) {
+            $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
+        }
+        $description = $post['description'] ?? 'No description available.';
+        $status = $post['status'] ?? false;
+        if (!$name || !$description || !$status) {
+            return false;
+        }
+        print_r($post);
+        $stmt = $this->PDOprepare("INSERT INTO `topics`(`name`, `description`, `status`) VALUES (:name, :description, :status);");
+        $stmt->bindValue('name', $name, PDO::PARAM_STR);
+        $stmt->bindValue('description', $description, PDO::PARAM_STR);
+        $stmt->bindValue('status', $status, PDO::PARAM_STR);
+        $success = $stmt->execute();
+        if ($success) {
+            // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
+            return true;
+        }
+        return false;
+    }
+    public function insertAdminLog(int $adminId, int $time, string $target, string $action, int $targetid): bool
     {
         $stmt = $this->PDOprepare(
             "INSERT INTO `admin_logs` 
-            (`userid`, `creationdate`, `description`) 
+            (`userid`, `creationdate`, `target`, `action`, `targetid`) 
             VALUES 
-            ( ?, ?, ?)"
+            ( ?, ?, ?, ?, ?)"
         );
-        return $stmt->execute([$adminId, $now, $description]);
+        return $stmt->execute([$adminId, $time, $target, $action, $targetid]);
     }
     public function fetchAdminLog(): PDOStatement
     {

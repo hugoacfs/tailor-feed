@@ -13,8 +13,8 @@ function displayHomeLink($pageId)
     }
     echo '<li title="Home link." class="nav-item ">
                 <a class="nav nav-link ' . $status . ' ml-auto" href="index.php">
-                    <span class="fas fa-home">
-                    </span> Home
+                    <i class="fas fa-home">
+                    </i> Home
                 </a>
             </li>';
 }

@@ -41,7 +41,7 @@ class User
         global $DB;
         $fetchUser = $DB->fetchUserByUsername($userName);
         $fetchedUser = $fetchUser->fetch();
-        $this->dbId = $fetchedUser['id'];
+        $this->dbId = intval($fetchedUser['id']);
         $this->userName = $userName;
         $this->givenName = $fetchedUser['givenname'];
         $this->subscribedList = array();
@@ -345,7 +345,7 @@ class User
                     if ($m['type'] === 'photo') {
                         $mediaHTML = $mediaHTML . '
                     <div class="carousel-item ' . $status . '">
-                        <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" alt="Article Image">
+                        <img class="img-fluid mx-auto d-block rounded " src="' . $m . '?name=medium" alt="Article Image">
                     </div>';
                     } elseif ($m['type'] === 'video') {
                         $mediaHTML = $mediaHTML . '

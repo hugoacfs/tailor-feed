@@ -4,20 +4,6 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-
-if (isset($_POST['button-hide'])) {
-    $DB->updateSourceStatusById(intval($_POST['button-hide']), $_SESSION['userid']);
-    // btnDelete
-} elseif (isset($_POST['button-show'])) {
-    // Assume btnSubmit
-    $DB->updateSourceStatusById(intval($_POST['button-show']), $_SESSION['userid']);
-}
-if (isset($_POST['id'])) {
-    print_r($_POST);
-    $array = $_POST;
-    $DB->updateSourceById($array, $_SESSION['userid']);
-}
-unset($_POST);
 ?>
 <script>
     $(document).ready(function() {
@@ -31,32 +17,32 @@ unset($_POST);
 </script>
 <div class="col-xs-12 col-sm-12 col-lg-12">
     <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
+        <ol class="breadcrumb bg-dark text-light">
+            <li class="breadcrumb-item ">
                 <a href="admin.php">Admin</a>
             </li>
-            <li class="breadcrumb-item active">
+            <li class="breadcrumb-item active text-light">
                 Sources
             </li>
         </ol>
     </nav>
     <div class="input-group mb-3">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Search</span>
+            <span class="input-group-text text-light bg-dark" id="basic-addon1">Search</span>
         </div>
-        <input id="search-area-admin" type="text" class="form-control" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
+        <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table tableFixHead table-striped">
+        <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
             <thead>
-                <tr>
+                <tr">
                     <th scope="col">Reference</th>
                     <th scope="col">Screen name</th>
                     <th scope="col">Type</th>
                     <th scope="col">Status</th>
                     <th scope="col">Update</th>
                     <th scope="col">Show/Hide</th>
-                </tr>
+                    </tr>
             </thead>
             <tbody>
                 <?php
@@ -69,22 +55,26 @@ unset($_POST);
                     $screenname = $source['screenname'];
                     $type = $source['type'];
                     $status = $source['status'];
-                    echo '<tr>';
-                    echo '<td style="display: none;">' . $id . '</td>';
-                    echo '<td>' . $reference . '</td>';
-                    echo '<td>' . $screenname . '</td>';
-                    echo '<td>' . $type . '</td>';
-                    echo '<td>' . $status . '</td>';
+                    if ($status === 'active') {
+                        $quickAction = 'suspend-source';
+                        $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
+                    } else {
+                        $quickAction = 'activate-source';
+                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
+                    }
+                    echo '<tr id="row-' . $id . '">';
+                    echo '<td class="reference">' . $reference . '</td>';
+                    echo '<td class="screenname">' . $screenname . '</td>';
+                    echo '<td class="type">' . ucfirst($type) . '</td>';
+                    echo '<td class="status">' . ucfirst($status) . '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" data-target="#edit-modal" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
+                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSource(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
                     echo '<td style="text-align:center;">';
                     echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
-                    if ($status === 'active') {
-                        echo '<button name="button-hide" value="' . $id . '" type="submit" class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
-                    } else {
-                        echo '<button name="button-show" value="' . $id . '" type="submit" class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
-                    }
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
+                    echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
@@ -96,9 +86,14 @@ unset($_POST);
     </div>
     <hr>
     <div class="btn-group btn-group " role="group">
-        <button class="btn btn-success " type="button">
+        <button data-toggle="modal" class="add-source btn btn-success " data-target="#modal" onClick="addNewSource()" type="button">
             <i class="fas fa-plus mr-1"></i>
             Add source
         </button>
     </div>
 </div>
+<script>
+    $('.add-source .btn .btn-success').click(function() {
+        $('form[name="modalForm"]').submit();
+    });
+</script>

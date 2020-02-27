@@ -8,7 +8,14 @@ if (!defined('CONFIG_PROTECTION')) {
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <?php
+    if (!defined('DESKTOP_VIEW')) {
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+    } else {
+        echo '<meta name="viewport" content="width=1024">';
+    }
+    ?>
     <link rel="icon" href="img/favicon.ico" type="image/gif" sizes="16x16">
     <title><?php echo $title; ?></title>
     <!-- BOOTSTRAP CSS -->
@@ -31,6 +38,13 @@ if (!defined('CONFIG_PROTECTION')) {
     <script src="vendor/bootstrap4-toggle-master/js/bootstrap4-toggle.js"></script>
     <!-- LODASH MIN JS -->
     <script src="vendor/lodash/lodash.js"></script>
+    <?php
+    // https://github.hubspot.com/sortable/api/themes/
+    if ($pageId === 'admin') {
+        echo '<script src="vendor/sortable/js/sortable.min.js"></script>';
+        echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-dark.css" />';
+    }
+    ?>
 </head>
 <script>
     $(document).ready(function() {
