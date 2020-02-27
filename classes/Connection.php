@@ -240,9 +240,17 @@ class Connection
      * @param string $type type of source
      * @return PDOStatement Query Result
      */
-    public function fetchAllSourcesByType(string $type): PDOStatement
+    public function fetchAllSourcesByType(string $type, $active = null): PDOStatement
     {
         $sql_string = "SELECT * FROM sources WHERE type = '$type'";
+        if($active != null){
+            if($active){
+                $status = 'active';
+            }else{
+                $status = 'suspended';
+            }
+            $sql_string .= " AND `status` = '$status';";
+        }
         return $this->PDOquery($sql_string);
     }
     /**
