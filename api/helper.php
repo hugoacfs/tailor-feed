@@ -166,19 +166,6 @@ function getSubscribedIds($array)
     return $listOfIds;
 }
 
-
-function signMeIn($authmethod)
-{
-    if ($authmethod === 'SimpleSAML') {
-        return simpleSamlSSO();
-    } elseif ($authmethod === 'local') {
-        return localSignIn();
-    } else {
-        echo 'No authentication method available. Contact your administrator.';
-        return null;
-    }
-}
-
 function performAdminTask(string $action, array $actionArray, int $adminId): bool
 {
     global $DB;
