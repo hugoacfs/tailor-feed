@@ -9,8 +9,8 @@ if ($forbid === 'true') {
 require_once __DIR__ . '/../../config.php';
 if (isset($_POST['username'])) {
     $user = new User($_POST['username']);;
-} elseif (isset($_SESSION['currentuser'])) {
-    $user = $_SESSION['currentuser'];
+} elseif (isset($_SESSION['currentUser'])) {
+    $user = $_SESSION['currentUser'];
 }
 if (!isset($user)) {
     echo 'No user is set.';

@@ -393,10 +393,10 @@ class Connection
      * @param string $username of the user
      * @return bool return True on success
      */
-    public function insertUser(string $username, string $givenname = ''): bool
+    public function insertUser(string $username, string $givenname = '', string $password = null): bool
     {
-        $stmt = $this->PDOprepare("INSERT INTO `users` (`username`, `givenname`) VALUES (?, ?)");
-        return $stmt->execute([$username, $givenname]);
+        $stmt = $this->PDOprepare("INSERT INTO `users` (`username`, `givenname`, `password`) VALUES (?, ?, ?)");
+        return $stmt->execute([$username, $givenname, $password]);
     }
 
     public function fetchTopicNameById(int $id): PDOStatement
