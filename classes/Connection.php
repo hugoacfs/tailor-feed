@@ -561,7 +561,7 @@ class Connection
     }
     public function insertTopic(array $post, int $adminId): bool
     {
-        $name = $post['reference'] ?? false; //reference because of how its being posted from mdoal form
+        $name = $post['name'] ?? false; //reference because of how its being posted from mdoal form
         if ($name) {
             $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
         }
@@ -570,7 +570,6 @@ class Connection
         if (!$name || !$description || !$status) {
             return false;
         }
-        print_r($post);
         $stmt = $this->PDOprepare("INSERT INTO `topics`(`name`, `description`, `status`) VALUES (:name, :description, :status);");
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->bindValue('description', $description, PDO::PARAM_STR);
