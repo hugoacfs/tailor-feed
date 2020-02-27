@@ -61,7 +61,7 @@ class Authenticate
         }
         return $success;
     }
-    function getUser(): PDOStatement
+    function getUser(): array
     {
         global $DB;
         $fetch = $DB->fetchUserByUsername($this->userName);
@@ -83,5 +83,34 @@ class Authenticate
     {
         $_SESSION['welcomemessage'] = true;
         $_SESSION['wmtimestamp'] = time();
+    }
+    static function requestUserInput(): array
+    {
+        //add your input from user here, either from a form or statically
+        return array('username' => 'admin', 'password' => '', 'givenname' => 'Admin');
+    }
+    function getUserName()
+    {
+        return $this->userName;
+    }
+    function getUserId()
+    {
+        return $this->userId;
+    }
+    function getGivenName()
+    {
+        return $this->givenName;
+    }
+    function getSignedIn()
+    {
+        return $this->signedIn;
+    }
+    function getRole()
+    {
+        return $this->role;
+    }
+    function getError()
+    {
+        return $this->error;
     }
 }
