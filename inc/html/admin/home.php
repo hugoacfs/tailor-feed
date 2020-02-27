@@ -9,7 +9,7 @@ if (!defined('CONFIG_PROTECTION')) {
     <div class="table-responsive" style="max-height: 80vh;">
         <div class="jumbotron bg-dark text-light">
             <h2>
-                Hello, <?php echo $_SESSION['givenname']; ?>!
+                Hello, <?php echo $_SESSION['givenName']; ?>!
             </h2>
             <p>
                 This is the admin site for UOC News.

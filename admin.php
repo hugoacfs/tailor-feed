@@ -18,7 +18,7 @@ if ($table) {
     if ($action) {
         $actionArray = $_POST;
         unset($_POST);
-        $adminId = $_SESSION['userid'];
+        $adminId = $_SESSION['userId'];
         $taskSuccess = performAdminTask($action, $actionArray, $adminId) ?? null;
         $message = '';
         if ($action === 'add-source') {

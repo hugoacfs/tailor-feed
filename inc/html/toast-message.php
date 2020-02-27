@@ -4,9 +4,9 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-if (isset($_SESSION['givenname']) && isset($_SESSION['welcomemessage'])) {
+if (isset($_SESSION['givenName']) && isset($_SESSION['welcomemessage'])) {
     // unset($_SESSION['welcomemessage']);
-    $name = $_SESSION['givenname'];
+    $name = $_SESSION['givenName'];
     echo '  <div class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0; min-width: 210px;">
             <div class="toast-header">
               <strong class="mr-auto text-primary">Welcome Message</strong>

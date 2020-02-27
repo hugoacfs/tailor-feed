@@ -63,11 +63,15 @@ function displayAdminLink($pageId)
                 </a>
             </li>';
 }
-function displayLoginLink()
-{
+function displayLoginLink($pageId)
+{  
+    $status = '';
     if (!isLoggedIn()) {
         $url = 'login.php';
         $text = 'Login';
+        if($pageId === 'login'){
+            $status = 'active';
+        }
     } else {
         $url = 'logout.php';
         if (isset($_SESSION['logout_url'])) {
@@ -75,7 +79,7 @@ function displayLoginLink()
         }
         $text = 'Logout';
     }
-    echo '<li class="nav-item ">
+    echo '<li class="nav-item ' . $status . '">
                 <a class="nav-link " href="' . $url . '"><i class="fas fa-sign-out-alt">
                     </i> ' . $text . '
                 </a>
@@ -139,7 +143,7 @@ function displayFeedbackLink($pageId)
                 }
                 // displayAboutLink($pageId);
                 displayFeedbackLink($pageId);
-                displayLoginLink();
+                displayLoginLink($pageId);
                 ?>
             </ul>
         </div>
