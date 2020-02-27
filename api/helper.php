@@ -179,38 +179,6 @@ function signMeIn($authmethod)
     }
 }
 
-function simpleSamlSSO()
-{
-    global $DB;
-    require_once('/var/simplesamlphp/lib/_autoload.php');
-    $auth = new \SimpleSAML\Auth\Simple('default-sp');
-    if (!$auth->isAuthenticated()) {
-        $auth->requireAuth();
-    }
-    $user = $auth->getAttributes();
-    $username = $user['SamAccountName'][0];
-    $givenname = $user['givenName'][0];
-    $userDetails = array();
-    $userDetails[] = $username;
-    $givenname = strtolower($givenname);
-    $givenname = ucfirst($givenname);
-    $userDetails[] = $givenname;
-    $session = \SimpleSAML\Session::getSessionFromRequest();
-    $session->cleanup();
-    $_SESSION['logout_url'] = $auth->getLogoutURL('/logout.php');
-    $DB->updateLastLogin($username);
-    // echo $USERNAME;
-    return $userDetails;
-}
-function localSignIn()
-{
-    global $DB;
-    $array = array('admin', 'Admin');
-    $DB->updateLastLogin('admin');
-    // $array = array('hsoares1', 'Hugo');
-    return $array;
-}
-
 function performAdminTask(string $action, array $actionArray, int $adminId): bool
 {
     global $DB;
