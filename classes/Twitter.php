@@ -139,8 +139,9 @@ class Twitter extends Source
     private static function twitterQuery(string $apiUrl, string $getfield)
     {
         global $CFG;
+        // TODO CHECK EXIST BEFORE CONTINUE
         require_once($CFG->dirroot . '/vendor/TwitterAPIExchange/TwitterAPIExchange.php');
-        $settings = $CFG->twtapisettings;
+        $settings = $CFG->sources['twitter']['api_settings'];
         $requestMethod = 'GET';
         $twitter = new TwitterAPIExchange($settings);
         $json_data = $twitter->setGetfield($getfield)

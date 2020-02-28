@@ -76,6 +76,25 @@ class Connection
         return intval(($this->connection)->lastInsertId());
     }
 
+    /**
+     * DB CONFIGURATION QUERIES
+     */
+    public function fetchConfiguration(): array
+    {
+        $stmt = $this->PDOprepare("SELECT * FROM `config`;");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function fetchSourcesConfiguration(string $type): array
+    {
+        $stmt = $this->PDOprepare("SELECT * FROM `sources_config` WHERE `type` = '$type';");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+
+    //END OF CONFIG QUERIES
+
     // DB QUERIES for class Article:
     /**
      * Fetches Article matching the UniqueId
@@ -243,10 +262,10 @@ class Connection
     public function fetchAllSourcesByType(string $type, $active = null): PDOStatement
     {
         $sql_string = "SELECT * FROM sources WHERE type = '$type'";
-        if($active != null){
-            if($active){
+        if ($active != null) {
+            if ($active) {
                 $status = 'active';
-            }else{
+            } else {
                 $status = 'suspended';
             }
             $sql_string .= " AND `status` = '$status';";
@@ -349,7 +368,7 @@ class Connection
         $topicsIds = array();
         $sourceIds = array();
         $sourceTopicsIds = [];
-        
+
         if (count($subscribedList) > 0) {
             foreach ($subscribedList as $source) {
                 $sourceIds[] = $source->getDbId();

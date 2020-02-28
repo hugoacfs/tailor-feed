@@ -5,28 +5,16 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 /**
- * This is the configuration class for the News API.
+ * This is the CORE configuration class for the News API.
  */
 $CFG = new stdClass();
+/**
+ * CORE DB configuration, and DIRECTORY configuration
+ */
 $CFG->username = 'root';
 $CFG->password = '';
-$CFG->hostname = 'mysql:host=localhost;dbname=database_name';
+$CFG->hostname = 'mysql:host=localhost;dbname=week_6';
 $CFG->dirroot = __DIR__;
-$CFG->authmethod = '';
-$CFG->jsonkeys = array(
-    'secret_key' => ""
-);
-$CFG->twtapisettings = array(
-    'oauth_access_token' => "",
-    'oauth_access_token_secret' => "",
-    'consumer_key' => "",
-    'consumer_secret' => ""
-);
-$CFG->fbapisettings = array(
-    'client_id' => "",
-    'client_secret' => "",
-    'access_token' => ""
-);
 /**
  * The autoloader for the News API classes.
  */
@@ -40,11 +28,49 @@ spl_autoload_register(
     }
 );
 /**
- * Global DB and CONNECTION objects.
- */
-$DB = new Connection($CFG->hostname, $CFG->username, $CFG->password);
-/**
  * Loading extra helper methods.
  * Custom methods added here.
  */
 require_once $CFG->dirroot . '/api/helper.php';
+/**
+ * Global DB and CONNECTION objects.
+ */
+$DB = new Connection($CFG->hostname, $CFG->username, $CFG->password);
+/**
+ * This is the MAIN configuration from DB.
+ */
+$config = $DB->fetchConfiguration();
+$source_types = [
+    'twitter',
+    'facebook',
+    'rss'
+];
+
+/**
+ * Populating MAIN configuration from DB
+ */
+foreach ($config as $c) {
+    $name = $c['name'];
+    $value = $c['value'];
+    $CFG->$name = $value;
+}
+/**
+ * Populating SOURCES configuration from DB
+ */
+$configArr = array();
+foreach ($source_types as $source) {
+    $config = $DB->fetchSourcesConfiguration($source);
+    foreach ($config as $c) {
+        $name = $c['name'];
+        $value = $c['value'];
+        $configArr[$source][$name] = $value;
+    }
+    $apiArr = array();
+    $config = $DB->fetchSourcesConfiguration($source . '_api');
+    foreach ($config as $c) {
+        $name = $c['name'];
+        $value = $c['value'];
+        $configArr[$source]['api_settings'][$name] = $value;;
+    }
+}
+$CFG->sources = $configArr;
