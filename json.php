@@ -11,7 +11,7 @@ if ($key_not_set || $user_not_set) {
 }
 $title = 'JSON RESULT';
 require_once __DIR__ . '/config.php';
-$key_not_match = $_GET['secretkey'] != $CFG->jsonkeys['secret_key'];
+$key_not_match = $_GET['secretkey'] != $CFG->json_private;
 if ($key_not_match) {
     echo 'Permission denied. [invalid key]';
     exit;

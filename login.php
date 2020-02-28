@@ -8,7 +8,7 @@ require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
-    if ($CFG->authmethod === 'SSAML') {
+    if ($CFG->auth_method === 'SSAML') {
         $_SESSION['USER'] = new SSAML();
     } else {
         if ($_POST) {
@@ -25,7 +25,7 @@ if (!$isLoggedIn) {
     }
 }
 if (!isset($_SESSION['signedIn'])) {
-    if ($CFG->authmethod === 'SSAML') {
+    if ($CFG->auth_method === 'SSAML') {
         //do simple saml stuff
         header('Location: timeline.php');
         die();
