@@ -105,13 +105,13 @@ class Twitter extends Source
      * It returns an array containing all sources as a Twitter object from the DB.
      * @return array of all the twitter sources that exist
      */
-    public static function getAllSources(): array
+    public static function getAllSources($active = null): array
     {
         global $DB;
         $sources = array();
         /** Getting the account handles from db to request from twitter **/
         $type = 'twitter';
-        $fetched = $DB->fetchAllSourcesByType($type);
+        $fetched = $DB->fetchAllSourcesByType($type, $active);
         /** By creating the Twitter objects*/
         foreach ($fetched as $row) {
             if ($row['type'] != $type) {
@@ -139,8 +139,9 @@ class Twitter extends Source
     private static function twitterQuery(string $apiUrl, string $getfield)
     {
         global $CFG;
+        // TODO CHECK EXIST BEFORE CONTINUE
         require_once($CFG->dirroot . '/vendor/TwitterAPIExchange/TwitterAPIExchange.php');
-        $settings = $CFG->twtapisettings;
+        $settings = $CFG->sources['twitter']['api_settings'];
         $requestMethod = 'GET';
         $twitter = new TwitterAPIExchange($settings);
         $json_data = $twitter->setGetfield($getfield)

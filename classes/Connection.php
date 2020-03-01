@@ -76,6 +76,25 @@ class Connection
         return intval(($this->connection)->lastInsertId());
     }
 
+    /**
+     * DB CONFIGURATION QUERIES
+     */
+    public function fetchConfiguration(): array
+    {
+        $stmt = $this->PDOprepare("SELECT * FROM `config`;");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    public function fetchSourcesConfiguration(string $type): array
+    {
+        $stmt = $this->PDOprepare("SELECT * FROM `sources_config` WHERE `type` = '$type';");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+
+    //END OF CONFIG QUERIES
+
     // DB QUERIES for class Article:
     /**
      * Fetches Article matching the UniqueId
@@ -240,9 +259,17 @@ class Connection
      * @param string $type type of source
      * @return PDOStatement Query Result
      */
-    public function fetchAllSourcesByType(string $type): PDOStatement
+    public function fetchAllSourcesByType(string $type, $active = null): PDOStatement
     {
         $sql_string = "SELECT * FROM sources WHERE type = '$type'";
+        if ($active != null) {
+            if ($active) {
+                $status = 'active';
+            } else {
+                $status = 'suspended';
+            }
+            $sql_string .= " AND `status` = '$status';";
+        }
         return $this->PDOquery($sql_string);
     }
     /**
@@ -282,7 +309,8 @@ class Connection
      */
     public function fetchUserTopicsByUserId(int $userId): PDOStatement
     {
-        $sql_string = "SELECT * FROM `subscribed_topics` AS `st` JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid` WHERE `userid` =" . $userId . " ORDER BY `t`.`name`;";
+        $sql_string = "SELECT * FROM `subscribed_topics` AS `st` JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid`
+           WHERE `userid` =" . $userId . " AND `t`.`status` = 'active' ORDER BY `t`.`name`;";
         return $this->PDOquery($sql_string);
     }
     /**
@@ -331,41 +359,35 @@ class Connection
         }
         $limit = 10;
         $offset = ($offset - 1) * 10;
-        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource` FROM `articles` AS `a`
-                       JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid` 
-                       LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
-                       LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id` 
-                       WHERE `s`.`status` = 'active' AND `t`.`status` = 'active' AND (";
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource`
+            FROM `articles` AS `a`
+                JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid`
+                LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
+                LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id`
+            WHERE `s`.`status` = 'active' AND ";
         $topicsIds = array();
         $sourceIds = array();
+        $sourceTopicsIds = [];
+
         if (count($subscribedList) > 0) {
             foreach ($subscribedList as $source) {
                 $sourceIds[] = $source->getDbId();
             }
-            $sql_source_ids = "(`a`.`sourceid` IN (" . join(',', $sourceIds) . "))";
-        } else {
-            $sql_source_ids = "";
+            $sourceTopicsIds[] = " `a`.`sourceid` IN (" . join(',', $sourceIds) . ") ";
         }
-        if ((count($topicsList) > 0) && count($subscribedList) > 0) {
-            $sql_link = ' OR ';
-        } else {
-            $sql_link = '';
-        }
+
         if (count($topicsList) > 0) {
             foreach ($topicsList as $topic) {
                 $topicsIds[] = $topic->dbId;
             }
-            $sql_topic_ids = "(`at`.`topicid` IN (" . join(',', $topicsIds) . "))";
-        } else {
-            $sql_topic_ids = "";
+            $sourceTopicsIds[] = " `at`.`topicid` IN (" . join(',', $topicsIds) . ") ";
         }
 
-        $sql_where =  ") AND `creationdate` > " . $timeInterval . " 
+        $sql_sourceTopics = " ( " . join(' OR ', $sourceTopicsIds) . " ) ";
+        $sql_where =  " AND `creationdate` > " . $timeInterval . " 
                             ORDER BY `creationdate` DESC LIMIT " . $offset . "," . $limit;
-        $sql_string = $sql_string . $sql_source_ids . $sql_link . $sql_topic_ids . $sql_where . ';';
+        $sql_string .= $sql_sourceTopics . $sql_where . ';';
         return $this->PDOquery($sql_string);
-
-        return null;
     }
     /**
      * Fetch User by Username
@@ -390,10 +412,10 @@ class Connection
      * @param string $username of the user
      * @return bool return True on success
      */
-    public function insertUser(string $username, string $givenname = ''): bool
+    public function insertUser(string $username, string $givenname = '', string $password = null): bool
     {
-        $stmt = $this->PDOprepare("INSERT INTO `users` (`username`, `givenname`) VALUES (?, ?)");
-        return $stmt->execute([$username, $givenname]);
+        $stmt = $this->PDOprepare("INSERT INTO `users` (`username`, `givenname`, `password`) VALUES (?, ?, ?)");
+        return $stmt->execute([$username, $givenname, $password]);
     }
 
     public function fetchTopicNameById(int $id): PDOStatement
@@ -558,7 +580,7 @@ class Connection
     }
     public function insertTopic(array $post, int $adminId): bool
     {
-        $name = $post['reference'] ?? false; //reference because of how its being posted from mdoal form
+        $name = $post['name'] ?? false; //reference because of how its being posted from mdoal form
         if ($name) {
             $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
         }
@@ -567,7 +589,6 @@ class Connection
         if (!$name || !$description || !$status) {
             return false;
         }
-        print_r($post);
         $stmt = $this->PDOprepare("INSERT INTO `topics`(`name`, `description`, `status`) VALUES (:name, :description, :status);");
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->bindValue('description', $description, PDO::PARAM_STR);

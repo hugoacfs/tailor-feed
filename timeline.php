@@ -7,7 +7,6 @@ session_start();
 require $CFG->dirroot . '/inc/php/authenticate.php';
 require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
-
 if (isset($_POST['submitpages'])) {
     unset($_POST['submitpages']);
     $sourcesIds = Source::getAllSourcesIds();
@@ -19,9 +18,9 @@ if (isset($_POST['submitpages'])) {
             $newSubscribeList[] = $id;
         }
     }
-    $_SESSION['currentuser']->updatePreferences($newSubscribeList, 'source');
-    $_SESSION['currentuser']->updateUserSubcribedList();
-    $_SESSION['currentuser'] = new User($_SESSION['username']);
+    $CURRENTUSER->updatePreferences($newSubscribeList, 'source');
+    $CURRENTUSER->updateUserSubcribedList();
+    $CURRENTUSER = new User($_SESSION['userName']);
 } else {
     unset($_POST['submitpages']);
 }
@@ -37,14 +36,11 @@ if (isset($_POST['submittopics'])) {
             $newTopicsList[] = $id;
         }
     }
-    $_SESSION['currentuser']->updatePreferences($newTopicsList, 'topic');
-    $_SESSION['currentuser']->updateUserTopicsList();
-    $_SESSION['currentuser'] = new User($_SESSION['username']);
+    $CURRENTUSER->updatePreferences($newTopicsList, 'topic');
+    $CURRENTUSER->updateUserTopicsList();
+    $CURRENTUSER = new User($_SESSION['userName']);
 } else {
     unset($_POST['submittopics']);
-}
-if (!isLoggedIn()) {
-    redirectGuestToLogin();
 }
 ?>
 <div class="row ">
@@ -56,7 +52,7 @@ if (!isLoggedIn()) {
         </div>
         <div id='news-feed' class="container card">
             <?php
-            $feed = $_SESSION['currentuser']->displaySubscribedArticles();
+            $feed = $CURRENTUSER->displaySubscribedArticles();
             echo ($feed);
             ?>
         </div>
@@ -79,7 +75,7 @@ include $CFG->dirroot . '/inc/html/modal-topics.php';
     }
     // ajax for pages
     $(document).ready(function() {
-        var username = '<?php echo $_SESSION['username']; ?>';
+        var username = '<?php echo $_SESSION['userName']; ?>';
         var safelock = '<?php echo false; ?>';
         var loadingspinner = '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
         // Pages Hide Modal

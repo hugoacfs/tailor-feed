@@ -122,7 +122,6 @@ function isAdminLoggedIn()
     if (!isLoggedIn()) {
         return false;
     } elseif (($role === 'a')) {
-        // if ( isset($_SESSION['username'])) {
         return true;
     } else {
         return false;
@@ -130,7 +129,7 @@ function isAdminLoggedIn()
 }
 function isLoggedIn()
 {
-    if (isset($_SESSION['username'])) {
+    if (isset($_SESSION['signedIn'])) {
         return true;
     } else {
         return false;
@@ -138,17 +137,13 @@ function isLoggedIn()
 }
 function redirectGuestToLogin()
 {
-    if (!isLoggedIn()) {
-        // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
-        header('Location: login.php');
-    }
+    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
+    header('Location: login.php');
 }
 function redirectUserToTimeline()
 {
-    if (!isAdminLoggedIn()) {
-        // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
-        header('Location: timeline.php');
-    }
+    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
+    header('Location: timeline.php');
 }
 
 function getSubscribedIds($array)
@@ -166,95 +161,6 @@ function getSubscribedIds($array)
     return $listOfIds;
 }
 
-function isUserAdmin($username)
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if ($fetched['role'] === 'a') {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function signMeIn($authmethod)
-{
-    if ($authmethod === 'SimpleSAML') {
-        return simpleSamlSSO();
-    } elseif ($authmethod === 'local') {
-        return localSignIn();
-    } else {
-        echo 'No authentication method available. Contact your administrator.';
-        return null;
-    }
-}
-
-function simpleSamlSSO()
-{
-    global $DB;
-    require_once('/var/simplesamlphp/lib/_autoload.php');
-    $auth = new \SimpleSAML\Auth\Simple('default-sp');
-    if (!$auth->isAuthenticated()) {
-        $auth->requireAuth();
-    }
-    $user = $auth->getAttributes();
-    $username = $user['SamAccountName'][0];
-    $givenname = $user['givenName'][0];
-    $userDetails = array();
-    $userDetails[] = $username;
-    $givenname = strtolower($givenname);
-    $givenname = ucfirst($givenname);
-    $userDetails[] = $givenname;
-    $session = \SimpleSAML\Session::getSessionFromRequest();
-    $session->cleanup();
-    $_SESSION['logout_url'] = $auth->getLogoutURL('/logout.php');
-    $DB->updateLastLogin($username);
-    // echo $USERNAME;
-    return $userDetails;
-}
-function localSignIn()
-{
-    global $DB;
-    $array = array('admin', 'Admin');
-    $DB->updateLastLogin('admin');
-    // $array = array('hsoares1', 'Hugo');
-    return $array;
-}
-
-function doesUserExist(string $username): bool
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if (is_array($fetched)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function getUserId(string $username): int
-{
-    global $DB;
-    $fetch = $DB->fetchUserByUsername($username);
-    $fetched = $fetch->fetch();
-    if (is_array($fetched)) {
-        return $fetched['id'];
-    } else {
-        return 0;
-    }
-}
-
-function buildUserProfile(string $username, string $givenname)
-{
-    global $DB;
-    $DB->insertUser($username, $givenname);
-    $userId = $DB->PDOgetlastinsertid();
-    $defaultSource = 1;
-    $DB->updateLastLogin($username);
-    $DB->userPreferencesCrudQuery('source', $defaultSource, $userId, 'insert');
-}
 function performAdminTask(string $action, array $actionArray, int $adminId): bool
 {
     global $DB;

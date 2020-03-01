@@ -345,7 +345,7 @@ class User
                     if ($m['type'] === 'photo') {
                         $mediaHTML = $mediaHTML . '
                     <div class="carousel-item ' . $status . '">
-                        <img class="img-fluid mx-auto d-block rounded " src="' . $m . '?name=medium" alt="Article Image">
+                        <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
                     </div>';
                     } elseif ($m['type'] === 'video') {
                         $mediaHTML = $mediaHTML . '
