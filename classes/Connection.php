@@ -615,6 +615,18 @@ class Connection
         $sql_string = "SELECT * FROM `admin_logs` ORDER BY `creationdate` DESC LIMIT 20 ";
         return $this->PDOquery($sql_string);
     }
+    public function fetchAllArticlesAndSources(int $page, int $max, $sourceid = null): PDOStatement
+    {
+        $limit = $max;
+        $offset = ($page - 1) * $max;
+        $sql_where = '';
+        if($sourceid){
+            $sql_where = " AND `s`.`id` = $sourceid ";
+        }
+        // $sql_string = "SELECT * FROM `articles` AS `a` JOIN `sources` AS `s` ORDER BY `creationdate` DESC LIMIT $offset, $limit ";
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` FROM `articles` AS `a` JOIN `sources` AS `s` WHERE `s`.`id` = `a`.`sourceid` ". $sql_where." ORDER BY `creationdate` DESC LIMIT $offset,$limit; ";
+        return $this->PDOquery($sql_string);
+    }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
     public function searchSourcesByReferenceOrName(string $term = null)

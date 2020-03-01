@@ -31,7 +31,7 @@ if ($table) {
             $message = 'updated the topic`s details.';
         } elseif ($action === 'suspend-source' || $action === 'activate-source') {
             $message = 'updated the source status.';
-        }elseif ($action === 'suspend-topic' || $action === 'activate-topic') {
+        } elseif ($action === 'suspend-topic' || $action === 'activate-topic') {
             $message = 'updated the topic status.';
         }
         $title = 'success';
@@ -79,7 +79,7 @@ unset($_POST);
                         ?>
                         <i class="fas fa-table" aria-hidden="true"></i>
                         <span class="text-light">
-                        Sources
+                            Sources
                         </span>
                         <?php
                         if ($table === 'sources') {
@@ -92,10 +92,23 @@ unset($_POST);
                         <a href="?table=topics" class="nav-link">
                             <i class="fas fa-table" aria-hidden="true"></i>
                             <span class="text-light">
-                            Topics
+                                Topics
                             </span>
                             <?php
                             if ($table === 'topics') {
+                                echo '<i class="fas fa-arrow-left"></i>';
+                            }
+                            ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="?table=articles" class="nav-link">
+                            <i class="fas fa-table" aria-hidden="true"></i>
+                            <span class="text-light">
+                                Articles
+                            </span>
+                            <?php
+                            if ($table === 'articles') {
                                 echo '<i class="fas fa-arrow-left"></i>';
                             }
                             ?>
@@ -110,6 +123,8 @@ unset($_POST);
                 require $CFG->dirroot . '/inc/html/admin/sources.php';
             } elseif ($table === 'topics') {
                 require $CFG->dirroot . '/inc/html/admin/topics.php';
+            } elseif ($table === 'articles') {
+                require $CFG->dirroot . '/inc/html/admin/articles.php';
             } else {
                 require $CFG->dirroot . '/inc/html/admin/home.php';
             }
