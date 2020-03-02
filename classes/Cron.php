@@ -13,6 +13,7 @@ class Cron
     public function __construct(string $type)
     {
         global $CFG;
+        $this->type = $type;
         // print_r('<pre>');
         // print_r($CFG);
         // print_r('</pre>');
@@ -26,7 +27,6 @@ class Cron
         } elseif ($type === 'rss') {
             $config = $CFG->sources['rss'];
         }
-
         $update_articles = $config['update_articles']; //if true, then get articles
         $update_sources = $config['update_sources']; //if true then get sources
         $cron = intval($config['cron']); //cron interval
@@ -39,31 +39,30 @@ class Cron
         }
         if ($run_now) {
             if ($update_articles) {
-                $this->updateArticles($type);
+                $this->updateArticles();
             }
             if ($update_sources) {
-                $this->updateSources($type);
+                $this->updateSources();
             }
             // UPDATE LAST RUN BY TYPE
-            // $this->updateLastRun($type);
+            $this->updateLastRun();
         }
         $this->finishTime = time();
-        echo "Ending job for " . $type . " sources" . "\n";
+        echo "Ending job for " . $this->type . " sources" . "\n";
         echo "Server Time: " . date('r', $this->finishTime) . "\n";
         $jobDuration = $this->finishTime - $this->startTime;
         echo "Duration = " . $jobDuration . " seconds.\n";
     }
-    private function updateArticles(string $type)
+    private function updateArticles()
     {
-        if ($type === 'twitter') {
+        if ($this->type === 'twitter') {
             $this->updateTwitterArticles();
-        } elseif ($type === 'facebook') {
+        } elseif ($this->type === 'facebook') {
             $this->updateFacebookArticles();
-        } elseif ($type === 'rss') {
+        } elseif ($this->type === 'rss') {
             $this->updateRssArticles();
         }
     }
-
     private function updateTwitterArticles()
     {
         echo "Instanciating Twitter objs... \n";
@@ -86,15 +85,13 @@ class Cron
         echo "Instanciating RSS objs... \n";
         echo "This method is not yet supported - aborting... \n";
     }
-
-
-    private function updateSources($type)
+    private function updateSources()
     {
-        if ($type === 'twitter') {
+        if ($this->type === 'twitter') {
             $this->updateTwitterSources();
-        } elseif ($type === 'facebook') {
+        } elseif ($this->type === 'facebook') {
             $this->updateFacebookSources();
-        } elseif ($type === 'rss') {
+        } elseif ($this->type === 'rss') {
             $this->updateRssSources();
         }
     }
@@ -113,5 +110,11 @@ class Cron
     {
         echo 'Updating all Rss sources details... ' . "\n";
         echo "This method is not yet supported - aborting... \n";
+    }
+    private function updateLastRun()
+    {
+        global $DB;
+        echo 'Updating last run time -> '. $this->type . "\n";
+        $DB->updateLastCronTime($this->type);
     }
 }
