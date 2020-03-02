@@ -8,8 +8,12 @@ require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
+//echo 'not signedin';
+	
     if ($CFG->auth_method === 'SSAML') {
-        $_SESSION['USER'] = new SSAML();
+	echo 'simple saml auth method on';
+	$_SESSION['USER'] = new SSAML();
+	print_r($_SESSION['USER']);
     } else {
         if ($_POST) {
             $_SESSION['USER'] = new Authenticate($_POST['username'], $_POST['password']);
@@ -27,7 +31,8 @@ if (!$isLoggedIn) {
 if (!isset($_SESSION['signedIn'])) {
     if ($CFG->auth_method === 'SSAML') {
         //do simple saml stuff
-        header('Location: timeline.php');
+	echo '<h1>ssaml</h1>';    
+	header('Location: timeline.php');
         die();
     } else {
         echo '<div class="text-center my-auto">
@@ -48,7 +53,9 @@ if (!isset($_SESSION['signedIn'])) {
     </body>';
     };
 } elseif (!$_SESSION['signedIn']) {
+    echo 'not signedin'; 
     session_unset();
+    $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
 } else {
     redirectUserToTimeline();

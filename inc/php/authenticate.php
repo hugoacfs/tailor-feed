@@ -4,7 +4,7 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-if (!$_SESSION['signedIn']) {
+if (!$_SESSION['signedIn']) {	
     session_unset();
     redirectGuestToLogin();
 } elseif (isset($_SESSION['userName'])) {
