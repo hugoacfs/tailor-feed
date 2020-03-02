@@ -20,15 +20,18 @@ class SSAML extends Authenticate
         $this->userName = $username;
         $givenname = ucfirst(strtolower($SSAMLuser['givenName'][0]));
         $this->givenName = $givenname;
-	echo $givenname;
+	//echo $givenname;
 	print_r($this);
 	$DBuser = $this->getUser();
         $exists = count($DBuser) ?? false;
-	echo 'exists: '. $exists;
+	//echo 'exists: '. $exists;
 	if (!$exists) {
             $this->passWord = null;
             $this->signedIn = $this->buildUserProfile() ?? false;
-        }
+	}else{
+	    $this->role = $DBuser['role'];
+	    $this->signedIn = true;
+	}
         $this->userId = $DBuser['id'] ?? null;
         $session = \SimpleSAML\Session::getSessionFromRequest();
         $session->cleanup();
