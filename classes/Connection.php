@@ -636,4 +636,13 @@ class Connection
         }
     }
     /** END SEARCH QUERIES */
+    /** CRON QUERIES */
+    public function updateLastCronTime(string $type): bool
+    {
+        $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = 'last_cron';");
+        $stmt->bindValue('time', time(), PDO::PARAM_STR);
+        $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+    /** END CRON QUERIES */
 }
