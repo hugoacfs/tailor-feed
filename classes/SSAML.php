@@ -4,6 +4,7 @@ if (!defined('CLASS_LOADER')) {
     http_response_code(403);
     exit;
 }
+ini_set('display_errors', 1);
 class SSAML extends Authenticate
 {
     function __construct()
@@ -15,13 +16,16 @@ class SSAML extends Authenticate
             $auth->requireAuth();
         }
         $SSAMLuser = $auth->getAttributes();
-        $username = strtolower($SSAMLuser['SamAccountName'][0]);
+	$username = strtolower($SSAMLuser['SamAccountName'][0]);
         $this->userName = $username;
         $givenname = ucfirst(strtolower($SSAMLuser['givenName'][0]));
         $this->givenName = $givenname;
-        $DBuser = $this->getUser();
+	echo $givenname;
+	print_r($this);
+	$DBuser = $this->getUser();
         $exists = count($DBuser) ?? false;
-        if (!$exists) {
+	echo 'exists: '. $exists;
+	if (!$exists) {
             $this->passWord = null;
             $this->signedIn = $this->buildUserProfile() ?? false;
         }
@@ -32,5 +36,17 @@ class SSAML extends Authenticate
         if ($this->signedIn) {
             $DB->updateLastLogin($this->userName);
         }
+    }
+    protected function buildUserProfile(): bool
+    {
+	echo 'building user profile';
+	global $DB;
+        $success = $DB->insertUser($this->userName, $this->givenName, 'none');
+        if ($success) {
+            $this->userId = $DB->PDOgetlastinsertid();
+            $DB->updateLastLogin($this->userName);
+            $this->displayWelcomeMessage();
+        }
+        return $success;
     }
 }

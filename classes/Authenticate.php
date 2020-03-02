@@ -65,13 +65,18 @@ class Authenticate
         }
         return $success;
     }
-    function getUser(): array
+    function getUser()
     {
         global $DB;
         $fetch = $DB->fetchUserByUsername($this->userName);
-        return $fetch->fetch();
+	$fetched = $fetch->fetch();
+	if(is_array($fetched)){
+	    return $fetched;
+	}else{
+	    return array();
+	}
     }
-    private function displayWelcomeMessage()
+    protected function displayWelcomeMessage()
     {
         $_SESSION['welcomemessage'] = true;
         $_SESSION['wmtimestamp'] = time();
