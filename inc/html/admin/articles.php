@@ -4,18 +4,20 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
-
+$params = [];
+$s_id = $_GET['id'] ?? false;
+if ($s_id) $params['sourceid'] = $s_id;
+$params['max'] = $_GET['max'] ?? 5;
+$params['page'] = $_GET['page'] ?? 1;
 function buildGetString(array $params): string
 {
-    $queryString = '';
+    $pa = [];
     foreach ($params as $key => $param) {
-        $queryString .= '&amp;' . $key . '=' . $param;
+        $pa[] = $key . '=' . $param;
     }
-    return $queryString;
+    $parmastring = join('&', $pa);
+    return $parmastring;
 }
-$max = $_GET['max'] ?? 5;
-$page = $_GET['page'] ?? 1;
-$s_id = $_GET['id'] ?? false;
 ?>
 <script>
     $(document).ready(function() {
@@ -27,8 +29,8 @@ $s_id = $_GET['id'] ?? false;
         });
     });
 </script>
-<div class="col-12">
-    <nav class="">
+<div class="col-xs-12 col-sm-12 col-lg-12">
+    <nav>
         <ol class="breadcrumb bg-dark text-light">
             <li class="breadcrumb-item ">
                 <a href="admin.php">Admin</a>
@@ -39,12 +41,18 @@ $s_id = $_GET['id'] ?? false;
             <div class="dropdown ml-auto ">
                 <span>Number of Articles</span>
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php echo $max; ?>
+                    <?php echo $params['max']; ?>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="admin.php?table=articles&max=<?php echo 5; ?>&page=<?php echo $page; ?>">5</a>
-                    <a class="dropdown-item" href="admin.php?table=articles&max=<?php echo 10; ?>&page=<?php echo $page; ?>">10</a>
-                    <a class="dropdown-item" href="admin.php?table=articles&max=<?php echo -1; ?>&page=<?php echo $page; ?>">All</a>
+                    <?php
+                    $options = [5, 10, 15, 30, 50];
+                    $tparams = $params;
+                    foreach ($options as $option) {
+                        $tparams['max'] = $option;
+                        $string = buildGetString($tparams);
+                        echo '<a class="dropdown-item" href="admin.php?table=articles&' . $string . '">' . $option . '</a>';
+                    }
+                    ?>
                 </div>
             </div>
         </ol>
@@ -71,7 +79,7 @@ $s_id = $_GET['id'] ?? false;
             </thead>
             <tbody>
                 <?php
-                $articles = $DB->fetchAllArticlesAndSources($page, $max, $s_id);
+                $articles = $DB->fetchAllArticlesAndSources($params['page'], $params['max'], $s_id);
                 $count = 0;
                 foreach ($articles as $article) {
                     $count += 1;
@@ -96,7 +104,7 @@ $s_id = $_GET['id'] ?? false;
                     echo '<td class="type">' . ucfirst($type) . '</td>';
                     echo '<td class="type">' . ucfirst($status) . '</td>';
                     echo '<td class="status">' . $body . '</td>';
-                    echo '<td class="status">' . $creationdate . '</td>';
+                    echo '<td class="status">' . timeago($creationdate) . '</td>';
                     echo '<td style="text-align:center;">';
                     echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSource(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
@@ -117,28 +125,45 @@ $s_id = $_GET['id'] ?? false;
     <hr>
     <div class="row">
         <div class="btn-group btn-group " role="group">
+            <?php
+            $tparams['page'] = 1;
+            $string = buildGetString($tparams);
+            ?>
+            <a class="btn btn-primary" href="admin.php?table=articles&<?php echo $string; ?> ">
+                <button class=" btn btn-primary" tabindex="-1">
+                    <i class="fas fa-step-backward"></i>
+                    Back to start
+                </button>
+            </a>
+        </div>
+        <nav class="ml-auto mr-auto">
+            <ul class="pagination">
+                <?php
+                $pages = [($params['page'] - 2), ($params['page'] - 1), ($params['page']), ($params['page'] + 1), ($params['page'] + 2)];
+                $tparams = $params;
+                foreach ($pages as $page) {
+                    $disabled = '';
+                    $active = '';
+                    if ($page < 1) {
+                        $disabled = 'disabled';
+                        continue;
+                    }
+                    if ($page === $params['page']) $active = 'active';
+                    $tparams['page'] = $page;
+                    $string = buildGetString($tparams);
+                    echo '<li class="page-item ' . $active . ' ' . $disabled . '">
+                    <a class="page-link" href="admin.php?table=articles&' . $string . '" tabindex="-1">' . $page . '</a>
+                </li>';
+                }
+                ?>
+            </ul>
+        </nav>
+        <div class="btn-group btn-group " role="group">
             <button data-toggle="modal" class="add-source btn btn-success " data-target="#modal" onClick="addNewSource()" type="button">
                 <i class="fas fa-plus mr-1"></i>
                 Add source
             </button>
         </div>
-        <nav class="ml-auto mr-auto">
-            <ul class="pagination">
-                <li class="page-item <?php if ($page < 2) {
-                                            echo 'disabled';
-                                        } ?>">
-                    <a class="page-link" href="admin.php?table=articles&max=<?php echo $max; ?>&page=<?php if ($page > 1) {
-                                                                                                            echo ($page - 1);
-                                                                                                        } ?>" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#"><?php echo ($page); ?> <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="admin.php?table=articles&id=' . $sourceid . '&max=<?php echo $max; ?>&page=<?php echo ($page + 1); ?>">Next</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </div>
 <script>

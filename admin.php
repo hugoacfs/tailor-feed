@@ -11,6 +11,14 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
+$adminMenu = $_COOKIE['adminMenu'] ?? false;
+$adminState = 'show';
+if ($adminMenu === 'closed') {
+    $adminState = '';
+}
+if (!$_GET) {
+    $adminState = 'show';
+}
 $table = $_GET['table'] ?? null;
 if ($table) {
     $action = $_POST['action'] ?? null;
@@ -59,12 +67,53 @@ unset($_POST);
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function toggleMenu() {
+        var adminMenu = getCookie('adminMenu');
+        if (adminMenu != 'open') {
+            setCookie('adminMenu', 'open', 50);
+        } else {
+            setCookie('adminMenu', 'closed', 50);
+        }
+        // alert(adminMenu);
+    }
 </script>
 <div id="wrapper" class="container-fluid ">
     <div class="spacer d-flex justify-content-center align-items-center">
     </div>
     <div class="row ">
         <div class="col-2 p-0">
+            <a class="btn btn-secondary w-100 mb-1" onclick="toggleMenu()" data-toggle="collapse" href="#admin-sidebar" role="button" aria-expanded="false" aria-controls="admin-sidebar">
+                <i class="fas fa-caret-down"></i>
+                Toggle Side Nav
+            </a>
+        </div>
+    </div>
+    <div class="row ">
+        <div id="admin-sidebar" class="col-2 p-0 collapse <?php echo $adminState; ?>">
             <!-- sidenav -->
             <nav id="admin-nav" class="navbar navbar-expand-md bg-dark breadcrumb align-content-start">
                 <ul class="navbar-nav flex-column ">
@@ -117,7 +166,7 @@ unset($_POST);
                 </ul>
             </nav>
         </div>
-        <div class="col-10 ">
+        <div class="col ">
             <?php
             if ($table === 'sources') {
                 require $CFG->dirroot . '/inc/html/admin/sources.php';
