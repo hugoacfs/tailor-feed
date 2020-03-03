@@ -778,8 +778,8 @@ class Connection
             $term = $term . '%';
             // bind parameters to statement
             $stmt->bindParam(":term", $term);
-            // execute the prepared statement
-            $this->ExecuteAndFetchArray($stmt);
+            // execute the prepared statement and return result
+            return $this->ExecuteAndFetchArray($stmt);
         }
     }
     /** END SEARCH QUERIES */

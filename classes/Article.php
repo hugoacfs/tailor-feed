@@ -135,12 +135,11 @@ class Article
     {
         global $DB;
         if ($type === 'twitter' && !empty($id)) {
-            $fetch = $DB->fetchLatestTwitterArticle($id);
-            $countFetch = count($fetch);
-            if ($countFetch != 1) {
+            $fetched = $DB->fetchLatestTwitterArticle($id);
+            $fetched = $fetched[0];
+            if(!$fetched){
                 return -1;
             }
-            $fetched = $fetch->fetch();
             return intval($fetched['MAX(a.uniqueidentifier)']);
         }
     }
