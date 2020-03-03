@@ -111,7 +111,7 @@ class Article
             $message = $article->body;
             $uniqueId = $article->uniqueId;
             $fetched = $DB->fetchArticleByUniqueId($uniqueId);
-            $uniqueIdNotExists = ($fetched->rowCount() === 0);
+            $uniqueIdNotExists = (count($fetched) === 0);
             if ($uniqueIdNotExists) {
                 $insertSuccess = $DB->insertNewArticleEntry($ownerId, $uniqueId, $creationDate, $message);
                 if ($insertSuccess) {

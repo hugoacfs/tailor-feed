@@ -33,7 +33,7 @@ class Connection
             $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->connection = $connection;
         } catch (PDOException $ex) {
-            handleException($ex);
+            handleException($ex, 'PDO Connection error.');
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -50,7 +50,7 @@ class Connection
         try {
             return ($this->connection)->query($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex);
+            handleException($ex, 'PDO Query error.');
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -65,9 +65,49 @@ class Connection
         try {
             return ($this->connection)->prepare($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex);
+            handleException($ex, 'PDO Prepare error.');
         } catch (Exception $ex) {
             handleException($ex);
+        }
+    }
+    /**
+     * Internal execute method
+     * @param PDOStatement $stmt pdo statement prepared to execute
+     * @return bool Execute Result
+     */
+    private function PDOexecute(PDOStatement $stmt): bool
+    {
+        try {
+            return ($stmt)->execute();
+        } catch (PDOException $ex) {
+            handleException($ex, 'PDO Execute error.');
+        } catch (Exception $ex) {
+            handleException($ex);
+        }
+    }
+    /**
+     * Internal execute method
+     * @param PDOStatement $stmt pdo statement prepared to execute
+     * @return bool Execute Result
+     */
+    private function PDOfetchAll(PDOStatement $stmt): array
+    {
+        try {
+            return ($stmt)->fetchAll();
+        } catch (PDOException $ex) {
+            handleException($ex, 'PDO Execute error.');
+        } catch (Exception $ex) {
+            handleException($ex);
+        }
+    }
+    private function ExecuteAndFetchArray(PDOStatement $stmt): array
+    {
+        $status = $this->PDOexecute($stmt);
+        switch ($status) {
+            case true:
+                return $this->PDOfetchAll($stmt);
+            default:
+                return array();
         }
     }
     /**
@@ -76,26 +116,27 @@ class Connection
      */
     public function PDOgetlastinsertid(): int
     {
-        return intval(($this->connection)->lastInsertId());
+        try {
+            return intval(($this->connection)->lastInsertId());
+        } catch (PDOException $ex) {
+            handleException($ex, 'Last insert ID error.');
+        } catch (Exception $ex) {
+            handleException($ex);
+        }
     }
-
     /**
      * DB CONFIGURATION QUERIES
      */
     public function fetchConfiguration(): array
     {
         $stmt = $this->PDOprepare("SELECT * FROM `config`;");
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->ExecuteAndFetchArray($stmt);
     }
     public function fetchSourcesConfiguration(string $type): array
     {
         $stmt = $this->PDOprepare("SELECT * FROM `sources_config` WHERE `type` = '$type';");
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->ExecuteAndFetchArray($stmt);
     }
-
-
     //END OF CONFIG QUERIES
 
     // DB QUERIES for class Article:
@@ -105,10 +146,11 @@ class Connection
      * @param string $matchingUniqueId Unique Id of Article
      * @return PDOStatement Query Result
      */
-    public function fetchArticleByUniqueId(string $matchingUniqueId): PDOStatement
+    public function fetchArticleByUniqueId(string $matchingUniqueId): array
     {
-        $sql_string = "SELECT * FROM `articles` WHERE `uniqueidentifier` = '" . $matchingUniqueId . "' ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `articles` WHERE `uniqueidentifier` = :matchingUniqueId;");
+        $stmt->bindValue('matchingUniqueId', $matchingUniqueId, PDO::PARAM_STR);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * Inserts Article into table
@@ -632,6 +674,9 @@ class Connection
     }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
+    /**
+     * @deprecated
+     */
     public function searchSourcesByReferenceOrName(string $term = null)
     {
         if (isset($term)) {
