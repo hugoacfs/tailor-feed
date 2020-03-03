@@ -121,7 +121,7 @@ function displayFeedbackLink($pageId)
 <body class="no-gutters pb-0 overflow-hidden">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <a class="navbar-brand mr-auto" href="#">
-            <img class="navbar-logo" src="https://moodle.chi.ac.uk/pluginfile.php/1/core_admin/logocompact/0x70/1579162405/Chi%20Uni%20Shield%20white%20on%20non%20Very%20Small%20%281%29.ai.png" alt="University of Chichester News">
+            <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
             uoc news
         </a>
         <?php
