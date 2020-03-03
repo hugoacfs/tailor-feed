@@ -42,9 +42,13 @@ if (!defined('CONFIG_PROTECTION')) {
     // https://github.hubspot.com/sortable/api/themes/
     if ($pageId === 'admin') {
         echo '<script src="vendor/sortable/js/sortable.min.js"></script>';
-        echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-dark.css" />';
+        echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-bootstrap.css" />';
+    }
+    if($CFG->g_analytics_mode === 'on'){
+        include $CFG->dirroot . '/inc/html/analytics.php';
     }
     ?>
+
 </head>
 <script>
     $(document).ready(function() {

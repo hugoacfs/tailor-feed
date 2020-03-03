@@ -64,18 +64,17 @@ function buildGetString(array $params): string
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
+        <table class="table table-dark tableFixHead table-striped table-sm" data-sortable>
             <thead>
-                <tr">
-                    <th scope="col">Source Reference</th>
-                    <th scope="col">Source Name</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Source Status</th>
-                    <th scope="col">Body</th>
-                    <th scope="col">Creation Date</th>
-                    <th scope="col">Update</th>
-                    <th scope="col">Delete</th>
-                    </tr>
+                <tr>
+                    <th class="align-top" scope=" col" colspan="2">Source Reference</th>
+                    <th class="align-top" scope="col">Source Name</th>
+                    <th class="align-top" scope="col">Type</th>
+                    <th class="align-top" scope="col">Source Status</th>
+                    <th class="align-top" scope="col">Body</th>
+                    <th class="align-top" scope="col">Creation Date</th>
+                    <th class="align-top" scope="col">Delete</th>
+                </tr>
             </thead>
             <tbody>
                 <?php
@@ -91,28 +90,22 @@ function buildGetString(array $params): string
                     $screenname = $article['screenname'];
                     $type = $article['type'];
                     $status = $article['status'];
-                    if ($status === 'active') {
-                        $quickAction = 'suspend-source';
-                        $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
-                    } else {
-                        $quickAction = 'activate-source';
-                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
-                    }
+                    $quickAction = 'delete-article';
+                    $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
+                    $confirmMessage = "'Are you sure you want to permanently delete this article from the database?'";
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td class="reference"><a href="admin.php?table=articles&id=' . $sourceid . '">' . $reference . '</a></td>';
+                    echo '<td><a href="admin.php?table=articles&id=' . $sourceid . '"><i class="fas fa-table fa-lg"></i></a></td>';
+                    echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
                     echo '<td class="type">' . ucfirst($type) . '</td>';
                     echo '<td class="type">' . ucfirst($status) . '</td>';
                     echo '<td class="status">' . $body . '</td>';
                     echo '<td class="status">' . timeago($creationdate) . '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSource(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
-                    echo '</td>';
-                    echo '<td style="text-align:center;">';
-                    echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
+                    echo '<form class="button-form" method="POST" action="admin.php?table=articles">';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
-                    echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
+                    echo '<button value="' . $id . '" onclick="return confirm(' . $confirmMessage . ');" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
@@ -152,18 +145,12 @@ function buildGetString(array $params): string
                     $tparams['page'] = $page;
                     $string = buildGetString($tparams);
                     echo '<li class="page-item ' . $active . ' ' . $disabled . '">
-                    <a class="page-link" href="admin.php?table=articles&' . $string . '" tabindex="-1">' . $page . '</a>
-                </li>';
+                              <a class="page-link" href="admin.php?table=articles&' . $string . '" tabindex="-1">' . $page . '</a>
+                          </li>';
                 }
                 ?>
             </ul>
         </nav>
-        <div class="btn-group btn-group " role="group">
-            <button data-toggle="modal" class="add-source btn btn-success " data-target="#modal" onClick="addNewSource()" type="button">
-                <i class="fas fa-plus mr-1"></i>
-                Add source
-            </button>
-        </div>
     </div>
 </div>
 <script>

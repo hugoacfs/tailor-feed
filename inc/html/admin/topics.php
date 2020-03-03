@@ -33,7 +33,7 @@ if (!defined('CONFIG_PROTECTION')) {
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
+        <table class="table table-dark tableFixHead table-striped " data-sortable>
             <thead>
                 <tr>
                     <th scope="col">Reference Name</th>
@@ -41,6 +41,7 @@ if (!defined('CONFIG_PROTECTION')) {
                     <th scope="col">Status</th>
                     <th scope="col">Update</th>
                     <th scope="col">Show/Hide</th>
+                    <th scope="col">Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,8 +59,9 @@ if (!defined('CONFIG_PROTECTION')) {
                         $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
                     } else {
                         $quickAction = 'activate-topic';
-                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
+                        $btnStyle = 'class="btn btn-warning mr-1"><i class="fas fa-eye-slash"></i></button>';
                     }
+                    $confirmMessage = "'Are you sure you want to permanently delete this topic from the database?'";
                     echo '<tr id="row-' . $id . '">';
                     echo '<td class="name">' . $name . '</td>';
                     echo '<td class="description">' . $description . '</td>';
@@ -72,6 +74,13 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
                     echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
+                    echo '</form>';
+                    echo '</td>';
+                    echo '<td style="text-align:center;">';
+                    echo '<form class="button-form" method="POST" action="admin.php?table=topics">';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="delete-topic"></div>';
+                    echo '<button value="' . $id . '" type="submit" onclick="return confirm('.$confirmMessage.');" class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
