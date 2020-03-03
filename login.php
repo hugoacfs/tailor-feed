@@ -47,7 +47,7 @@ if (!isset($_SESSION['signedIn'])) {
     } else {
         echo '<div class="text-center my-auto">
         <form class="form-signin" action="login.php" method="POST">
-            <img class="mb-4" src="https://www.chi.ac.uk/sites/all/themes/chiuni_2016/logo.png" alt="">
+            <img class="mb-4" src="img/login_logo.png" alt="">
             <label for="username" class="sr-only">Username</label>
             <input type="text" name="username" id="username" class="form-control" placeholder="Username" required="" autofocus="">
             <label for="password" class="sr-only">Password</label>
