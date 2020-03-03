@@ -15,7 +15,7 @@ if (!defined('CONFIG_PROTECTION')) {
         });
     });
 </script>
-<div class="col-xs-12 col-sm-12 col-lg-12">
+<div class="col-xs-12 col-sm-12 col-lg-12 ">
     <nav>
         <ol class="breadcrumb bg-dark text-light">
             <li class="breadcrumb-item ">
@@ -33,10 +33,10 @@ if (!defined('CONFIG_PROTECTION')) {
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table tableFixHead table-striped sortable-theme-dark" data-sortable>
+        <table class="table table-dark tableFixHead table-striped " data-sortable>
             <thead>
                 <tr">
-                    <th scope="col">Reference</th>
+                    <th scope="col" colspan="2">Reference</th>
                     <th scope="col">Screen name</th>
                     <th scope="col">Type</th>
                     <th scope="col">Status</th>
@@ -63,7 +63,8 @@ if (!defined('CONFIG_PROTECTION')) {
                         $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
                     }
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td class="reference"><a href="admin.php?table=articles&id='.$id.'">' . $reference . '</a></td>';
+                    echo '<td><a href="admin.php?table=articles&id=' . $id . '"><i class="fas fa-table fa-lg"></i></a></td>';
+                    echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
                     echo '<td class="type">' . ucfirst($type) . '</td>';
                     echo '<td class="status">' . ucfirst($status) . '</td>';

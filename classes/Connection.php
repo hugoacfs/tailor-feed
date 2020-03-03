@@ -764,6 +764,12 @@ class Connection
         $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         return $this->ExecuteAndFetchArray($stmt);
     }
+    public function deleteArticleById(int $id): bool
+    {
+        $stmt = $this->PDOprepare("DELETE FROM `articles` WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
+    }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
     /**

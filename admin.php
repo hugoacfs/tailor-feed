@@ -29,18 +29,31 @@ if ($table) {
         $adminId = $_SESSION['userId'];
         $taskSuccess = performAdminTask($action, $actionArray, $adminId) ?? null;
         $message = '';
-        if ($action === 'add-source') {
-            $message = 'added a new source.';
-        } elseif ($action === 'add-topic') {
-            $message = 'added a new topic.';
-        } elseif ($action === 'update-source') {
-            $message = 'updated the source`s details.';
-        } elseif ($action === 'update-topic') {
-            $message = 'updated the topic`s details.';
-        } elseif ($action === 'suspend-source' || $action === 'activate-source') {
-            $message = 'updated the source status.';
-        } elseif ($action === 'suspend-topic' || $action === 'activate-topic') {
-            $message = 'updated the topic status.';
+        switch($action){
+            case 'add-source':
+                $message = 'added a new source.';
+                continue;
+            case 'add-topic':
+                $message = 'added a new topic.';
+                continue;
+            case 'update-source':
+                $message = 'updated the source`s details.';
+                continue;
+            case 'update-topic':
+                $message = 'updated the topic`s details.';
+                continue;
+            case 'suspend-source':
+                $message = 'updated the source status.';
+                continue;
+            case 'suspend-topic':
+                $message = 'updated the topic status.';
+                continue;
+            case 'delete-article':
+                $message = 'removed the article from the database.';
+                continue;
+            default:
+                continue;
+
         }
         $title = 'success';
         $status = 'You successfully';
@@ -101,12 +114,12 @@ unset($_POST);
         // alert(adminMenu);
     }
 </script>
-<div id="wrapper" class="container-fluid ">
+<div id="wrapper" class="container-fluid bg-darker h-100" style="height: 100vh !important;">
     <div class="spacer d-flex justify-content-center align-items-center">
     </div>
     <div class="row ">
         <div class="col-2 p-0">
-            <a class="btn btn-secondary w-100 mb-1" onclick="toggleMenu()" data-toggle="collapse" href="#admin-sidebar" role="button" aria-expanded="false" aria-controls="admin-sidebar">
+            <a class="btn btn-secondary w-100 mb-1 mt-1" onclick="toggleMenu()" data-toggle="collapse" href="#admin-sidebar" role="button" aria-expanded="false" aria-controls="admin-sidebar">
                 <i class="fas fa-caret-down"></i>
                 Toggle Side Nav
             </a>
