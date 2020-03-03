@@ -164,18 +164,34 @@ function getSubscribedIds($array)
 function performAdminTask(string $action, array $actionArray, int $adminId): bool
 {
     global $DB;
-    if ($action === 'update-source') {
-        return $DB->updateSourceById($actionArray, $adminId);
-    } elseif ($action === 'add-source') {
-        return $DB->insertSource($actionArray, $adminId);
-    } elseif ($action === 'update-topic') {
-        return $DB->updateTopicById($actionArray, $adminId);
-    } elseif ($action === 'add-topic') {
-        return $DB->insertTopic($actionArray, $adminId);
-    } elseif ($action === 'suspend-source' || $action ===  'activate-source') {
-        return $DB->updateSourceStatusById(intval($actionArray['id']), $adminId);
-    } elseif ($action === 'suspend-topic' || $action ===  'activate-topic') {
-        return $DB->updateTopicStatusById(intval($actionArray['id']), $adminId);
+    switch ($action) {
+        case 'update-source':
+            return $DB->updateSourceById($actionArray, $adminId);
+        case 'add-source':
+            return $DB->insertSource($actionArray, $adminId);
+        case 'update-topic':
+            return $DB->updateTopicById($actionArray, $adminId);
+        case 'add-topic':
+            return $DB->insertTopic($actionArray, $adminId);
+        case 'suspend-source':
+        case 'activate-source':
+            return $DB->updateSourceStatusById(intval($actionArray['id']), $adminId);
+        case 'suspend-topic':
+        case 'activate-topic':
+            return $DB->updateTopicStatusById(intval($actionArray['id']), $adminId);
+        default:
+            return false;
     }
-    return false;
+}
+
+function handleException($ex, $message = 'No especified message'){
+    global $CFG;
+    if ($CFG->debug_mode === 'true') {
+        echo '<h5>'.$message.'</h5>';
+        echo '<pre>';
+        print_r($ex);
+        echo '</pre>';
+    }
+    if (php_sapi_name() != 'cli') include $CFG->dirroot . '/error.php';
+    exit();
 }

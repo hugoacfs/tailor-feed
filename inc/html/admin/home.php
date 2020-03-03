@@ -27,8 +27,8 @@ if (!defined('CONFIG_PROTECTION')) {
                         $targetId = $row['targetid'];
                         $timestamp = $row['creationdate'];
                         $target = $row['target'];
-                        $reference = $DB->fetchSourceReferenceById($targetId)->fetch()['reference'];
-                        $adminName = $DB->fetchUserById($adminId)->fetch()['givenname'];
+                        $reference = $DB->fetchSourceReferenceById($targetId)['reference'];
+                        $adminName = $DB->fetchUserById($adminId)['givenname'];
                         echo '
                         <h5 class="card-subtitle mb-2 text-muted">
                             <a href="#" target="uni_news" class=" card-link">
