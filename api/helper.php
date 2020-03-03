@@ -184,9 +184,10 @@ function performAdminTask(string $action, array $actionArray, int $adminId): boo
     }
 }
 
-function handleException($ex){
+function handleException($ex, $message = 'No especified message'){
     global $CFG;
     if ($CFG->debug_mode === 'true') {
+        echo '<h5>'.$message.'</h5>';
         echo '<pre>';
         print_r($ex);
         echo '</pre>';
