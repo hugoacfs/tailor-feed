@@ -20,7 +20,8 @@ class Authenticate
         global $DB;
         $this->userName = $userName;
         $user = $this->getUser();
-        $exists = count($user) ?? false;
+        $exists = false;
+        if($user) $exists = true;
         if (!$newUserMode && $exists) {
             $this->passWord = $user['password'];
             // echo $passWord;
@@ -38,15 +39,19 @@ class Authenticate
             $this->signedIn = $this->buildUserProfile() ?? false;
             if (!$this->signedIn) {
                 $this->error = array('code' => '300', 'description' => 'Cannot build user profile, please try again.');
+                throw new Exception('Sorry we cannot process your request at this time.');
             }
         } elseif ($newUserMode && $exists) {
             $this->error = array('code' => '100', 'description' => 'Cannot create user, already exists.');
+            throw new Exception($this->error['description']);
         } elseif (!$newUserMode && !$exists) {
             $this->error = array('code' => '200', 'description' => 'Cannot find username.');
+            throw new Exception('User or password do not match our record.');
         }
         if ($this->signedIn) {
             $DB->updateLastLogin($this->userName);
         }
+        print_r($this->error);
     }
 
     public function getSignedIn()
@@ -69,12 +74,12 @@ class Authenticate
     {
         global $DB;
         $fetch = $DB->fetchUserByUsername($this->userName);
-	$fetched = $fetch->fetch();
-	if(is_array($fetched)){
-	    return $fetched;
-	}else{
-	    return array();
-	}
+        print_r($fetch);
+        if ($fetch) {
+            return $fetch[0];
+        } else {
+            return array();
+        }
     }
     protected function displayWelcomeMessage()
     {

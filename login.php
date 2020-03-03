@@ -8,15 +8,24 @@ require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
-//echo 'not signedin';
-	
+    //echo 'not signedin';
+
     if ($CFG->auth_method === 'SSAML') {
-	echo 'simple saml auth method on';
-	$_SESSION['USER'] = new SSAML();
-	print_r($_SESSION['USER']);
+        $_SESSION['USER'] = new SSAML();
     } else {
         if ($_POST) {
-            $_SESSION['USER'] = new Authenticate($_POST['username'], $_POST['password']);
+            try {
+                print_r($_POST);
+                // $mode = isset($_POST['newaccount']) ?? false;
+                if (isset($_POST['newaccount'])) $mode = true;
+                else $mode = false;
+                if ($mode) $givenname = $_POST['givenname'];
+                else $givenname = '';
+                $_SESSION['USER'] = new Authenticate($_POST['username'], $_POST['password'], $givenname, $mode);
+            } catch (Exception $ex) {
+                // header('Location: login.php?loginerror=true');
+                handleException($ex);
+            }
         }
     }
     if (isset($_SESSION['USER'])) {
@@ -28,22 +37,29 @@ if (!$isLoggedIn) {
         $_SESSION['currentUser'] = new User($_SESSION['userName']);
     }
 }
+
 if (!isset($_SESSION['signedIn'])) {
     if ($CFG->auth_method === 'SSAML') {
         //do simple saml stuff
-	echo '<h1>ssaml</h1>';    
-	header('Location: timeline.php');
+        echo '<h1>ssaml</h1>';
+        header('Location: timeline.php');
         die();
     } else {
         echo '<div class="text-center my-auto">
         <form class="form-signin" action="login.php" method="POST">
             <img class="mb-4" src="https://www.chi.ac.uk/sites/all/themes/chiuni_2016/logo.png" alt="">
-            <h1 class="h3 mb-3 font-weight-normal">Login Form</h1>
             <label for="username" class="sr-only">Username</label>
             <input type="text" name="username" id="username" class="form-control" placeholder="Username" required="" autofocus="">
             <label for="password" class="sr-only">Password</label>
             <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="">
+            <div id="name-input" style="display:none">
+                    <input type="text" name="givenname" id="givenname" class="form-control" placeholder="First Name" required=""=>
+            </div>
             <div class="checkbox mb-3">
+                <input class="form-check-input" type="checkbox" name="newaccount" value="on" id="newaccount">
+                <label class="form-check-label" for="newaccount">
+                    Create New Account
+                </label>
             </div>
             <input class="btn btn-lg btn-primary btn-block" value="Login" type="submit" />
             <p class="mt-5 mb-3 text-muted">© 2020</p>
@@ -53,10 +69,16 @@ if (!isset($_SESSION['signedIn'])) {
     </body>';
     };
 } elseif (!$_SESSION['signedIn']) {
-    echo 'not signedin'; 
+    echo 'not signedin';
     session_unset();
     $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
 } else {
     redirectUserToTimeline();
 }
+?>
+<script type="text/javascript">
+    $('#newaccount').click(function() {
+        $('#name-input').toggle();
+    });
+</script>
