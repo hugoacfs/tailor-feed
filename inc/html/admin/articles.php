@@ -52,6 +52,9 @@ function buildGetString(array $params): string
                         $string = buildGetString($tparams);
                         echo '<a class="dropdown-item" href="admin.php?table=articles&' . $string . '">' . $option . '</a>';
                     }
+                    $tparams['max'] = 0;
+                    $string = buildGetString($tparams);
+                    echo '<a class="dropdown-item" href="admin.php?table=articles&' . $string . '">All</a>';
                     ?>
                 </div>
             </div>
