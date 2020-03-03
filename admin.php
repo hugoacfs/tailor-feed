@@ -51,6 +51,9 @@ if ($table) {
             case 'delete-article':
                 $message = 'removed the article from the database.';
                 continue;
+            case 'delete-topic':
+                $message = 'removed the topic from the database.';
+                continue;
             default:
                 continue;
 

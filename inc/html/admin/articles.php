@@ -92,6 +92,7 @@ function buildGetString(array $params): string
                     $status = $article['status'];
                     $quickAction = 'delete-article';
                     $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
+                    $confirmMessage = "'Are you sure you want to permanently delete this article from the database?'";
                     echo '<tr id="row-' . $id . '">';
                     echo '<td><a href="admin.php?table=articles&id=' . $sourceid . '"><i class="fas fa-table fa-lg"></i></a></td>';
                     echo '<td class="reference">' . $reference . '</td>';
@@ -104,7 +105,7 @@ function buildGetString(array $params): string
                     echo '<form class="button-form" method="POST" action="admin.php?table=articles">';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
-                    echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
+                    echo '<button value="' . $id . '" onclick="return confirm(' . $confirmMessage . ');" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
