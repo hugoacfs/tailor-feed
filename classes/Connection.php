@@ -150,7 +150,8 @@ class Connection
     {
         $stmt = $this->PDOprepare(
             "SELECT * FROM `articles` 
-            WHERE `uniqueidentifier` = :matchingUniqueId;");
+            WHERE `uniqueidentifier` = :matchingUniqueId;"
+        );
         $stmt->bindValue('matchingUniqueId', $matchingUniqueId, PDO::PARAM_STR);
         return $this->ExecuteAndFetchArray($stmt);
     }
@@ -327,11 +328,13 @@ class Connection
                 $stmt = $this->PDOprepare(
                     "SELECT * FROM sources 
                     WHERE `type` = :type 
-                    AND `status` = 'active' ;");
+                    AND `status` = 'active' ;"
+                );
             default:
                 $stmt = $this->PDOprepare(
                     "SELECT * FROM sources 
-                    WHERE `type` = :type;");
+                    WHERE `type` = :type;"
+                );
         }
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         return $this->ExecuteAndFetchArray($stmt);
@@ -402,16 +405,19 @@ class Connection
                 $stmt = $this->PDOprepare(
                     "SELECT `id` FROM `subscribed_" . $type . "s` 
                 WHERE `" . $type . "id` = :id 
-                AND `userid` = :userid ;");
+                AND `userid` = :userid ;"
+                );
             case 'insert':
                 $stmt = $this->PDOprepare(
                     "INSERT INTO `subscribed_" . $type . "s` (`" . $type . "id`, `userid`) 
-                    VALUES (:id, :userid);");
+                    VALUES (:id, :userid);"
+                );
             case 'delete':
                 $stmt = $this->PDOprepare(
                     "DELETE FROM `subscribed_" . $type . "s` 
                     WHERE `" . $type . "id` = :id 
-                    AND `userid` = :userid;");
+                    AND `userid` = :userid;"
+                );
         }
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
@@ -508,7 +514,8 @@ class Connection
     {
         $stmt = $this->PDOprepare(
             "INSERT INTO `users` (`username`, `givenname`, `password`) 
-            VALUES (:username, :givenname, :password);");
+            VALUES (:username, :givenname, :password);"
+        );
         $stmt->bindValue('username', $username, PDO::PARAM_STR);
         $stmt->bindValue('givenname', $givenname, PDO::PARAM_STR);
         $stmt->bindValue('password', $password, PDO::PARAM_STR);
@@ -651,12 +658,12 @@ class Connection
         $stmt = $this->PDOprepare(
             "SELECT * FROM `sources` 
             WHERE `reference` = :reference 
-            AND `type` = :type;");
+            AND `type` = :type;"
+        );
         $stmt->bindValue('reference', $reference, PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         $fetchedArray = $this->ExecuteAndFetchArray($stmt);
-        $fetchedLenght = count($fetchedArray);
-        if ($fetchedLenght != 0) {
+        if ($fetchedArray) {
             return true;
         }
         return false;
@@ -678,16 +685,17 @@ class Connection
         $stmt->bindValue('screenname', $screenname, PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         $stmt->bindValue('status', $status, PDO::PARAM_STR);
-        $success = $stmt->execute();
-        if ($success) {
-            // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
-            return true;
-        }
-        return false;
+        return $this->PDOexecute($stmt);
+        // $success = $this->PDOexecute($stmt);
+        // if ($success) {
+        //     // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
+        //     return true;
+        // }
+        // return false;
     }
     public function insertTopic(array $post, int $adminId): bool
     {
-        $name = $post['name'] ?? false; //reference because of how its being posted from mdoal form
+        $name = $post['name'] ?? false; //reference because of how its being posted from modal form
         if ($name) {
             $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
         }
@@ -700,61 +708,78 @@ class Connection
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->bindValue('description', $description, PDO::PARAM_STR);
         $stmt->bindValue('status', $status, PDO::PARAM_STR);
-        $success = $stmt->execute();
-        if ($success) {
-            // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
-            return true;
-        }
-        return false;
+        return $this->PDOexecute($stmt);
+        // $success = $this->PDOexecute($stmt);
+        // if ($success) {
+        //     // $this->insertAdminLog($adminId, time(), 'topics', 'add', intval($this->PDOgetlastinsertid()));
+        //     return true;
+        // }
+        // return false;
     }
-    public function insertAdminLog(int $adminId, int $time, string $target, string $action, int $targetid): bool
+
+    public function insertAdminLog(int $userid, int $creationdate, string $target, string $action, int $targetid): bool
     {
         $stmt = $this->PDOprepare(
             "INSERT INTO `admin_logs` 
             (`userid`, `creationdate`, `target`, `action`, `targetid`) 
             VALUES 
-            ( ?, ?, ?, ?, ?)"
+            (:userid, :creationdate, :target, :action, :targetid);"
         );
-        return $stmt->execute([$adminId, $time, $target, $action, $targetid]);
+        $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
+        $stmt->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
+        $stmt->bindValue('target', $target, PDO::PARAM_STR);
+        $stmt->bindValue('action', $action, PDO::PARAM_STR);
+        $stmt->bindValue('targetid', $targetid, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
     }
-    public function fetchAdminLog(): PDOStatement
+    public function fetchAdminLog(): array
     {
-        $sql_string = "SELECT * FROM `admin_logs` ORDER BY `creationdate` DESC LIMIT 20 ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `admin_logs` ORDER BY `creationdate` DESC LIMIT 20;");
+        return $this->ExecuteAndFetchArray($stmt);
     }
-    public function fetchAllArticlesAndSources(int $page, int $max, $sourceid = null): PDOStatement
+    public function fetchAllArticlesAndSources(int $page, int $max, $sourceid = null): array
     {
         $limit = $max;
         $offset = ($page - 1) * $max;
         $sql_where = '';
         if ($sourceid) {
-            $sql_where = " AND `s`.`id` = $sourceid ";
+            $sql_where = " AND `s`.`id` = :sourceid ";
         }
         // $sql_string = "SELECT * FROM `articles` AS `a` JOIN `sources` AS `s` ORDER BY `creationdate` DESC LIMIT $offset, $limit ";
-        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` FROM `articles` AS `a` JOIN `sources` AS `s` WHERE `s`.`id` = `a`.`sourceid` " . $sql_where . " ORDER BY `creationdate` DESC LIMIT $offset,$limit; ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare(
+            "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
+        FROM `articles` AS `a` 
+        JOIN `sources` AS `s` 
+        WHERE `s`.`id` = `a`.`sourceid` " . $sql_where . " 
+        ORDER BY `creationdate` 
+        DESC LIMIT :offset,:limit; "
+        );
+        if ($sourceid) {
+            $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        }
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
     /**
      * @deprecated
      */
-    public function searchSourcesByReferenceOrName(string $term = null)
+    public function searchSourcesByReferenceOrName(string $term = null): array
     {
         if (isset($term)) {
             // create prepared statement
-            $sql = "SELECT * FROM `sources` WHERE (`screenname` LIKE :term OR reference LIKE :term) AND `status` = 'active'";
-            $stmt = $this->PDOprepare($sql);
+            $stmt = $this->PDOprepare(
+                "SELECT * FROM `sources` 
+                WHERE (`screenname` LIKE :term OR reference LIKE :term) 
+                AND `status` = 'active';"
+            );
             $term = $term . '%';
             // bind parameters to statement
             $stmt->bindParam(":term", $term);
             // execute the prepared statement
-            $stmt->execute();
-            if ($stmt->rowCount() > 0) {
-                return $stmt->fetchAll();
-            } else {
-                return array();
-            }
+            $this->ExecuteAndFetchArray($stmt);
         }
     }
     /** END SEARCH QUERIES */
@@ -764,7 +789,7 @@ class Connection
         $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = 'last_cron';");
         $stmt->bindValue('time', time(), PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
-        return $stmt->execute();
+        return $this->PDOexecute($stmt);
     }
     /** END CRON QUERIES */
 }
