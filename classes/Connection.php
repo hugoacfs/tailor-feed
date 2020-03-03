@@ -28,13 +28,14 @@ class Connection
         $this->username = $username;
         $this->password = $password;
         try {
-            $connection = new PDO($this->hostname, $this->username, $this->password) or die('Cannot connect to db');
+            $connection = new PDO($this->hostname, $this->username, $this->password);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->connection = $connection;
-        } catch (PDOException $e) {
-            die();
-            $this->connection = null;
+        } catch (PDOException $ex) {
+            handleException($ex);
+        } catch (Exception $ex) {
+            handleException($ex);
         }
     }
 
@@ -48,9 +49,10 @@ class Connection
     {
         try {
             return ($this->connection)->query($sql_query);
-        } catch (PDOException $e) {
-            die();
-            $this->connection = null;
+        } catch (PDOException $ex) {
+            handleException($ex);
+        } catch (Exception $ex) {
+            handleException($ex);
         }
     }
     /**
@@ -62,9 +64,10 @@ class Connection
     {
         try {
             return ($this->connection)->prepare($sql_query);
-        } catch (PDOException $e) {
-            die();
-            $this->connection = null;
+        } catch (PDOException $ex) {
+            handleException($ex);
+        } catch (Exception $ex) {
+            handleException($ex);
         }
     }
     /**
@@ -620,11 +623,11 @@ class Connection
         $limit = $max;
         $offset = ($page - 1) * $max;
         $sql_where = '';
-        if($sourceid){
+        if ($sourceid) {
             $sql_where = " AND `s`.`id` = $sourceid ";
         }
         // $sql_string = "SELECT * FROM `articles` AS `a` JOIN `sources` AS `s` ORDER BY `creationdate` DESC LIMIT $offset, $limit ";
-        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` FROM `articles` AS `a` JOIN `sources` AS `s` WHERE `s`.`id` = `a`.`sourceid` ". $sql_where." ORDER BY `creationdate` DESC LIMIT $offset,$limit; ";
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` FROM `articles` AS `a` JOIN `sources` AS `s` WHERE `s`.`id` = `a`.`sourceid` " . $sql_where . " ORDER BY `creationdate` DESC LIMIT $offset,$limit; ";
         return $this->PDOquery($sql_string);
     }
     /** END ADMIN QUERIES */

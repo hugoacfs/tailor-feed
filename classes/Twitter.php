@@ -143,16 +143,20 @@ class Twitter extends Source
         require_once($CFG->dirroot . '/vendor/TwitterAPIExchange/TwitterAPIExchange.php');
         $settings = $CFG->sources['twitter']['api_settings'];
         $requestMethod = 'GET';
-        $twitter = new TwitterAPIExchange($settings);
-        $json_data = $twitter->setGetfield($getfield)
-            ->buildOauth($apiUrl, $requestMethod)
-            ->performRequest();
-        $httpsStatus = $twitter->getHttpStatusCode();
-        echo "HTTP STATUS CODE: "  . $httpsStatus . "\n";
-        if ($httpsStatus === 200) {
-            return json_decode($json_data);
-        } else {
-            return false;
+        try {
+            $twitter = new TwitterAPIExchange($settings);
+            $json_data = $twitter->setGetfield($getfield)
+                ->buildOauth($apiUrl, $requestMethod)
+                ->performRequest();
+            $httpsStatus = $twitter->getHttpStatusCode();
+            echo "HTTP STATUS CODE: "  . $httpsStatus . "\n";
+            if ($httpsStatus === 200) {
+                return json_decode($json_data);
+            } else {
+                return false;
+            }
+        } catch (Exception $ex) {
+            handleException($ex);
         }
     }
     /**
