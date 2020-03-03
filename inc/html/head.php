@@ -44,7 +44,11 @@ if (!defined('CONFIG_PROTECTION')) {
         echo '<script src="vendor/sortable/js/sortable.min.js"></script>';
         echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-bootstrap.css" />';
     }
+    if($CFG->g_analytics_mode === 'on'){
+        include $CFG->dirroot . '/inc/html/analytics.php';
+    }
     ?>
+
 </head>
 <script>
     $(document).ready(function() {
