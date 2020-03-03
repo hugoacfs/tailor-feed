@@ -53,7 +53,7 @@ if (!isset($_SESSION['signedIn'])) {
             <label for="password" class="sr-only">Password</label>
             <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="">
             <div id="name-input" style="display:none">
-                    <input type="text" name="givenname" id="givenname" class="form-control" placeholder="First Name" required=""=>
+                    <input type="text" name="givenname" id="givenname" class="form-control" placeholder="First Name">
             </div>
             <div class="checkbox mb-3">
                 <input class="form-check-input" type="checkbox" name="newaccount" value="on" id="newaccount">
