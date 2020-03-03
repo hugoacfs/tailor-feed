@@ -770,6 +770,12 @@ class Connection
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
+    public function deleteTopicById(int $id): bool
+    {
+        $stmt = $this->PDOprepare("DELETE FROM `topics` WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
+    }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
     /**
