@@ -148,7 +148,9 @@ class Connection
      */
     public function fetchArticleByUniqueId(string $matchingUniqueId): array
     {
-        $stmt = $this->PDOprepare("SELECT * FROM `articles` WHERE `uniqueidentifier` = :matchingUniqueId;");
+        $stmt = $this->PDOprepare(
+            "SELECT * FROM `articles` 
+            WHERE `uniqueidentifier` = :matchingUniqueId;");
         $stmt->bindValue('matchingUniqueId', $matchingUniqueId, PDO::PARAM_STR);
         return $this->ExecuteAndFetchArray($stmt);
     }
@@ -188,7 +190,8 @@ class Connection
             FROM `articles` AS `a`
             JOIN `sources` AS `s` ON s.id=a.sourceid
             WHERE s.type = 'twitter' 
-            AND s.id = :sourceid;");
+            AND s.id = :sourceid;"
+        );
         $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
         return $this->ExecuteAndFetchArray($stmt);
     }
@@ -234,9 +237,11 @@ class Connection
                 "INSERT INTO `articles_topics` 
                 (`articleid`, `topicid`) 
                 VALUES 
-                (?, ?)"
+                (:articleid, :topicid);"
             );
-            $stmt->execute([$articleid, $topicid]);
+            $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
+            $stmt->bindValue('topicid', $topicid, PDO::PARAM_INT);
+            $this->PDOexecute($stmt);
         }
     }
 
@@ -250,11 +255,14 @@ class Connection
                 "INSERT INTO `media_links` 
                 (`articleid`, `url`, `type`) 
                 VALUES 
-                (?, ?, ?)"
+                (:articleid, :url, :type);"
             );
             $url = $m['url'];
             $type = $m['type'];
-            $stmt->execute([$articleid, $url, $type]);
+            $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
+            $stmt->bindValue('url', $url, PDO::PARAM_STR);
+            $stmt->bindValue('type', $type, PDO::PARAM_STR);
+            $this->PDOexecute($stmt);
         }
     }
 
@@ -266,25 +274,26 @@ class Connection
      * Source DB query
      * @return PDOStatement Query Result
      */
-    public function fetchAllSources(): PDOStatement
+    public function fetchAllSources(): array
     {
-        $sql_string = "SELECT * FROM sources ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM sources;");
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * Fetches All Sources from DB 
      * Source DB query
      * @return PDOStatement Query Result
      */
-    public function fetchAllActiveSources(): PDOStatement
+    public function fetchAllActiveSources(): array
     {
-        $sql_string = "SELECT * FROM sources WHERE `status` = 'active'";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM sources WHERE `status` = 'active';");
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * Counts All Sources from DB 
      * Source DB query
      * @return int Query Result
+     * @deprecated
      */
     public function countAllSources(): int
     {
@@ -297,11 +306,11 @@ class Connection
      * @param int $sourceId the Id as in DB
      * @return PDOStatement Query Result
      */
-    public function fetchSourceReferenceById(int $sourceId): PDOStatement
+    public function fetchSourceReferenceById(int $id): array
     {
-        $id = intval($sourceId);
-        $sql_string = "SELECT * FROM sources WHERE `id` = $id";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM sources WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /** END Source QUERIES */
     /**DB QUERIES FOR class Twitter */
@@ -311,18 +320,21 @@ class Connection
      * @param string $type type of source
      * @return PDOStatement Query Result
      */
-    public function fetchAllSourcesByType(string $type, $active = null): PDOStatement
+    public function fetchAllSourcesByType(string $type, $active = null): array
     {
-        $sql_string = "SELECT * FROM sources WHERE type = '$type'";
-        if ($active != null) {
-            if ($active) {
-                $status = 'active';
-            } else {
-                $status = 'suspended';
-            }
-            $sql_string .= " AND `status` = '$status';";
+        switch ($active) {
+            case 'active':
+                $stmt = $this->PDOprepare(
+                    "SELECT * FROM sources 
+                    WHERE `type` = :type 
+                    AND `status` = 'active' ;");
+            default:
+                $stmt = $this->PDOprepare(
+                    "SELECT * FROM sources 
+                    WHERE `type` = :type;");
         }
-        return $this->PDOquery($sql_string);
+        $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * Updates specified Source table field
@@ -334,10 +346,10 @@ class Connection
      */
     public function updateSourcesFieldById(string $field, string $value, int $id): bool
     {
-        $stmt = $this->PDOprepare("UPDATE `sources` SET `$field` = :newvalue WHERE `id` = :id");
-        $stmt->bindValue('newvalue', $value, PDO::PARAM_STR);
+        $stmt = $this->PDOprepare("UPDATE `sources` SET `$field` = :value WHERE `id` = :id");
+        $stmt->bindValue('value', $value, PDO::PARAM_STR);
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        return $this->PDOexecute($stmt);
     }
     /** END Twitter QUERIES */
     /**DB QUERIES FOR class User */
@@ -347,54 +359,80 @@ class Connection
      * @param int $userid Id of Source
      * @return PDOStatement Query Result
      */
-    public function fetchUserPreferencesByUserId(int $userId): PDOStatement
+    public function fetchUserPreferencesByUserId(int $userid): array
     {
-        $sql_string = "SELECT * FROM `subscribed_sources` AS `ss` JOIN `sources` AS `s` ON `s`.`id` = `ss`.`sourceid` WHERE `userid` =" . $userId . " ORDER BY `s`.`reference`;";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare(
+            "SELECT * FROM `subscribed_sources` AS `ss` 
+        JOIN `sources` AS `s` ON `s`.`id` = `ss`.`sourceid` 
+        WHERE `userid` = :userid 
+        ORDER BY `s`.`reference`;"
+        );
+        $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
-
     /**
      * Fetches topics preferences by userId
      * User DB query
      * @param int $userid Id of Source
      * @return PDOStatement Query Result
      */
-    public function fetchUserTopicsByUserId(int $userId): PDOStatement
+    public function fetchUserTopicsByUserId(int $userid): array
     {
-        $sql_string = "SELECT * FROM `subscribed_topics` AS `st` JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid`
-           WHERE `userid` =" . $userId . " AND `t`.`status` = 'active' ORDER BY `t`.`name`;";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare(
+            "SELECT * FROM `subscribed_topics` AS `st` 
+            JOIN `topics` AS `t` ON `t`.`id` = `st`.`topicid`
+            WHERE `userid` = :userid AND `t`.`status` = 'active' 
+            ORDER BY `t`.`name`;"
+        );
+        $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * User preferences CRD method
      * User DB query
 
-     * @return PDOStatement Query Result for select query
+     * @return array Query Result for select query
      * @return bool for insert and delete returns true or false
      */
-    public function userPreferencesCrudQuery(string $type, int $preferenceId, int $userId, string $action)
+    public function userPreferencesCrudQuery(string $type, int $preferenceid, int $userid, string $action)
     {
-        if ($action === 'select') {
-            // $sql_string = "SELECT `id` FROM `subscribed_preferences` WHERE `name` = '$name' AND `value` = '" . $value . "' AND `userid` = $userId";
-            $sql_string = "SELECT `id` FROM `subscribed_" . $type . "s` WHERE `" . $type . "id` = $preferenceId AND `userid` = $userId";
-            return $this->PDOquery($sql_string);
-        } elseif ($action === 'insert') {
-            $stmt = $this->PDOprepare("INSERT INTO `subscribed_" . $type . "s` (`" . $type . "id`, `userid`) VALUES (?, ?);");
-            return $stmt->execute([$preferenceId, $userId]);
-        } elseif ($action === 'delete') {
-            $stmt = $this->PDOprepare("DELETE FROM `subscribed_" . $type . "s` WHERE `" . $type . "id` = ? AND `userid` = ?;");
-            return $stmt->execute([$preferenceId, $userId]);
-        } else {
-            return false;
+        $id = $preferenceid;
+        switch ($action) {
+            case 'select':
+                $stmt = $this->PDOprepare(
+                    "SELECT `id` FROM `subscribed_" . $type . "s` 
+                WHERE `" . $type . "id` = :id 
+                AND `userid` = :userid ;");
+            case 'insert':
+                $stmt = $this->PDOprepare(
+                    "INSERT INTO `subscribed_" . $type . "s` (`" . $type . "id`, `userid`) 
+                    VALUES (:id, :userid);");
+            case 'delete':
+                $stmt = $this->PDOprepare(
+                    "DELETE FROM `subscribed_" . $type . "s` 
+                    WHERE `" . $type . "id` = :id 
+                    AND `userid` = :userid;");
+        }
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
+        switch ($action) {
+            case 'select':
+                return $this->ExecuteAndFetchArray($stmt);
+            case 'insert':
+            case 'delete':
+                return $this->PDOexecute($stmt);
+            default:
+                return false;
         }
     }
     /**
      * Fetch media URLs
      */
-    public function fetchMediaUrlsPerArticleId(int $id): PDOStatement
+    public function fetchMediaUrlsPerArticleId(int $articleid): array
     {
-        $sql_string = "SELECT * FROM `media_links` WHERE `articleid` = $id;";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `media_links` WHERE `articleid` = :articleid;");
+        $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
     /**
@@ -447,16 +485,18 @@ class Connection
      * @param string $username of the user
      * @return PDOStatement Query Result
      */
-    public function fetchUserByUsername(string $username): PDOStatement
+    public function fetchUserByUsername(string $username): array
     {
-        $sql_string = "SELECT * FROM `users` WHERE `username` = '$username'";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `users` WHERE `username` = :username;");
+        $stmt->bindValue('username', $username, PDO::PARAM_STR);
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
-    public function fetchUserById(int $id): PDOStatement
+    public function fetchUserById(int $id): array
     {
-        $sql_string = "SELECT * FROM `users` WHERE `id` = $id";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `users` WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * Insert User by Username
@@ -466,26 +506,33 @@ class Connection
      */
     public function insertUser(string $username, string $givenname = '', string $password = null): bool
     {
-        $stmt = $this->PDOprepare("INSERT INTO `users` (`username`, `givenname`, `password`) VALUES (?, ?, ?)");
-        return $stmt->execute([$username, $givenname, $password]);
+        $stmt = $this->PDOprepare(
+            "INSERT INTO `users` (`username`, `givenname`, `password`) 
+            VALUES (:username, :givenname, :password);");
+        $stmt->bindValue('username', $username, PDO::PARAM_STR);
+        $stmt->bindValue('givenname', $givenname, PDO::PARAM_STR);
+        $stmt->bindValue('password', $password, PDO::PARAM_STR);
+        return $this->PDOexecute($stmt);
     }
-
-    public function fetchTopicNameById(int $id): PDOStatement
+    public function fetchTopicNameById(int $id): array
     {
-        $id = intval($id);
-        $sql_string = "SELECT `name` FROM `topics` WHERE `id` = $id";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT `name` FROM `topics` WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     public function updateLastLogin(string $username): bool
     {
-        $timestamp = time();
+        $lastlogin = time();
         $stmt = $this->PDOprepare(
-            "UPDATE `users` SET `lastlogin`= $timestamp  WHERE username = '$username';"
+            "UPDATE `users` SET `lastlogin`= :lastlogin  WHERE username = :username;"
         );
-        return $stmt->execute();
+        $stmt->bindValue('username', $username, PDO::PARAM_STR);
+        $stmt->bindValue('lastlogin', $lastlogin, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
     }
     /** END User QUERIES */
     /** ADMIN QUERIES */
+    //TODO:REVIEW
     public function updateSourceStatusById(int $sourceId, int $adminId): bool
     {
         $id = intval($sourceId);
@@ -511,6 +558,7 @@ class Connection
         // $this->insertAdminLog($adminId, $now, $logDescription);
         return $success;
     }
+    // TODO:REVIEW
     public function updateTopicStatusById(int $topicId, int $adminId): bool
     {
         $id = intval($topicId);
@@ -537,6 +585,7 @@ class Connection
         return $success;
     }
     // might be merged with updatetopicbyid
+    //TODO:REVIEW
     public function updateSourceById(array $post, int $adminId): bool
     {
         $id = intval($post['id']) ?? false;
@@ -563,6 +612,7 @@ class Connection
         return true;
     }
     // might be merged with updatesourcesbyid
+    //TODO:REVIEW
     public function updateTopicById(array $post, int $adminId): bool
     {
         $id = intval($post['id']) ?? false;
@@ -598,9 +648,14 @@ class Connection
         if (!$reference || !$type) {
             return false;
         }
-        $sql_string = "SELECT * FROM `sources` WHERE `reference` = '$reference' AND `type` = '$type';";
-        $fetched = $this->PDOquery($sql_string)->fetchAll();
-        $fetchedLenght = count($fetched);
+        $stmt = $this->PDOprepare(
+            "SELECT * FROM `sources` 
+            WHERE `reference` = :reference 
+            AND `type` = :type;");
+        $stmt->bindValue('reference', $reference, PDO::PARAM_STR);
+        $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        $fetchedArray = $this->ExecuteAndFetchArray($stmt);
+        $fetchedLenght = count($fetchedArray);
         if ($fetchedLenght != 0) {
             return true;
         }

@@ -125,7 +125,7 @@ class Source
     public static function getTotalNumberOfSources(): int
     {
         global $DB;
-        return intval($DB->countAllSources());
+        return intval(count($DB->fetchAllSources()));
     }
     /**
      * It returns the ids of all sources in the DB as an array.
