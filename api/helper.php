@@ -181,6 +181,8 @@ function performAdminTask(string $action, array $actionArray, int $adminId): boo
             return $DB->updateTopicStatusById(intval($actionArray['id']), $adminId);
         case 'delete-article':
             return $DB->deleteArticleById(intval($actionArray['id']), $adminId);
+        case 'delete-topic':
+            return $DB->deleteTopicById(intval($actionArray['id']), $adminId);
         default:
             return false;
     }
