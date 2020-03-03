@@ -120,7 +120,7 @@ class User
     {
         global $DB;
         $fetched = $DB->userPreferencesCrudQuery($type, $preferenceId, $this->dbId, 'select');
-        if (($fetched->rowCount() > 0)) {
+        if ($fetched) {
             return true;
         } else {
             return false;
@@ -169,12 +169,15 @@ class User
         $toAddList = array();
         $toRemoveList = array();
         $currentList = array();
-        if ($type === 'source') {
-            $operatingList = $this->subscribedList;
-        } elseif ($type === 'topic') {
-            $operatingList = $this->topicsList;
-        } else {
-            return;
+        switch($type){
+            case 'source':
+                $operatingList = $this->subscribedList;
+                continue;
+            case 'topic':
+                $operatingList = $this->topicsList;
+                continue;
+            default:
+                return;
         }
 
         if (!empty($operatingList)) {
