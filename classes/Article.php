@@ -136,7 +136,7 @@ class Article
         global $DB;
         if ($type === 'twitter' && !empty($id)) {
             $fetch = $DB->fetchLatestTwitterArticle($id);
-            $countFetch = $fetch->rowCount();
+            $countFetch = count($fetch);
             if ($countFetch != 1) {
                 return -1;
             }

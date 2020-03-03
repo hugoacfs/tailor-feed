@@ -161,15 +161,19 @@ class Connection
      * @param string $message Message body of Article
      * @return bool Returns query status, true for success.
      */
-    public function insertNewArticleEntry(int $ownerId, string $uniqueId, int $creationDate, string $message): bool
+    public function insertNewArticleEntry(int $sourceid, string $uniqueidentifier, int $creationdate, string $body): bool
     {
         $stmt = $this->PDOprepare(
             "INSERT INTO `articles` 
             (`sourceid`, `uniqueidentifier`, `creationdate`, `body`) 
             VALUES 
-            (?, ?, ?, ?)"
+            (:sourceid, :uniqueidentifier, :creationdate, :body);"
         );
-        return $stmt->execute([$ownerId, $uniqueId, $creationDate, $message]);
+        $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        $stmt->bindValue('uniqueidentifier', $uniqueidentifier, PDO::PARAM_STR);
+        $stmt->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
+        $stmt->bindValue('body', $body, PDO::PARAM_STR);
+        return $this->PDOexecute($stmt);
     }
     /**
      * Fetches the Article with max uniqueId 
@@ -177,44 +181,47 @@ class Connection
      * @param int $id Unique Id of Article
      * @return PDOStatement Query Result
      */
-    public function fetchLatestTwitterArticle(int $id): PDOStatement
+    public function fetchLatestTwitterArticle(int $sourceid): array
     {
-        $sql_select =
+        $stmt = $this->PDOprepare(
             "SELECT MAX(a.uniqueidentifier) 
             FROM `articles` AS `a`
             JOIN `sources` AS `s` ON s.id=a.sourceid
             WHERE s.type = 'twitter' 
-            AND s.id = " . $id;
-        return $this->PDOquery($sql_select);
+            AND s.id = :sourceid;");
+        $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
     /**
      * TODO: Complete Documenting
      */
-    public function fetchAllTopics(): PDOStatement
+    public function fetchAllTopics(): array
     {
-        $sql_string = "SELECT * FROM `topics` ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `topics`;");
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
     /**
      * TODO: Complete Documenting
      */
-    public function fetchAllActiveTopics(): PDOStatement
+    public function fetchAllActiveTopics(): array
     {
-        $sql_string = "SELECT * FROM `topics` WHERE `status` = 'active'";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `topics` WHERE `status` = 'active';");
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
-    public function fetchTopicId(string $name): PDOStatement
+    public function fetchTopicId(string $name): array
     {
-        $sql_string = "SELECT `id` FROM `topics` WHERE `name` = '" . $name . "' ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT `id` FROM `topics` WHERE `name` = :name;");
+        $stmt->bindValue('name', $name, PDO::PARAM_STR);
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
-    public function fetchMediaLinksArticle(int $id): PDOStatement
+    public function fetchMediaLinksArticle(int $id): array
     {
-        $sql_string = "SELECT * FROM `media_links` WHERE `id` = " . $id . " ";
-        return $this->PDOquery($sql_string);
+        $stmt = $this->PDOprepare("SELECT * FROM `media_links` WHERE `id` = :id;");
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        return $this->ExecuteAndFetchArray($stmt);
     }
 
     public function insertArticlesTopics(array $topics = array(), int $articleid)
