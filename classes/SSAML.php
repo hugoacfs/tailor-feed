@@ -16,22 +16,23 @@ class SSAML extends Authenticate
             $auth->requireAuth();
         }
         $SSAMLuser = $auth->getAttributes();
-	$username = strtolower($SSAMLuser['SamAccountName'][0]);
+        $username = strtolower($SSAMLuser['SamAccountName'][0]);
         $this->userName = $username;
         $givenname = ucfirst(strtolower($SSAMLuser['givenName'][0]));
         $this->givenName = $givenname;
-	//echo $givenname;
-	print_r($this);
-	$DBuser = $this->getUser();
-        $exists = count($DBuser) ?? false;
-	//echo 'exists: '. $exists;
-	if (!$exists) {
+        //echo $givenname;
+        print_r($this);
+        $DBuser = $this->getUser();
+        $exists = false;
+        if ($DBuser) $exists = true;
+        //echo 'exists: '. $exists;
+        if (!$exists) {
             $this->passWord = null;
             $this->signedIn = $this->buildUserProfile() ?? false;
-	}else{
-	    $this->role = $DBuser['role'];
-	    $this->signedIn = true;
-	}
+        } else {
+            $this->role = $DBuser['role'];
+            $this->signedIn = true;
+        }
         $this->userId = $DBuser['id'] ?? null;
         $session = \SimpleSAML\Session::getSessionFromRequest();
         $session->cleanup();
@@ -42,8 +43,8 @@ class SSAML extends Authenticate
     }
     protected function buildUserProfile(): bool
     {
-	echo 'building user profile';
-	global $DB;
+        echo 'building user profile';
+        global $DB;
         $success = $DB->insertUser($this->userName, $this->givenName, 'none');
         if ($success) {
             $this->userId = $DB->PDOgetlastinsertid();
