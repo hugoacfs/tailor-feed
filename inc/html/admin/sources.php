@@ -32,7 +32,7 @@ if (!defined('CONFIG_PROTECTION')) {
         </div>
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
-    <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
+    <div class="table-responsive" style="max-height: 65vh;">
         <table class="table table-dark tableFixHead table-striped " data-sortable>
             <thead>
                 <tr">

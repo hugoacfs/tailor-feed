@@ -52,7 +52,7 @@
 </style>
 
 <body class="m-0 p-0 w-100 h-100">
-    <div class="container-fluid d-flex h-100 w-100 nu-gutters p-0">
+    <div class="container-fluid d-flex h-100 w-100 nu-gutters p-0" style="z-index: 100000;">
         <div class="row align-items-center w-100 h-100 ">
             <div class="col mx-auto">
                 <div class="error-template ">
@@ -60,9 +60,11 @@
                     <h1>
                         Oops!</h1>
                     <h2>
-                        {Error Code} {Error Message}</h2>
+                        <?php 
+                        global $EXCEPTION;
+                        echo $EXCEPTION->code .' - We seem to have ran into a problem'; ?></h2>
                     <div class="error-details">
-                        Sorry, an error has occured, {Error Description}
+                        Sorry, an error has occured, <?php echo $EXCEPTION->message; ?>
                     </div>
                     <div class="error-actions">
                         <a href="index.php" class="btn btn-primary btn-lg">

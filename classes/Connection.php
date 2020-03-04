@@ -33,7 +33,7 @@ class Connection
             $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->connection = $connection;
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Connection error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -50,7 +50,7 @@ class Connection
         try {
             return ($this->connection)->query($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Query error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -65,7 +65,7 @@ class Connection
         try {
             return ($this->connection)->prepare($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Prepare error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -80,7 +80,7 @@ class Connection
         try {
             return ($stmt)->execute();
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Execute error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -95,7 +95,7 @@ class Connection
         try {
             return ($stmt)->fetchAll();
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO FetchAll error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -119,7 +119,7 @@ class Connection
         try {
             return intval(($this->connection)->lastInsertId());
         } catch (PDOException $ex) {
-            handleException($ex, 'Last insert ID error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -740,36 +740,37 @@ class Connection
         $stmt = $this->PDOprepare("SELECT * FROM `admin_logs` ORDER BY `creationdate` DESC LIMIT 20;");
         return $this->ExecuteAndFetchArray($stmt);
     }
+
     public function fetchAllArticlesAndSources(int $page, int $max, $sourceid = null): array
     {
-        $limit = $max;
-        $offset = ($page - 1) * $max;
-        $sql_where = '';
-        if ($sourceid) {
-            $sql_where = " AND `s`.`id` = :sourceid ";
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
+                    FROM `articles` AS `a` 
+                    JOIN `sources` AS `s` 
+                    WHERE `s`.`id` = `a`.`sourceid` ";
+        if ($sourceid) $sql_string .= " AND `s`.`id` = :sourceid ";
+        $sql_string .= " ORDER BY `creationdate` DESC ";
+        if ($max != 0) {
+            $limit = intval($max);
+            $offset = intval(($page - 1) * $max);
+            $sql_string .= 'LIMIT :offset,:limit';
         }
-        // $sql_string = "SELECT * FROM `articles` AS `a` JOIN `sources` AS `s` ORDER BY `creationdate` DESC LIMIT $offset, $limit ";
-        $stmt = $this->PDOprepare(
-            "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
-        FROM `articles` AS `a` 
-        JOIN `sources` AS `s` 
-        WHERE `s`.`id` = `a`.`sourceid` " . $sql_where . " 
-        ORDER BY `creationdate` 
-        DESC LIMIT :offset,:limit; "
-        );
-        if ($sourceid) {
-            $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        $sql_string .= ';';
+        $stmt = $this->PDOprepare($sql_string);
+        if ($sourceid) $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        if ($max != 0) {
+            $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         }
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         return $this->ExecuteAndFetchArray($stmt);
     }
+
     public function deleteArticleById(int $id): bool
     {
         $stmt = $this->PDOprepare("DELETE FROM `articles` WHERE `id` = :id;");
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
+
     public function deleteTopicById(int $id): bool
     {
         $stmt = $this->PDOprepare("DELETE FROM `topics` WHERE `id` = :id;");

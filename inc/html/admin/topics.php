@@ -32,7 +32,7 @@ if (!defined('CONFIG_PROTECTION')) {
         </div>
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
-    <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
+    <div class="table-responsive" style="max-height: 65vh;">
         <table class="table table-dark tableFixHead table-striped " data-sortable>
             <thead>
                 <tr>
@@ -80,7 +80,7 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '<form class="button-form" method="POST" action="admin.php?table=topics">';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
                     echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="delete-topic"></div>';
-                    echo '<button value="' . $id . '" type="submit" onclick="return confirm('.$confirmMessage.');" class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
+                    echo '<button value="' . $id . '" type="submit" onclick="return confirm(' . $confirmMessage . ');" class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
                     echo '</form>';
                     echo '</td>';
                     echo '</tr>';
