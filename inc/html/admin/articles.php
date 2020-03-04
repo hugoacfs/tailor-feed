@@ -4,10 +4,11 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
+// DEFAULTS
 $params = [];
 $s_id = $_GET['id'] ?? false;
 if ($s_id) $params['sourceid'] = $s_id;
-$params['max'] = $_GET['max'] ?? 5;
+$params['max'] = $_GET['max'] ?? 30;
 $params['page'] = $_GET['page'] ?? 1;
 function buildGetString(array $params): string
 {
@@ -122,6 +123,7 @@ function buildGetString(array $params): string
     <div class="row">
         <div class="btn-group btn-group " role="group">
             <?php
+            $tparams = $params;
             $tparams['page'] = 1;
             $string = buildGetString($tparams);
             ?>
