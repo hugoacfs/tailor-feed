@@ -14,29 +14,25 @@ class Cron
     {
         global $CFG;
         $this->type = $type;
-        // print_r('<pre>');
-        // print_r($CFG);
-        // print_r('</pre>');
         $this->startTime = time();
         echo "Initiating Cron Job for " . ucfirst($type) . "... \n";
         echo "Server Time: " . date('r', $this->startTime) . "\n";
-        if ($type === 'twitter') {
-            $config = $CFG->sources['twitter'];
-        } elseif ($type === 'facebook') {
-            $config = $CFG->sources['facebook'];
-        } elseif ($type === 'rss') {
-            $config = $CFG->sources['rss'];
+        switch ($this->type) {
+            case 'twitter':
+                $config = $CFG->sources['twitter'];
+                continue;
+            case 'facebook':
+                $config = $CFG->sources['facebook'];
+                continue;
+            case 'rss':
+                $config = $CFG->sources['rss'];
+                continue;
         }
         $update_articles = $config['update_articles']; //if true, then get articles
         $update_sources = $config['update_sources']; //if true then get sources
-        $cron = intval($config['cron']); //cron interval
-        $last_cron = intval($config['last_cron']); //last time run
-        $now = time();
-        $time_to_run = $last_cron + $cron;
-        $run_now = false;
-        if ($time_to_run <= $now) {
-            $run_now = true;
-        }
+        $sources_cron = intval($config['cron']); //cron interval
+        $sources_last_cron = intval($config['last_cron']); //last time run
+        $run_now = $this->timeToRun($sources_cron, $sources_last_cron, time());
         if ($run_now) {
             if ($update_articles) {
                 $this->updateArticles();
@@ -47,20 +43,39 @@ class Cron
             // UPDATE LAST RUN BY TYPE
             $this->updateLastRun();
         }
+        $articles_cron = intval($CFG->articles_recycle_cron); //cron interval
+        $articles_last_cron = intval($CFG->articles_last_cron); //last time run
+        $articles_run_now = $this->timeToRun($articles_cron, $articles_last_cron, time());
+        if ($CFG->articles_recycle_mode === 'on' && $articles_run_now) {
+            echo 'Deleting old articles...';
+            $deleteFrom = time() - $CFG->articles_recycle_interval;
+            $removalStatus = $this->removeOldArticles($deleteFrom);
+        }
+        // END CRON
         $this->finishTime = time();
         echo "Ending job for " . $this->type . " sources" . "\n";
         echo "Server Time: " . date('r', $this->finishTime) . "\n";
         $jobDuration = $this->finishTime - $this->startTime;
         echo "Duration = " . $jobDuration . " seconds.\n";
     }
+
+    private function timeToRun(int $cron, int $last_cron, int $now): bool
+    {
+        $time_to_run = $last_cron + $cron;
+        return ($time_to_run <= $now);
+    }
     private function updateArticles()
     {
-        if ($this->type === 'twitter') {
-            $this->updateTwitterArticles();
-        } elseif ($this->type === 'facebook') {
-            $this->updateFacebookArticles();
-        } elseif ($this->type === 'rss') {
-            $this->updateRssArticles();
+        switch ($this->type) {
+            case 'twitter':
+                $this->updateTwitterArticles();
+                continue;
+            case 'facebook':
+                $this->updateFacebookArticles();
+                continue;
+            case 'rss':
+                $this->updateRssArticles();
+                continue;
         }
     }
     private function updateTwitterArticles()
@@ -87,12 +102,16 @@ class Cron
     }
     private function updateSources()
     {
-        if ($this->type === 'twitter') {
-            $this->updateTwitterSources();
-        } elseif ($this->type === 'facebook') {
-            $this->updateFacebookSources();
-        } elseif ($this->type === 'rss') {
-            $this->updateRssSources();
+        switch ($this->type) {
+            case 'twitter':
+                $this->updateTwitterSources();
+                continue;
+            case 'facebook':
+                $this->updateFacebookSources();
+                continue;
+            case 'rss':
+                $this->updateRssSources();
+                continue;
         }
     }
     private function updateTwitterSources()
@@ -114,7 +133,12 @@ class Cron
     private function updateLastRun()
     {
         global $DB;
-        echo 'Updating last run time -> '. $this->type . "\n";
+        echo 'Updating last run time -> ' . $this->type . "\n";
         $DB->updateLastCronTime($this->type);
+    }
+    private function removeOldArticles($since): bool
+    {
+        global $DB;
+        return $DB->deleteArticlesOlderThan($since);
     }
 }
