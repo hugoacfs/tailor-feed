@@ -6,9 +6,9 @@ if (!defined('CONFIG_PROTECTION')) {
 }
 // DEFAULTS
 $params = [];
-$s_id = $_GET['id'] ?? false;
+$s_id = $_GET['sourceid'] ?? false;
 if ($s_id) $params['sourceid'] = $s_id;
-$params['max'] = $_GET['max'] ?? 30;
+$params['max'] = $_GET['max'] ?? 10;
 $params['page'] = $_GET['page'] ?? 1;
 function buildGetString(array $params): string
 {
@@ -42,11 +42,12 @@ function buildGetString(array $params): string
             <div class="dropdown ml-auto ">
                 <span>Number of Articles</span>
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php echo $params['max']; ?>
+                    <?php if ($params['max'] != 0) echo $params['max'];
+                    else echo 'All'; ?>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <?php
-                    $options = [5, 10, 15, 30, 50];
+                    $options = [10, 20, 40, 80];
                     $tparams = $params;
                     foreach ($options as $option) {
                         $tparams['max'] = $option;
@@ -55,7 +56,7 @@ function buildGetString(array $params): string
                     }
                     $tparams['max'] = 0;
                     $string = buildGetString($tparams);
-                    echo '<a class="dropdown-item" href="admin.php?table=articles&' . $string . '">All</a>';
+                    echo '<a class="dropdown-item" value="All" href="admin.php?table=articles&' . $string . '">All</a>';
                     ?>
                 </div>
             </div>
@@ -67,8 +68,8 @@ function buildGetString(array $params): string
         </div>
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
-    <div class="table-responsive" style="max-height: 100%; max-height: 500px;">
-        <table class="table table-dark tableFixHead table-striped table-sm" data-sortable>
+    <div class="table-responsive" style="max-height: 65vh;">
+        <table class="table table-dark tableFixHead table-striped table-sm rounded" data-sortable>
             <thead>
                 <tr>
                     <th class="align-top" scope=" col" colspan="2">Source Reference</th>
@@ -97,8 +98,11 @@ function buildGetString(array $params): string
                     $quickAction = 'delete-article';
                     $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-trash"></i></button>';
                     $confirmMessage = "'Are you sure you want to permanently delete this article from the database?'";
+                    $tparams = $params;
+                    $tparams['sourceid'] = $sourceid;
+                    $string = buildGetString($tparams);
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td><a href="admin.php?table=articles&id=' . $sourceid . '"><i class="fas fa-table fa-lg"></i></a></td>';
+                    echo '<td><a href="admin.php?table=articles&' . $string . '"><i class="fas fa-table fa-lg"></i></a></td>';
                     echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
                     echo '<td class="type">' . ucfirst($type) . '</td>';
@@ -125,6 +129,7 @@ function buildGetString(array $params): string
             <?php
             $tparams = $params;
             $tparams['page'] = 1;
+            unset($tparams['sourceid']);
             $string = buildGetString($tparams);
             ?>
             <a class="btn btn-primary" href="admin.php?table=articles&<?php echo $string; ?> ">

@@ -740,51 +740,37 @@ class Connection
         $stmt = $this->PDOprepare("SELECT * FROM `admin_logs` ORDER BY `creationdate` DESC LIMIT 20;");
         return $this->ExecuteAndFetchArray($stmt);
     }
+
     public function fetchAllArticlesAndSources(int $page, int $max, $sourceid = null): array
     {
-        try {
-            if ($sourceid) $sourceid = intval($sourceid);
-            if ($max != 0) {
-                $limit = intval($max);
-                $offset = intval(($page - 1) * $max);
-                $sql_limit = "LIMIT $offset,$limit";
-            }
-            $sql_where = '';
-            if ($sourceid) {
-                $sql_where = " AND `s`.`id` = :sourceid ";
-            }
-            $stmt = $this->PDOprepare(
-                "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
-        FROM `articles` AS `a` 
-        JOIN `sources` AS `s` 
-        WHERE `s`.`id` = `a`.`sourceid` " . $sql_where . " 
-        ORDER BY `creationdate` 
-        DESC $sql_limit; "
-            );
-            if ($sourceid) {
-                $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
-            }
+        $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
+                    FROM `articles` AS `a` 
+                    JOIN `sources` AS `s` 
+                    WHERE `s`.`id` = `a`.`sourceid` ";
+        if ($sourceid) $sql_string .= " AND `s`.`id` = :sourceid ";
+        $sql_string .= " ORDER BY `creationdate` DESC ";
+        if ($max != 0) {
+            $limit = intval($max);
+            $offset = intval(($page - 1) * $max);
+            $sql_string .= 'LIMIT :offset,:limit';
+        }
+        $sql_string .= ';';
+        $stmt = $this->PDOprepare($sql_string);
+        if ($sourceid) $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
+        if ($max != 0) {
             $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
-            return $this->ExecuteAndFetchArray($stmt);
-        } catch (Exception $ex) {
-            $stmt = $this->PDOprepare(
-                "SELECT `a`.*, `s`.`reference`, `s`.`screenname`, `s`.`type`, `s`.`status` 
-        FROM `articles` AS `a` 
-        JOIN `sources` AS `s` 
-        WHERE `s`.`id` = `a`.`sourceid` 
-        ORDER BY `creationdate` 
-        DESC LIMIT 10,1; "
-            );
-            return $this->ExecuteAndFetchArray($stmt);
         }
+        return $this->ExecuteAndFetchArray($stmt);
     }
+
     public function deleteArticleById(int $id): bool
     {
         $stmt = $this->PDOprepare("DELETE FROM `articles` WHERE `id` = :id;");
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
+
     public function deleteTopicById(int $id): bool
     {
         $stmt = $this->PDOprepare("DELETE FROM `topics` WHERE `id` = :id;");
