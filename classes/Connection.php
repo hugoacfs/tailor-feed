@@ -33,7 +33,7 @@ class Connection
             $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->connection = $connection;
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Connection error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -50,7 +50,7 @@ class Connection
         try {
             return ($this->connection)->query($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Query error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -65,7 +65,7 @@ class Connection
         try {
             return ($this->connection)->prepare($sql_query);
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Prepare error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -80,7 +80,7 @@ class Connection
         try {
             return ($stmt)->execute();
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO Execute error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -95,7 +95,7 @@ class Connection
         try {
             return ($stmt)->fetchAll();
         } catch (PDOException $ex) {
-            handleException($ex, 'PDO FetchAll error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -119,7 +119,7 @@ class Connection
         try {
             return intval(($this->connection)->lastInsertId());
         } catch (PDOException $ex) {
-            handleException($ex, 'Last insert ID error.');
+            handleException($ex);
         } catch (Exception $ex) {
             handleException($ex);
         }

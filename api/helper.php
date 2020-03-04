@@ -188,14 +188,20 @@ function performAdminTask(string $action, array $actionArray, int $adminId): boo
     }
 }
 
-function handleException($ex, $message = 'No especified message'){
-    global $CFG;
+function handleException($ex, $message = 'Please contact support to let us know about this problem.')
+{
+    global $CFG, $EXCEPTION;
+    $EXCEPTION->code = '500';
+    $EXCEPTION->message = $message;
     if ($CFG->debug_mode === 'true') {
-        echo '<h5>'.$message.'</h5>';
+        echo '<h5>' . $message . '</h5>';
         echo '<pre>';
         print_r($ex);
         echo '</pre>';
+        $EXCEPTION->code = $ex->getCode();
+        $EXCEPTION->message = $ex->getMessage();
     }
+
     if (php_sapi_name() != 'cli') include $CFG->dirroot . '/error.php';
     exit();
 }
