@@ -57,7 +57,7 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '<td class="name">' . ucfirst($name) . '</td>';
                     echo '<td class="value">' . $value . '</td>';
                     echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSource(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
+                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSetting(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -68,7 +68,7 @@ if (!defined('CONFIG_PROTECTION')) {
     <hr>
 </div>
 <script>
-    $('.add-source .btn .btn-success').click(function() {
+    $('.update-setting .btn .btn-success').click(function() {
         $('form[name="modalForm"]').submit();
     });
 </script>

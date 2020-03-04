@@ -11,7 +11,7 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
-$adminMenu = $_COOKIE['adminMenu'] ?? false;
+$adminMenu = strip_tags($_COOKIE['adminMenu']) ?? false;
 $adminState = 'show';
 if ($adminMenu === 'closed') {
     $adminState = '';
@@ -19,12 +19,15 @@ if ($adminMenu === 'closed') {
 if (!$_GET) {
     $adminState = 'show';
 }
-$table = $_GET['table'] ?? null;
+$table = strip_tags($_GET['table']) ?? null;
 if ($table) {
     $action = $_POST['action'] ?? null;
+    if ($action) $action = strip_tags($action);
     unset($_POST['action']);
     if ($action) {
-        $actionArray = $_POST;
+        foreach($_POST as $k => $v){
+            $actionArray[$k] = strip_tags($v);
+        }
         unset($_POST);
         $adminId = $_SESSION['userId'];
         $taskSuccess = performAdminTask($action, $actionArray, $adminId) ?? null;

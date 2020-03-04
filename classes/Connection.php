@@ -605,7 +605,7 @@ class Connection
         unset($post['id']);
         $updateArray = array();
         foreach ($post as $key => $value) {
-            $updateArray[] = array($key, $value) ?? null;
+            $updateArray[] = array($key, strip_tags($value)) ?? null;
         }
         foreach ($updateArray as $item) {
             if ($item === null) {

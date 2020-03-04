@@ -46,6 +46,12 @@ if (!defined('CONFIG_PROTECTION')) {
         }
         return $select;
     }
+
+    function buildSettingsInput(value, inputType) {
+        // BUILD INPUT TAGS BASED ON VALUE AND TYPE
+        return $value;
+    }
+
     // Modal Update Source Form
 
     function updateSource($id) {
@@ -194,7 +200,39 @@ if (!defined('CONFIG_PROTECTION')) {
         $('#modal-label').html('Adding new topic');
         $('#submit-btn').html('Add topic');
     };
+    // UPDATE SETTING
+    function updateSetting($id) {
+        var modalBody = $('<div id="modalContent"></div>');
+        var modalForm = $('<form role="form" name="modalForm" action="admin.php?table=settings" method="POST"></form>');
+        var rowId = $id;
 
+        var idValue = rowId;
+        var idHtml = '<div class="form-group hidden"><input type="hidden" class="form-control" name="id" id="id" placeholder="' + idValue + '" value="' + idValue + '"></div>';
+
+        var actionHtml = '<div class="form-group hidden"><input type="hidden" class="form-control" name="action" id="action" value="update-setting"></div>';
+
+        var nameValue = $('#row-' + rowId + ' .name').html();
+        var nameHtml = '<div class="form-group"><label for="name">Setting Name</label><input class="form-control" name="name" id="name" placeholder="#30daysofkindness" value="' + nameValue + '" readonly /></div>';
+
+        var valueValue = $('#row-' + rowId + ' .value').html();
+        if (isNaN(valueValue)) {
+            var valueValue = parseInt(valueValue);
+            var valueType = 'integer';
+        } else {
+            var valueType = 'string';
+        }
+        // var valueHtml = '<div class="form-group"><label for="value">Value</label><input class="form-control" name="value" id="value" placeholder="" value="' + valueValue + '" required /></div>';
+        var valueHtml = buildSettingsInput(valueValue, valueType);
+
+        modalForm.append(actionHtml);
+        modalForm.append(idHtml);
+        modalForm.append(nameHtml);
+        modalForm.append(valueHtml);
+        modalBody.append(modalForm);
+        $('.modal-body').html(modalBody);
+        $('#modal-label').html('Editing ' + nameValue);
+        $('#submit-btn').html('Update setting');
+    };
 
     $('#cancel-btn').click(function() {
         $('.modal-body').html('');
