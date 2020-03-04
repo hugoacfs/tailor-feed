@@ -193,7 +193,7 @@ function handleException($ex, $message = 'Please contact support to let us know 
     global $CFG, $EXCEPTION;
     $EXCEPTION->code = '500';
     $EXCEPTION->message = $message;
-    if ($CFG->debug_mode === 'true') {
+    if ($CFG->debug_mode === 'on') {
         echo '<h5>' . $message . '</h5>';
         echo '<pre>';
         print_r($ex);
