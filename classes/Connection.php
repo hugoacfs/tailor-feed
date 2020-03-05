@@ -809,9 +809,12 @@ class Connection
     }
     public function deleteArticlesOlderThan(int $creationdate): bool
     {
-        $stmt = $this->PDOprepare("DELETE FROM `articles` WHERE `creationdate` < :creationdate;");
-        $stmt->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
-        return $this->PDOexecute($stmt);
+        $stmt1 = $this->PDOprepare("SELECT * FROM `articles` WHERE `creationdate` < :creationdate;");
+        
+
+        $stmt2 = $this->PDOprepare("DELETE FROM `articles` WHERE `creationdate` < :creationdate;");
+        $stmt2->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt2);
     }
     /** END CRON QUERIES */
 }

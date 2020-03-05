@@ -44,7 +44,7 @@ class Cron
             $this->updateLastRun();
         }
         $articles_cron = intval($CFG->articles_recycle_cron); //cron interval
-        $articles_last_cron = intval($CFG->articles_last_cron); //last time run
+        $articles_last_cron = intval($CFG->articles_recycle_last_cron); //last time run
         $articles_run_now = $this->timeToRun($articles_cron, $articles_last_cron, time());
         if ($CFG->articles_recycle_mode === 'on' && $articles_run_now) {
             echo 'Deleting old articles...';

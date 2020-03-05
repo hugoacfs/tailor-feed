@@ -19,7 +19,8 @@ if ($adminMenu === 'closed') {
 if (!$_GET) {
     $adminState = 'show';
 }
-$table = strip_tags($_GET['table']) ?? null;
+$table = $_GET['table'] ?? null;
+$table = strip_tags($table);
 if ($table) {
     $action = $_POST['action'] ?? null;
     if ($action) $action = strip_tags($action);
