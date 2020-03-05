@@ -32,38 +32,213 @@ if (!defined('CONFIG_PROTECTION')) {
         </div>
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
-    <div class="table-responsive" style="max-height: 65vh;">
-        <table class="table table-dark tableFixHead table-striped " data-sortable>
-            <thead>
-                <tr>
-                    <th scope="col">Setting</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Update</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $settings = $DB->fetchConfiguration();
-                $count = 0;
-                foreach ($settings as $setting) {
-                    $count += 1;
-                    $id = $setting['id'];
-                    $name = $setting['name'];
-                    $name = explode("_", $name);
-                    $name = implode(" ", $name);
-                    $value = $setting['value'];
-                    $confirmMessage = "'Are you sure you want to permanently delete this topic from the database?'";
-                    echo '<tr id="row-' . $id . '">';
-                    echo '<td class="name">' . ucfirst($name) . '</td>';
-                    echo '<td class="value">' . $value . '</td>';
-                    echo '<td style="text-align:center;">';
-                    echo '<button data-toggle="modal" value="' . $id . '" data-target="#modal" onClick="updateSetting(' . $id . ')" type="button" class="btn btn-primary mr-1"><i class="fas fa-edit"></i></button>';
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                ?>
-            </tbody>
-        </table>
+    <div class="bg-dark p-3 rounded" style="max-height: 70vh; overflow: auto;">
+        <form class="text-white">
+            <div class="md-form">
+                <div class="row ">
+                    <div class="col-4 ">
+                        <label class="form-text " for="preferences">Setting Name:</label>
+                    </div>
+                    <div class="col-4 ">
+                        <label class="form-text " for="preferences"> Status: </label>
+                    </div>
+                    <div class="col-4 ">
+                        <label class="form-text " for="preferences"> Last Run: </label>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Articles Recycle Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="articles_recycle_mode" id="articles_recycle_mode_on" value="on" <?php if ($CFG->articles_recycle_mode === 'on') echo 'checked'; ?>>
+                            <label class="form-check-label" for="articles_recycle_mode_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="articles_recycle_mode" id="articles_recycle_mode_off" value="off" <?php if ($CFG->articles_recycle_mode != 'on') echo 'checked'; ?>>
+                            <label class="form-check-label" for="articles_recycle_mode_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->articles_recycle_last_cron); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Users Recycle Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="users_recycle_mode" id="users_recycle_mode_on" value="on" <?php if ($CFG->users_recycle_mode === 'on') echo 'checked'; ?>>
+                            <label class="form-check-label" for="users_recycle_mode_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="users_recycle_mode" id="users_recycle_mode_off" value="off" <?php if ($CFG->users_recycle_mode != 'on') echo 'checked'; ?>>
+                            <label class="form-check-label" for="users_recycle_mode_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->users_recycle_last_cron); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Articles Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="twitter_update_articles" id="twitter_update_articles_on" value="on" <?php if ($CFG->sources['twitter']['update_articles'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="twitter_update_articles_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="twitter_update_articles" id="twitter_update_articles_off" value="off" <?php if ($CFG->sources['twitter']['update_articles'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="twitter_update_articles_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['twitter']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Sources Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_on" value="on" <?php if ($CFG->sources['twitter']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="twitter_update_sources_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_off" value="off" <?php if ($CFG->sources['twitter']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="twitter_update_sources_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['twitter']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Articles Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_on" value="on" <?php if ($CFG->sources['facebook']['update_articles'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="facebook_update_articles_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_off" value="off" <?php if ($CFG->sources['facebook']['update_articles'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="facebook_update_articles_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['facebook']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Sources Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_on" value="on" <?php if ($CFG->sources['facebook']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="facebook_update_sources_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_off" value="off" <?php if ($CFG->sources['facebook']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="facebook_update_sources_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['facebook']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Articles Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_on" value="on" <?php if ($CFG->sources['rss']['update_articles'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="rss_update_articles_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_off" value="off" <?php if ($CFG->sources['rss']['update_articles'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="rss_update_articles_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['rss']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Sources Update Mode</div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_on" value="on" <?php if ($CFG->sources['rss']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="rss_update_sources_on">
+                                Enabled
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_off" value="off" <?php if ($CFG->sources['rss']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <label class="form-check-label" for="rss_update_sources_off">
+                                Disabled
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-check-label"><?php echo timeAgo($CFG->sources['rss']['last_cron']); ?></label>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="form-group row">
+                <div class="col-5">
+                    <button type="submit" class="btn btn-primary">Update Settings</button>
+                </div>
+            </div>
+        </form>
+
     </div>
     <hr>
 </div>
