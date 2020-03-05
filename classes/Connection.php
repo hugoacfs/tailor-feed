@@ -800,21 +800,32 @@ class Connection
     }
     /** END SEARCH QUERIES */
     /** CRON QUERIES */
-    public function updateLastCronTime(string $type): bool
+    public function updateLastSourcesCronTime(string $type): bool
     {
         $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = 'last_cron';");
         $stmt->bindValue('time', time(), PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         return $this->PDOexecute($stmt);
     }
+    public function updateRecycleCronType(string $type): bool
+    {
+        $stmt = $this->PDOprepare("UPDATE `config` SET `value` = :time WHERE `name` = :name;");
+        $name = $type . '_recycle_last_cron';
+        $stmt->bindValue('time', time(), PDO::PARAM_STR);
+        $stmt->bindValue('name', $name, PDO::PARAM_STR);
+        return $this->PDOexecute($stmt);
+    }
     public function deleteArticlesOlderThan(int $creationdate): bool
     {
-        $stmt1 = $this->PDOprepare("SELECT * FROM `articles` WHERE `creationdate` < :creationdate;");
-        
-
-        $stmt2 = $this->PDOprepare("DELETE FROM `articles` WHERE `creationdate` < :creationdate;");
-        $stmt2->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
-        return $this->PDOexecute($stmt2);
+        $stmt = $this->PDOprepare("DELETE FROM `articles` WHERE `creationdate` < :creationdate;");
+        $stmt->bindValue('creationdate', $creationdate, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
+    }
+    public function deleteUsersOlderThan(int $lastlogin): bool
+    {
+        $stmt = $this->PDOprepare("DELETE FROM `users` WHERE `lastlogin` < :lastlogin;");
+        $stmt->bindValue('lastlogin', $lastlogin, PDO::PARAM_INT);
+        return $this->PDOexecute($stmt);
     }
     /** END CRON QUERIES */
 }
