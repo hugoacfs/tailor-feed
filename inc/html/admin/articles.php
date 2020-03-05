@@ -72,7 +72,7 @@ function buildGetString(array $params): string
         <table class="table table-dark tableFixHead table-striped table-sm rounded" data-sortable>
             <thead>
                 <tr>
-                    <th class="align-top" scope=" col" colspan="2">Source Reference</th>
+                    <th class="align-top" scope="col" <?php if (!isset($_GET['sourceid'])) echo 'colspan="2"'; ?>>Source Reference</th>
                     <th class="align-top" scope="col">Source Name</th>
                     <th class="align-top" scope="col">Type</th>
                     <th class="align-top" scope="col">Source Status</th>
@@ -102,7 +102,7 @@ function buildGetString(array $params): string
                     $tparams['sourceid'] = $sourceid;
                     $string = buildGetString($tparams);
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td><a href="admin.php?table=articles&' . $string . '"><i class="fas fa-table fa-lg"></i></a></td>';
+                    if (!isset($_GET['sourceid'])) echo '<td><a href="admin.php?table=articles&' . $string . '"><i class="fas fa-table fa-lg"></i></a></td>';
                     echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
                     echo '<td class="type">' . ucfirst($type) . '</td>';
@@ -111,8 +111,8 @@ function buildGetString(array $params): string
                     echo '<td class="status">' . timeago($creationdate) . '</td>';
                     echo '<td style="text-align:center;">';
                     echo '<form class="button-form" method="POST" action="admin.php?table=articles">';
-                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
-                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" value="' . $quickAction . '"></div>';
                     echo '<button value="' . $id . '" onclick="return confirm(' . $confirmMessage . ');" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';

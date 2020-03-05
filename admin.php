@@ -11,7 +11,7 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
-$adminMenu = $_COOKIE['adminMenu'] ?? false;
+$adminMenu = strip_tags($_COOKIE['adminMenu']) ?? false;
 $adminState = 'show';
 if ($adminMenu === 'closed') {
     $adminState = '';
@@ -20,16 +20,20 @@ if (!$_GET) {
     $adminState = 'show';
 }
 $table = $_GET['table'] ?? null;
+$table = strip_tags($table);
 if ($table) {
     $action = $_POST['action'] ?? null;
+    if ($action) $action = strip_tags($action);
     unset($_POST['action']);
     if ($action) {
-        $actionArray = $_POST;
+        foreach($_POST as $k => $v){
+            $actionArray[$k] = strip_tags($v);
+        }
         unset($_POST);
         $adminId = $_SESSION['userId'];
         $taskSuccess = performAdminTask($action, $actionArray, $adminId) ?? null;
         $message = '';
-        switch($action){
+        switch ($action) {
             case 'add-source':
                 $message = 'added a new source.';
                 continue;
@@ -56,7 +60,6 @@ if ($table) {
                 continue;
             default:
                 continue;
-
         }
         $title = 'success';
         $status = 'You successfully';
@@ -147,9 +150,8 @@ unset($_POST);
                             Sources
                         </span>
                         <?php
-                        if ($table === 'sources') {
-                            echo '<i class="fas fa-arrow-left"></i>';
-                        }
+                        if ($table === 'sources') echo '<i class="fas fa-arrow-left"></i>';
+
                         ?>
                         </a>
                     </li>
@@ -160,9 +162,7 @@ unset($_POST);
                                 Topics
                             </span>
                             <?php
-                            if ($table === 'topics') {
-                                echo '<i class="fas fa-arrow-left"></i>';
-                            }
+                            if ($table === 'topics') echo '<i class="fas fa-arrow-left"></i>';
                             ?>
                         </a>
                     </li>
@@ -173,9 +173,18 @@ unset($_POST);
                                 Articles
                             </span>
                             <?php
-                            if ($table === 'articles') {
-                                echo '<i class="fas fa-arrow-left"></i>';
-                            }
+                            if ($table === 'articles') echo '<i class="fas fa-arrow-left"></i>';
+                            ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="?table=settings" class="nav-link">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                            <span class="text-light">
+                                Settings
+                            </span>
+                            <?php
+                            if ($table === 'settings') echo '<i class="fas fa-arrow-left"></i>';
                             ?>
                         </a>
                     </li>
@@ -184,14 +193,22 @@ unset($_POST);
         </div>
         <div class="col ">
             <?php
-            if ($table === 'sources') {
-                require $CFG->dirroot . '/inc/html/admin/sources.php';
-            } elseif ($table === 'topics') {
-                require $CFG->dirroot . '/inc/html/admin/topics.php';
-            } elseif ($table === 'articles') {
-                require $CFG->dirroot . '/inc/html/admin/articles.php';
-            } else {
-                require $CFG->dirroot . '/inc/html/admin/home.php';
+            switch ($table) {
+                case 'sources':
+                    require $CFG->dirroot . '/inc/html/admin/sources.php';
+                    continue;
+                case 'topics':
+                    require $CFG->dirroot . '/inc/html/admin/topics.php';
+                    continue;
+                case 'articles':
+                    require $CFG->dirroot . '/inc/html/admin/articles.php';
+                    continue;
+                case 'settings':
+                    require $CFG->dirroot . '/inc/html/admin/settings.php';
+                    continue;
+                default:
+                    require $CFG->dirroot . '/inc/html/admin/home.php';
+                    continue;
             }
             ?>
         </div>
