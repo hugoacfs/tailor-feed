@@ -73,8 +73,8 @@ if (!defined('CONFIG_PROTECTION')) {
                     echo '</td>';
                     echo '<td style="text-align:center;">';
                     echo '<form class="button-form" method="POST" action="admin.php?table=sources">';
-                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" id="id" value="' . $id . '"></div>';
-                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" id="action" value="' . $quickAction . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="id" value="' . $id . '"></div>';
+                    echo '<div class="form-group hidden d-none"><input type="hidden" class="form-control" name="action" value="' . $quickAction . '"></div>';
                     echo '<button value="' . $id . '" type="submit" ' . $btnStyle;
                     echo '</form>';
                     echo '</td>';

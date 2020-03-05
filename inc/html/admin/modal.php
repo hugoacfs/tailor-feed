@@ -46,6 +46,7 @@ if (!defined('CONFIG_PROTECTION')) {
         }
         return $select;
     }
+
     // Modal Update Source Form
 
     function updateSource($id) {
@@ -195,6 +196,33 @@ if (!defined('CONFIG_PROTECTION')) {
         $('#submit-btn').html('Add topic');
     };
 
+    function updateSettings() {
+        var modalBody = $('<div id="modalContent"></div>');
+        var modalForm = $('<form role="form" name="modalForm" action="admin.php?table=topics" method="POST"></form>');
+
+        var actionHtml = '<div class="form-group hidden"><input type="hidden" class="form-control" name="action" id="action" value="add-topic"></div>';
+
+        var nameHtml = '<div class="form-group"><label for="name">Name</label><input class="form-control" name="name" id="name" placeholder="#30daysofkindness" value="" required /></div>';
+
+        var descriptionHTML = '<div class="form-group"><label for="description">Description</label><input class="form-control" name="description" id="description" placeholder="30 Days of Kindness March" value="" required /></div>';
+
+        var statusValue = 'active';
+        var statusOptions = {
+            active: 'active',
+            suspended: 'suspended'
+        };
+        var statusSelect = buildSelect(statusOptions, statusValue, 'status');
+        var statusHtml = '<div class="form-group"><label for="status">Status</label>' + statusSelect.prop('outerHTML') + '</div>';
+
+        modalForm.append(actionHtml);
+        modalForm.append(nameHtml);
+        modalForm.append(descriptionHTML);
+        modalForm.append(statusHtml);
+        modalBody.append(modalForm);
+        $('.modal-body').html(modalBody);
+        $('#modal-label').html('Adding new topic');
+        $('#submit-btn').html('Add topic');
+    };
 
     $('#cancel-btn').click(function() {
         $('.modal-body').html('');
