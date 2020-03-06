@@ -199,18 +199,12 @@ class Connection
     /**
      * TODO: Complete Documenting
      */
-    public function fetchAllTopics(): array
+    public function fetchAllTopics(bool $active = false): array
     {
-        $stmt = $this->PDOprepare("SELECT * FROM `topics`;");
-        return $this->ExecuteAndFetchArray($stmt);
-    }
-
-    /**
-     * TODO: Complete Documenting
-     */
-    public function fetchAllActiveTopics(): array
-    {
-        $stmt = $this->PDOprepare("SELECT * FROM `topics` WHERE `status` = 'active';");
+        $sql_string = "SELECT * FROM `topics`";
+        if($active) $sql_string .= " WHERE `status` = 'active'";
+        $sql_string .= ";";
+        $stmt = $this->PDOprepare($sql_string);
         return $this->ExecuteAndFetchArray($stmt);
     }
 
@@ -228,11 +222,9 @@ class Connection
         return $this->ExecuteAndFetchArray($stmt);
     }
 
-    public function insertArticlesTopics(array $topics = array(), int $articleid)
+    public function insertArticlesTopics(array $topics = array(), int $articleid): bool
     {
-        if (empty($topics)) {
-            return false;
-        }
+        if (empty($topics)) return false;
         foreach ($topics as $topicid) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `articles_topics` 
@@ -242,15 +234,14 @@ class Connection
             );
             $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
             $stmt->bindValue('topicid', $topicid, PDO::PARAM_INT);
-            $this->PDOexecute($stmt);
+            if (!$this->PDOexecute($stmt)) return false;
         }
+        return true;
     }
 
-    public function insertMediaLinks(array $media = array(), int $articleid)
+    public function insertMediaLinks(array $media, int $articleid): bool
     {
-        if (empty($media)) {
-            return false;
-        }
+        if (empty($media)) return false;
         foreach ($media as $m) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `media_links` 
@@ -263,8 +254,9 @@ class Connection
             $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
             $stmt->bindValue('url', $url, PDO::PARAM_STR);
             $stmt->bindValue('type', $type, PDO::PARAM_STR);
-            $this->PDOexecute($stmt);
+            if (!$this->PDOexecute($stmt)) return false;
         }
+        return true;
     }
 
 

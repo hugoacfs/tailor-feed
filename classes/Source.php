@@ -136,9 +136,8 @@ class Source
         global $DB;
         $sourcesIds = array();
         $fetched = $DB->fetchAllSources();
-        foreach ($fetched as $row) {
-            $sourcesIds[] = $row['id'];
-        }
+        foreach ($fetched as $row) $sourcesIds[] = $row['id'];
+
         return $sourcesIds;
     }
     /**
@@ -149,9 +148,7 @@ class Source
     public static function updateAllSourcesDetails(): bool
     {
         $twitterSuccess = Twitter::updateSourcesDetails();
-        // $rssSuccess = Rss::updateSourcesDetails();
-        if ($twitterSuccess) {
-            return true;
-        }
+        // $rssSuccess = Rss::updateSourcesDetails(); //Exmaple of further implm.
+        if ($twitterSuccess) return true;
     }
 }

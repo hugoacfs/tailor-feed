@@ -94,130 +94,108 @@ class Article
         }
     }
     /**
-     * Publishes the Article objects given to the DB.
-     * Won't run if array is empty. Makes sure Article is not yet on DB before insertion.
-     * @param array $articlesToPublish contains Article objects.
+     * Inserts a new article entry on the DB as per article objects generated from external sources.
+     * @param array $articlesToPublish Array containing Article objects to publish.
      * @return bool Returns true on publish. False on failure to publish or nothing to publish.
+     * @throws PDOException On PDO issues when inserting new Articles or media/topics links.
      */
     public static function publishArticles(array $articlesToPublish): bool
     {
         global $DB;
-        if (empty($articlesToPublish)) {
-            return false;
-        }
+        if (empty($articlesToPublish)) return false;
         foreach ($articlesToPublish as $article) {
-            $creationDate = $article->creationDate;
-            $ownerId = $article->ownerId;
-            $message = $article->body;
-            $uniqueId = $article->uniqueId;
-            $fetched = $DB->fetchArticleByUniqueId($uniqueId);
-            $uniqueIdNotExists = (count($fetched) === 0);
-            if ($uniqueIdNotExists) {
-                $insertSuccess = $DB->insertNewArticleEntry($ownerId, $uniqueId, $creationDate, $message);
-                if ($insertSuccess) {
-                    $lastInsertId = $DB->PDOgetlastinsertid();
-                    $article->dbId = intval($lastInsertId);
-                    Article::linkTopics($article);
-                    Article::linkMedia($article);
-                }
-            }
+            $fetched = $DB->fetchArticleByUniqueId($article->uniqueId);
+            $uniqueIdExists = !(count($fetched) === 0);
+            if ($uniqueIdExists) return false;
+            $insertSuccess = $DB->insertNewArticleEntry(
+                $article->ownerId,
+                $article->uniqueId,
+                $article->creationDate,
+                $article->body
+            );
+            if (!$insertSuccess) return false;
+            $lastInsertId = $DB->PDOgetlastinsertid();
+            $article->dbId = intval($lastInsertId);
+            Article::linkTopics($article->topics, $article->dbId);
+            Article::linkMedia($article->media, $article->dbId);
         }
         return true;
     }
     /**
      * Finds the latest Article in DB by Source ID and Type.
-     * For each of the Sources, it finds the latest Article published.
+     * For each a Source, it finds the latest Article published.
      * @param string $type Type of Article e.g. Twitter.
      * @param int $id DB id of Source of Article.
      * @return int Unique identifier or -1 if no Article is published yet.
      */
-    public static function getLatestArticleUId(string $type, int $id): int
+    public static function getLatestArticleUId(int $id): int
     {
         global $DB;
-        if ($type === 'twitter' && !empty($id)) {
-            $fetched = $DB->fetchLatestTwitterArticle($id);
-            $fetched = $fetched[0];
-            if(!$fetched){
-                return -1;
-            }
-            return intval($fetched['MAX(a.uniqueidentifier)']);
-        }
+        if (!$id) return 0;
+        $fetched = $DB->fetchLatestTwitterArticle($id);
+        $fetched = $fetched[0]; //gets the first row
+        if (!$fetched) return 0;
+        return intval($fetched['MAX(a.uniqueidentifier)']);
     }
     /**
      * Links an article to certain topics that exist in the DB
-     * @param Article $article The object to link topics to
+     * @param array $topics An array of topics found in the body of an Article.
+     * @param int $id The id of the Article as found in the DB.
+     * @return bool True on all links successfully added, False on failure to add all links. False on array is empty.
      */
-    static public function linkTopics($article)
+    static public function linkTopics(array $topics, int $id): bool
     {
         global $DB;
-        if (empty($article->topics)) {
-            return false;
-        }
+        if (empty($topics)) return false;
         $fetchedtopics = $DB->fetchAllTopics();
         $topicsList = array();
         foreach ($fetchedtopics as $row) {
-            $topicsList[] = $row['name'];
+            $topicsList[$row['id']] = $row['name'];
         }
-        $validTopics = array();
-        $validTopics = array_intersect($topicsList, $article->topics);
-        $validIds = array();
-        foreach ($validTopics as $topic) {
-            $fetchedid = $DB->fetchTopicId($topic);
-            foreach ($fetchedid as $row) {
-                $validIds[] = $row['id'];
-            }
-        }
-        $DB->insertArticlesTopics($validIds, $article->dbId);
+        $validTopics = array_intersect($topicsList, $topics);
+        $validIds = array_keys($validTopics);
+        return $DB->insertArticlesTopics($validIds, $id);
     }
     /**
-     * 
-     * @param Article $article The object to link topics to
+     * Links an article to media urls.
+     * @param array $media An array of media, containing urls and type of media, found in Article.
+     * @param int $id The id of the Article as found in the DB.
+     * @return bool True on all links successfully added, False on failure to add all links. False on array is empty.
      */
-    static public function linkMedia($article)
+    static public function linkMedia(array $media, int $id): bool
     {
         global $DB;
-        if (empty($article->media)) {
-            return false;
-        }
-        $DB->insertMediaLinks($article->media, $article->dbId);
+        if (empty($media)) return false;
+        return $DB->insertMediaLinks($media, $id);
     }
     /**
      * It returns an array containing all topics as Topic objects stdClass from the DB.
      * @return array $sources
      */
-    public static function getAllTopics($active = true): array
+    public static function getAllTopics(): array
     {
         global $DB;
         $topics = array();
-        if ($active) {
-            $result = $DB->fetchAllActiveTopics();
-        } else {
-            $result = $DB->fetchAllTopics();
-        }
+        $result = $DB->fetchAllTopics(true);
         foreach ($result as $row) {
-            $name = $row['name'];
-            $id = $row['id'];
-            $description = $row['description'];
             $thisTopic = new stdClass();
-            $thisTopic->dbId = $id;
-            $thisTopic->name = $name;
-            $thisTopic->description = $description;
+            $thisTopic->dbId = $row['id'];
+            $thisTopic->name = $row['name'];
+            $thisTopic->description = $row['description'];
             $topics[] = $thisTopic;
         }
         return $topics;
     }
     /**
-     * It returns the number of sources in the DB as an integer.
-     * @return int
+     * Returns an array of topic ids.
+     * @return array An array containing all topic ids from the DB.
      */
     public static function getAllTopicsIds(): array
     {
         global $DB;
         $topicsIds = array();
         $fetched = $DB->fetchAllTopics();
-        foreach ($fetched as $row) {
-            $topicsIds[] = $row['id'];
-        }
+        foreach ($fetched as $row) $topicsIds[] = $row['id'];
         return $topicsIds;
     }
 }
