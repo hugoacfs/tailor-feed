@@ -145,8 +145,8 @@ class Cron
         global $DB;
         echo 'Updating last run time -> ' . $this->type . "\n";
         if ($this->sourcesStatus || $this->articlesStatus) $DB->updateLastSourcesCronTime($this->type);
-        if ($this->articlesRecycleStatus) $DB->updateRecycleCronType('articles');
-        if ($this->usersRecycleStatus) $DB->updateRecycleCronType('users');
+        if ($this->articlesRecycleStatus) $DB->updateRecycleCronTime('articles');
+        if ($this->usersRecycleStatus) $DB->updateRecycleCronTime('users');
     }
     private function removeOldArticles($since): bool
     {

@@ -33,7 +33,7 @@ if (!defined('CONFIG_PROTECTION')) {
         <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
     </div>
     <div class="bg-dark p-3 rounded" style="max-height: 70vh; overflow: auto;">
-        <form class="text-white">
+        <form action="admin.php?table=settings" method="POST" class="text-white">
             <div class="md-form">
                 <div class="row ">
                     <div class="col-4 ">
@@ -72,7 +72,7 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Users Recycle Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Users Recycle Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
@@ -95,7 +95,7 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Articles Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Articles Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
@@ -118,17 +118,17 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Sources Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Twitter Sources Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_on" value="on" <?php if ($CFG->sources['twitter']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_on" value="true" <?php if ($CFG->sources['twitter']['update_sources'] === 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="twitter_update_sources_on">
                                 Enabled
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_off" value="off" <?php if ($CFG->sources['twitter']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="twitter_update_sources" id="twitter_update_sources_off" value="false" <?php if ($CFG->sources['twitter']['update_sources'] != 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="twitter_update_sources_off">
                                 Disabled
                             </label>
@@ -141,17 +141,17 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Articles Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Articles Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_on" value="on" <?php if ($CFG->sources['facebook']['update_articles'] === 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_on" value="true" <?php if ($CFG->sources['facebook']['update_articles'] === 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="facebook_update_articles_on">
                                 Enabled
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_off" value="off" <?php if ($CFG->sources['facebook']['update_articles'] != 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="facebook_update_articles" id="facebook_update_articles_off" value="false" <?php if ($CFG->sources['facebook']['update_articles'] != 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="facebook_update_articles_off">
                                 Disabled
                             </label>
@@ -164,17 +164,17 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Sources Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> Facebook Sources Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_on" value="on" <?php if ($CFG->sources['facebook']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_on" value="true" <?php if ($CFG->sources['facebook']['update_sources'] === 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="facebook_update_sources_on">
                                 Enabled
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_off" value="off" <?php if ($CFG->sources['facebook']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="facebook_update_sources" id="facebook_update_sources_off" value="false" <?php if ($CFG->sources['facebook']['update_sources'] != 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="facebook_update_sources_off">
                                 Disabled
                             </label>
@@ -187,17 +187,17 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Articles Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Articles Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_on" value="on" <?php if ($CFG->sources['rss']['update_articles'] === 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_on" value="true" <?php if ($CFG->sources['rss']['update_articles'] === 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="rss_update_articles_on">
                                 Enabled
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_off" value="off" <?php if ($CFG->sources['rss']['update_articles'] != 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="rss_update_articles" id="rss_update_articles_off" value="false" <?php if ($CFG->sources['rss']['update_articles'] != 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="rss_update_articles_off">
                                 Disabled
                             </label>
@@ -210,17 +210,17 @@ if (!defined('CONFIG_PROTECTION')) {
             </div>
             <hr class="bg-white">
             <div class="form-group row">
-                <div class="col-4"><a href="#" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Sources Update Mode</div>
+                <div class="col-4"><a data-toggle="modal" onclick="updateSettings()" data-target="#modal" type="button" class="text-primary"><i class="fas fa-cogs fa-lg"></i></a> RSS Sources Update Mode</div>
                 <div class="col-4">
                     <div class="form-check">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_on" value="on" <?php if ($CFG->sources['rss']['update_sources'] === 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_on" value="true" <?php if ($CFG->sources['rss']['update_sources'] === 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="rss_update_sources_on">
                                 Enabled
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_off" value="off" <?php if ($CFG->sources['rss']['update_sources'] != 'true') echo 'checked'; ?>>
+                            <input class="form-check-input" type="radio" name="rss_update_sources" id="rss_update_sources_off" value="false" <?php if ($CFG->sources['rss']['update_sources'] != 'true') echo 'checked'; ?>>
                             <label class="form-check-label" for="rss_update_sources_off">
                                 Disabled
                             </label>
@@ -232,6 +232,7 @@ if (!defined('CONFIG_PROTECTION')) {
                 </div>
             </div>
             <hr class="bg-white">
+            <input type="hidden" name="action" value="update-config" />
             <div class="form-group row">
                 <div class="col-5">
                     <button type="submit" class="btn btn-primary">Update Settings</button>

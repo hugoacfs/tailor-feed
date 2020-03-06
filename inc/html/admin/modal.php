@@ -214,14 +214,15 @@ if (!defined('CONFIG_PROTECTION')) {
         var statusSelect = buildSelect(statusOptions, statusValue, 'status');
         var statusHtml = '<div class="form-group"><label for="status">Status</label>' + statusSelect.prop('outerHTML') + '</div>';
 
-        modalForm.append(actionHtml);
-        modalForm.append(nameHtml);
-        modalForm.append(descriptionHTML);
-        modalForm.append(statusHtml);
+        // modalForm.append(actionHtml);
+        // modalForm.append(nameHtml);
+        // modalForm.append(descriptionHTML);
+        // modalForm.append(statusHtml);
+        modalForm.append("<h4>Sorry, this feature is not yet available.</h4>");
         modalBody.append(modalForm);
         $('.modal-body').html(modalBody);
-        $('#modal-label').html('Adding new topic');
-        $('#submit-btn').html('Add topic');
+        $('#modal-label').html('Coming soon!');
+        $('#submit-btn').hide();
     };
 
     $('#cancel-btn').click(function() {

@@ -777,6 +777,30 @@ class Connection
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
+    public function updateCronConfiguration(array $post): bool
+    {
+        $filter = ['twitter', 'facebook', 'rss'];
+        foreach ($post as $name => $value) {
+            if (contains($name, $filter)) {
+                // do twitter/rss/facebook stuff
+                $arr = restructureString($name);
+                $type = $arr[0];
+                $name = $arr[1];
+                $stmt = $this->PDoprepare("UPDATE `sources_config` SET `value` = :value WHERE `name` = :name AND `type` = :type;");
+                $stmt->bindValue('value', $value, PDO::PARAM_STR);
+                $stmt->bindValue('type', $type, PDO::PARAM_STR);
+                $stmt->bindValue('name', $name, PDO::PARAM_STR);
+                if (!$this->PDOexecute($stmt)) return false;
+            } else {
+                // do normal stuff like
+                $stmt = $this->PDoprepare("UPDATE `config` SET `value` = :value WHERE `name` = :name;");
+                $stmt->bindValue('value', $value, PDO::PARAM_STR);
+                $stmt->bindValue('name', $name, PDO::PARAM_STR);
+                if (!$this->PDOexecute($stmt)) return false;
+            }
+        }
+        return true;
+    }
     /** END ADMIN QUERIES */
     /** SEARCH QUERIES */
     /**
@@ -807,7 +831,7 @@ class Connection
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         return $this->PDOexecute($stmt);
     }
-    public function updateRecycleCronType(string $type): bool
+    public function updateRecycleCronTime(string $type): bool
     {
         $stmt = $this->PDOprepare("UPDATE `config` SET `value` = :time WHERE `name` = :name;");
         $name = $type . '_recycle_last_cron';
@@ -823,7 +847,7 @@ class Connection
     }
     public function deleteUsersOlderThan(int $lastlogin): bool
     {
-        $stmt = $this->PDOprepare("DELETE FROM `users` WHERE `lastlogin` < :lastlogin;");
+        $stmt = $this->PDOprepare("DELETE FROM `users` WHERE `lastlogin` < :lastlogin AND `username` != 'default';");
         $stmt->bindValue('lastlogin', $lastlogin, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
