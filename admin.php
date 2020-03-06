@@ -19,6 +19,7 @@ if ($adminMenu === 'closed') {
 if (!$_GET) {
     $adminState = 'show';
 }
+// print_r($_POST);
 $table = $_GET['table'] ?? null;
 $table = strip_tags($table);
 if ($table) {
@@ -57,6 +58,9 @@ if ($table) {
                 continue;
             case 'delete-topic':
                 $message = 'removed the topic from the database.';
+                continue;
+            case 'update-config':
+                $message = 'updated the configuration settings.';
                 continue;
             default:
                 continue;

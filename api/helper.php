@@ -183,6 +183,8 @@ function performAdminTask(string $action, array $actionArray, int $adminId): boo
             return $DB->deleteArticleById(intval($actionArray['id']), $adminId);
         case 'delete-topic':
             return $DB->deleteTopicById(intval($actionArray['id']), $adminId);
+        case 'update-config':
+            return $DB->updateCronConfiguration($actionArray, $adminId);
         default:
             return false;
     }
@@ -204,4 +206,19 @@ function handleException($ex, $message = 'Please contact support to let us know 
 
     if (php_sapi_name() != 'cli') include $CFG->dirroot . '/error.php';
     exit();
+}
+function contains(string $str, array $arr): bool
+{
+    foreach ($arr as $a) {
+        if (stripos($str, $a) !== false) return true;
+    }
+    return false;
+}
+
+function restructureString(string $str): array
+{
+    $arr = explode('_', $str);
+    $extractStr = array_shift($arr);
+    $otherStr = implode('_', $arr);
+    return array($extractStr, $otherStr);
 }
