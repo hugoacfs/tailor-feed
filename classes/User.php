@@ -172,10 +172,10 @@ class User
         switch($type){
             case 'source':
                 $operatingList = $this->subscribedList;
-                continue;
+                break;
             case 'topic':
                 $operatingList = $this->topicsList;
-                continue;
+                break;
             default:
                 return;
         }
