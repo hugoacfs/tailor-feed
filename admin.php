@@ -11,7 +11,8 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
-$adminMenu = strip_tags($_COOKIE['adminMenu']) ?? false;
+$adminCookie = $_COOKIE['adminMenu'] ?? false;
+$adminMenu = strip_tags($adminCookie) ;
 $adminState = 'show';
 if ($adminMenu === 'closed') {
     $adminState = '';
@@ -37,33 +38,33 @@ if ($table) {
         switch ($action) {
             case 'add-source':
                 $message = 'added a new source.';
-                continue;
+                break;
             case 'add-topic':
                 $message = 'added a new topic.';
-                continue;
+                break;
             case 'update-source':
                 $message = 'updated the source`s details.';
-                continue;
+                break;
             case 'update-topic':
                 $message = 'updated the topic`s details.';
-                continue;
+                break;
             case 'suspend-source':
                 $message = 'updated the source status.';
-                continue;
+                break;
             case 'suspend-topic':
                 $message = 'updated the topic status.';
-                continue;
+                break;
             case 'delete-article':
                 $message = 'removed the article from the database.';
-                continue;
+                break;
             case 'delete-topic':
                 $message = 'removed the topic from the database.';
-                continue;
+                break;
             case 'update-config':
                 $message = 'updated the configuration settings.';
-                continue;
+                break;
             default:
-                continue;
+                break;
         }
         $title = 'success';
         $status = 'You successfully';
@@ -200,19 +201,19 @@ unset($_POST);
             switch ($table) {
                 case 'sources':
                     require $CFG->dirroot . '/inc/html/admin/sources.php';
-                    continue;
+                    break;
                 case 'topics':
                     require $CFG->dirroot . '/inc/html/admin/topics.php';
-                    continue;
+                    break;
                 case 'articles':
                     require $CFG->dirroot . '/inc/html/admin/articles.php';
-                    continue;
+                    break;
                 case 'settings':
                     require $CFG->dirroot . '/inc/html/admin/settings.php';
-                    continue;
+                    break;
                 default:
                     require $CFG->dirroot . '/inc/html/admin/home.php';
-                    continue;
+                    break;
             }
             ?>
         </div>

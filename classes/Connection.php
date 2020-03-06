@@ -407,20 +407,20 @@ class Connection
                 WHERE `" . $type . "id` = :id 
                 AND `userid` = :userid ;"
                 );
-                continue;
+                break;
             case 'insert':
                 $stmt = $this->PDOprepare(
                     "INSERT INTO `subscribed_" . $type . "s` (`" . $type . "id`, `userid`) 
                     VALUES (:id, :userid);"
                 );
-                continue;
+                break;
             case 'delete':
                 $stmt = $this->PDOprepare(
                     "DELETE FROM `subscribed_" . $type . "s` 
                     WHERE `" . $type . "id` = :id 
                     AND `userid` = :userid;"
                 );
-                continue;
+                break;
         }
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         $stmt->bindValue('userid', $userid, PDO::PARAM_INT);
