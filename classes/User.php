@@ -323,14 +323,17 @@ class User
             $timestamp = $article->creationDate;
             $name = $article->ownerName;
             $screen_name = $article->ownerReference;
-            if ($article->type === 'twitter') {
-                $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
-                $profile_image = $article->imageSource;
-                $accountUrl = 'https://twitter.com/' . $screen_name;
+            $profile_image = $article->imageSource;
+            switch($article->type){
+                case 'twitter':
+                    $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
+                    $accountUrl = 'https://twitter.com/' . $screen_name;
+                    break;
             }
             $media = $article->media ?? array();
             $mediaHTML = '';
             $firstStatus = 'active';
+            $carouselHtml = '';
             foreach ($media as $m) {
                 switch ($m['type']) {
                     case 'photo':
@@ -338,15 +341,16 @@ class User
                         <div class="carousel-item ' . $firstStatus . '">
                             <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
                         </div>';
+                        break;
                     case 'video':
                         $mediaHTML .= '
                         <div class="carousel-item ' . $firstStatus . '">
                             <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
                         </div>';
+                        break;
                 }
                 $firstStatus = '';
             }
-            $carouselHtml = $mediaHTML;
             if ($article->media) {
                 $carouselHtml = '
                 <div id="carouselArticle' . $article->dbId . '" class="carousel slide" data-ride="carousel" data-interval="false">
