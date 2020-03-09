@@ -324,7 +324,7 @@ class User
             $name = $article->ownerName;
             $screen_name = $article->ownerReference;
             $profile_image = $article->imageSource;
-            switch($article->type){
+            switch ($article->type) {
                 case 'twitter':
                     $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
                     $accountUrl = 'https://twitter.com/' . $screen_name;
@@ -334,6 +334,8 @@ class User
             $mediaHTML = '';
             $firstStatus = 'active';
             $carouselHtml = '';
+            $carouselHtmlNav = '';
+            $numOfMediaItems = count($article->media);
             foreach ($media as $m) {
                 switch ($m['type']) {
                     case 'photo':
@@ -351,20 +353,23 @@ class User
                 }
                 $firstStatus = '';
             }
+            if ($numOfMediaItems > 1) {
+                $carouselHtmlNav = '<a class="carousel-control-prev" href="#carouselArticle' . $article->dbId . '" role="button" data-slide="prev">
+                                        <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next " href="#carouselArticle' . $article->dbId . '" role="button" data-slide="next">
+                                        <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>';
+            }
             if ($article->media) {
                 $carouselHtml = '
                 <div id="carouselArticle' . $article->dbId . '" class="carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>
-                    <a class="carousel-control-prev" href="#carouselArticle' . $article->dbId . '" role="button" data-slide="prev">
-                        <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next " href="#carouselArticle' . $article->dbId . '" role="button" data-slide="next">
-                        <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    ' . $carouselHtmlNav . '
                 </div>';
             }
             $builder = null;
