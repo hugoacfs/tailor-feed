@@ -16,13 +16,7 @@ if (!defined('CONFIG_PROTECTION')) {
     <link rel="icon" href="img/favicon.ico" type="image/gif" sizes="16x16">
     <title><?php echo $title; ?></title>
     <!-- BOOTSTRAP CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- JQUERY -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- POPPER JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-    <!-- BOOTSTRAP JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <!-- CUSTOM CSS -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Fontawesome -->
@@ -31,10 +25,6 @@ if (!defined('CONFIG_PROTECTION')) {
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <!-- TOGGLE CSS -->
     <link rel="stylesheet" href="vendor/bootstrap4-toggle-master/css/bootstrap4-toggle.css">
-    <!-- TOGGLE JS -->
-    <script src="vendor/bootstrap4-toggle-master/js/bootstrap4-toggle.js"></script>
-    <!-- LODASH MIN JS -->
-    <script src="vendor/lodash/lodash.js"></script>
     <?php
     // https://github.hubspot.com/sortable/api/themes/
     if ($pageId === 'admin') {
@@ -44,10 +34,3 @@ if (!defined('CONFIG_PROTECTION')) {
     if ($CFG->g_analytics_mode === 'on') include $CFG->dirroot . '/inc/html/analytics.php';
     ?>
 </head>
-<script>
-    $(document).ready(function() {
-        $("body").tooltip({
-            selector: '[data-toggle=tooltip]'
-        });
-    });
-</script>
