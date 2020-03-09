@@ -107,7 +107,7 @@ class Connection
             case true:
                 return $this->PDOfetchAll($stmt);
             default:
-                return array();
+                return [];
         }
     }
     /**
@@ -199,18 +199,12 @@ class Connection
     /**
      * TODO: Complete Documenting
      */
-    public function fetchAllTopics(): array
+    public function fetchAllTopics(bool $active = false): array
     {
-        $stmt = $this->PDOprepare("SELECT * FROM `topics`;");
-        return $this->ExecuteAndFetchArray($stmt);
-    }
-
-    /**
-     * TODO: Complete Documenting
-     */
-    public function fetchAllActiveTopics(): array
-    {
-        $stmt = $this->PDOprepare("SELECT * FROM `topics` WHERE `status` = 'active';");
+        $sql_string = "SELECT * FROM `topics`";
+        if ($active) $sql_string .= " WHERE `status` = 'active'";
+        $sql_string .= ";";
+        $stmt = $this->PDOprepare($sql_string);
         return $this->ExecuteAndFetchArray($stmt);
     }
 
@@ -228,11 +222,9 @@ class Connection
         return $this->ExecuteAndFetchArray($stmt);
     }
 
-    public function insertArticlesTopics(array $topics = array(), int $articleid)
+    public function insertArticlesTopics(array $topics = [], int $articleid): bool
     {
-        if (empty($topics)) {
-            return false;
-        }
+        if (empty($topics)) return false;
         foreach ($topics as $topicid) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `articles_topics` 
@@ -242,15 +234,14 @@ class Connection
             );
             $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
             $stmt->bindValue('topicid', $topicid, PDO::PARAM_INT);
-            $this->PDOexecute($stmt);
+            if (!$this->PDOexecute($stmt)) return false;
         }
+        return true;
     }
 
-    public function insertMediaLinks(array $media = array(), int $articleid)
+    public function insertMediaLinks(array $media, int $articleid): bool
     {
-        if (empty($media)) {
-            return false;
-        }
+        if (empty($media)) return false;
         foreach ($media as $m) {
             $stmt = $this->PDOprepare(
                 "INSERT INTO `media_links` 
@@ -263,8 +254,9 @@ class Connection
             $stmt->bindValue('articleid', $articleid, PDO::PARAM_INT);
             $stmt->bindValue('url', $url, PDO::PARAM_STR);
             $stmt->bindValue('type', $type, PDO::PARAM_STR);
-            $this->PDOexecute($stmt);
+            if (!$this->PDOexecute($stmt)) return false;
         }
+        return true;
     }
 
 
@@ -451,11 +443,9 @@ class Connection
      * @param int $timeInterval time interval for query
      * @return PDOStatement Query Result
      */
-    public function fetchUserSubscribedArticles(array $subscribedList = array(), array $topicsList = array(), int $timeInterval, int $offset)
+    public function fetchUserSubscribedArticles(array $subscribedList = [], array $topicsList = [], int $timeInterval, int $offset)
     {
-        if ($subscribedList === array() && $topicsList === array()) {
-            return null;
-        }
+        if (!$subscribedList && !$topicsList) return null;
         $limit = 10;
         $offset = ($offset - 1) * 10;
         $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource`
@@ -464,21 +454,13 @@ class Connection
                 LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
                 LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id`
             WHERE `s`.`status` = 'active' AND ";
-        $topicsIds = array();
-        $sourceIds = array();
-        $sourceTopicsIds = [];
-
+        $sourceTopicsIds = $sourceIds = $topicsIds = [];
         if (count($subscribedList) > 0) {
-            foreach ($subscribedList as $source) {
-                $sourceIds[] = $source->getDbId();
-            }
+            foreach ($subscribedList as $source) $sourceIds[] = $source->getDbId();
             $sourceTopicsIds[] = " `a`.`sourceid` IN (" . join(',', $sourceIds) . ") ";
         }
-
         if (count($topicsList) > 0) {
-            foreach ($topicsList as $topic) {
-                $topicsIds[] = $topic->dbId;
-            }
+            foreach ($topicsList as $topic) $topicsIds[] = $topic->dbId;
             $sourceTopicsIds[] = " `at`.`topicid` IN (" . join(',', $topicsIds) . ") ";
         }
 
@@ -553,11 +535,8 @@ class Connection
         $fetch = $this->PDOquery($sql_string);
         $fetched = $fetch->fetch();
         $stmt = $this->PDOprepare("UPDATE `sources` SET `status`=:newstatus WHERE `id`= :id");
-        if ($fetched['status'] === 'suspended') {
-            $newstatus = 'active';
-        } else {
-            $newstatus = 'suspended';
-        }
+        if ($fetched['status'] === 'suspended') $newstatus = 'active';
+        else $newstatus = 'suspended';
         $logDescription->newstatus = $newstatus;
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
@@ -579,11 +558,8 @@ class Connection
         $fetch = $this->PDOquery($sql_string);
         $fetched = $fetch->fetch();
         $stmt = $this->PDOprepare("UPDATE `topics` SET `status`=:newstatus WHERE `id`= :id");
-        if ($fetched['status'] === 'suspended') {
-            $newstatus = 'active';
-        } else {
-            $newstatus = 'suspended';
-        }
+        if ($fetched['status'] === 'suspended') $newstatus = 'active';
+        else $newstatus = 'suspended';
         $logDescription->newstatus = $newstatus;
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
@@ -599,18 +575,12 @@ class Connection
     public function updateSourceById(array $post, int $adminId): bool
     {
         $id = intval($post['id']) ?? false;
-        if (!$id) {
-            return false;
-        }
+        if (!$id) return false;
         unset($post['id']);
-        $updateArray = array();
-        foreach ($post as $key => $value) {
-            $updateArray[] = array($key, strip_tags($value)) ?? null;
-        }
+        $updateArray = [];
+        foreach ($post as $key => $value) $updateArray[] = array($key, strip_tags($value)) ?? null;
         foreach ($updateArray as $item) {
-            if ($item === null) {
-                continue;
-            }
+            if ($item === null) continue;
             $colName = $item[0];
             $newValue = $item[1];
             $stmt = $this->PDOprepare("UPDATE `sources` SET `$colName` = :newvalue WHERE `id` = :id;");
@@ -626,23 +596,15 @@ class Connection
     public function updateTopicById(array $post, int $adminId): bool
     {
         $id = intval($post['id']) ?? false;
-        if (!$id) {
-            return false;
-        }
+        if (!$id) return false;
         unset($post['id']);
-        $updateArray = array();
-        foreach ($post as $key => $value) {
-            $updateArray[] = array($key, $value) ?? null;
-        }
+        $updateArray = [];
+        foreach ($post as $key => $value) $updateArray[] = array($key, $value) ?? null;
         foreach ($updateArray as $item) {
-            if ($item === null) {
-                continue;
-            }
+            if ($item === null) continue;
             $colName = $item[0];
             $newValue = $item[1];
-            if ($colName === 'name') {
-                $newValue = preg_replace("/[^a-zA-Z0-9]/", "", $newValue);
-            }
+            if ($colName === 'name') $newValue = preg_replace("/[^a-zA-Z0-9]/", "", $newValue);
             $stmt = $this->PDOprepare("UPDATE `topics` SET `$colName` = :newvalue WHERE `id` = :id;");
             $stmt->bindValue('newvalue', $newValue, PDO::PARAM_STR);
             $stmt->bindValue('id', $id, PDO::PARAM_INT);
@@ -655,9 +617,7 @@ class Connection
     {
         $reference = $reference ?? false;
         $type = $type ?? false;
-        if (!$reference || !$type) {
-            return false;
-        }
+        if (!$reference || !$type) return false;
         $stmt = $this->PDOprepare(
             "SELECT * FROM `sources` 
             WHERE `reference` = :reference 
@@ -666,9 +626,7 @@ class Connection
         $stmt->bindValue('reference', $reference, PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
         $fetchedArray = $this->ExecuteAndFetchArray($stmt);
-        if ($fetchedArray) {
-            return true;
-        }
+        if ($fetchedArray) return true;
         return false;
     }
     public function insertSource(array $post, int $adminId): bool
@@ -677,12 +635,8 @@ class Connection
         $screenname = $post['screenname'] ?? false;
         $type = $post['type'] ?? false;
         $status = $post['status'] ?? false;
-        if (!$reference || !$screenname || !$type || !$status) {
-            return false;
-        }
-        if ($this->doesSourceExist($reference, $type)) {
-            return false;
-        }
+        if (!$reference || !$screenname || !$type || !$status) return false;
+        if ($this->doesSourceExist($reference, $type)) return false;
         $stmt = $this->PDOprepare("INSERT INTO `sources`( `reference`, `screenname`, `type`, `status`) VALUES (:reference, :screenname, :type, :status);");
         $stmt->bindValue('reference', $reference, PDO::PARAM_STR);
         $stmt->bindValue('screenname', $screenname, PDO::PARAM_STR);
@@ -699,14 +653,10 @@ class Connection
     public function insertTopic(array $post, int $adminId): bool
     {
         $name = $post['name'] ?? false; //reference because of how its being posted from modal form
-        if ($name) {
-            $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
-        }
+        if ($name) $name = preg_replace("/[^a-zA-Z0-9]/", "", $name);
         $description = $post['description'] ?? 'No description available.';
         $status = $post['status'] ?? false;
-        if (!$name || !$description || !$status) {
-            return false;
-        }
+        if (!$name || !$description || !$status) return false;
         $stmt = $this->PDOprepare("INSERT INTO `topics`(`name`, `description`, `status`) VALUES (:name, :description, :status);");
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->bindValue('description', $description, PDO::PARAM_STR);
@@ -749,7 +699,7 @@ class Connection
                     WHERE `s`.`id` = `a`.`sourceid` ";
         if ($sourceid) $sql_string .= " AND `s`.`id` = :sourceid ";
         $sql_string .= " ORDER BY `creationdate` DESC ";
-        if ($max != 0) {
+        if ($max) {
             $limit = intval($max);
             $offset = intval(($page - 1) * $max);
             $sql_string .= 'LIMIT :offset,:limit';
@@ -757,7 +707,7 @@ class Connection
         $sql_string .= ';';
         $stmt = $this->PDOprepare($sql_string);
         if ($sourceid) $stmt->bindValue('sourceid', $sourceid, PDO::PARAM_INT);
-        if ($max != 0) {
+        if ($max) {
             $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue('limit', $limit, PDO::PARAM_INT);
         }
@@ -802,27 +752,6 @@ class Connection
         return true;
     }
     /** END ADMIN QUERIES */
-    /** SEARCH QUERIES */
-    /**
-     * @deprecated
-     */
-    public function searchSourcesByReferenceOrName(string $term = null): array
-    {
-        if (isset($term)) {
-            // create prepared statement
-            $stmt = $this->PDOprepare(
-                "SELECT * FROM `sources` 
-                WHERE (`screenname` LIKE :term OR reference LIKE :term) 
-                AND `status` = 'active';"
-            );
-            $term = $term . '%';
-            // bind parameters to statement
-            $stmt->bindParam(":term", $term);
-            // execute the prepared statement and return result
-            return $this->ExecuteAndFetchArray($stmt);
-        }
-    }
-    /** END SEARCH QUERIES */
     /** CRON QUERIES */
     public function updateLastSourcesCronTime(string $type): bool
     {

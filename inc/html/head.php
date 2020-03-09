@@ -10,11 +10,8 @@ if (!defined('CONFIG_PROTECTION')) {
 <head>
     <meta charset="UTF-8" />
     <?php
-    if (!defined('DESKTOP_VIEW')) {
-        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-    } else {
-        echo '<meta name="viewport" content="width=1024">';
-    }
+    if (!defined('DESKTOP_VIEW')) echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+    else echo '<meta name="viewport" content="width=1024">';
     ?>
     <link rel="icon" href="img/favicon.ico" type="image/gif" sizes="16x16">
     <title><?php echo $title; ?></title>
@@ -44,11 +41,8 @@ if (!defined('CONFIG_PROTECTION')) {
         echo '<script src="vendor/sortable/js/sortable.min.js"></script>';
         echo '<link rel="stylesheet" href="vendor/sortable/css/sortable-theme-bootstrap.css" />';
     }
-    if($CFG->g_analytics_mode === 'on'){
-        include $CFG->dirroot . '/inc/html/analytics.php';
-    }
+    if ($CFG->g_analytics_mode === 'on') include $CFG->dirroot . '/inc/html/analytics.php';
     ?>
-
 </head>
 <script>
     $(document).ready(function() {

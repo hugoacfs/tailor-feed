@@ -41,65 +41,59 @@ class Twitter extends Source
      */
     public function buildArticles(): void
     {
-        $lastArticleUniqueId = Article::getLatestArticleUId('twitter', $this->getDbId());
-        if (!($lastArticleUniqueId > 1222193862900375552)) {
-            //DEFAULT UNIQUE ID
-            $lastArticleUniqueId = 1222193862900375552;
-        }
+        $lastArticleUniqueId = Article::getLatestArticleUId($this->dbId);
+        if ($lastArticleUniqueId === 0) $lastArticleUniqueId = 1132305067937714178; //default value cannot be 0 for twitter API
         $getfield = '?screen_name=' . $this->reference . $this->requestExtraSettings . $lastArticleUniqueId;
         $apiUrl = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $tweets = $this->twitterQuery($apiUrl, $getfield);
-        if (($tweets != false) && (count($tweets) > 0)) {
-            $articles = array();
-            $this->tweets = $tweets;
-            $this->name = $this->tweets[0]->user->name;
-            foreach ($this->tweets as $tweet) {
-                $is_quote = ($tweet->is_quote_status === "true");
-                $is_reply = ($tweet->in_reply_to_status_id > 0);
-                $is_reply_or_quote = $is_quote || $is_reply;
-                if ($is_reply_or_quote) {
-                    continue;
-                }
-                $id_str = $tweet->id_str;
-                $creationDate = $tweet->created_at;
-                $timestamp = strtotime($creationDate);
-                if ($timestamp < weeksAgo(8)) {
-                    continue;
-                }
-                $message = $tweet->full_text;
-                $mediaLinks = $tweet->extended_entities->media ?? null;
-                $media = array();
-                if ($mediaLinks != null) {
-                    foreach ($mediaLinks as $m) {
-                        $type = $m->type;
-                        // DEBUGGING
-                        // echo'<pre>';
-                        // print_r($tweet->entities);
-                        // echo'</pre>';
-                        if ($type === 'video') {
-                            $url = $m->video_info->variants[0]->url;
-                        } elseif ($type === 'photo') {
-                            $url = $m->media_url_https;
-                        }
-                        $media[] = array('url' => $url, 'type' => $type);
-                    }
-                }
-                $topics = array();
-                $topics = extractHashtags($message);
-                $builder = array(
-                    'uniqueId' => $id_str,
-                    'ownerId' => $this->dbId,
-                    'creationDate' => $timestamp,
-                    'body' => $message,
-                    'topics' => $topics,
-                    'media' => $media
-                );
-                $articles[] = new Article($builder);
-            }
-            $this->articles = $articles;
-        } else {
-            $this->articles = array();
+        $this->tweets = $this->twitterQuery($apiUrl, $getfield);
+        $this->articles = array();
+        if (!$this->tweets || count($this->tweets) === 0) return;
+        $this->name = $this->tweets[0]->user->name;
+        foreach ($this->tweets as $tweet) {
+            $isQuote = ($tweet->is_quote_status === "true");
+            $isReply = ($tweet->in_reply_to_status_id > 0);
+            if ($isQuote || $isReply) continue; //if not original content, ignore
+            $creationDate = $tweet->created_at;
+            $timestamp = strtotime($creationDate);
+            if ($timestamp < weeksAgo(8)) continue; //if older than 8 weeks, ignore
+            $idStr = $tweet->id_str;
+            $message = $tweet->full_text;
+            $mediaLinksObj = $tweet->extended_entities->media ?? [];
+            $media = $this->createMediaArray($mediaLinksObj) ?? [];
+            $topics = extractHashtags($message) ?? [];
+            $builder = array(
+                'uniqueId' => $idStr,
+                'ownerId' => $this->dbId,
+                'creationDate' => $timestamp,
+                'body' => $message,
+                'topics' => $topics,
+                'media' => $media
+            );
+            $this->articles[] = new Article($builder);
         }
+    }
+    /**
+     * Creates an array required for media parsing into Article object for publishing.
+     * @param object From Twitter API's JSON request.
+     * @return array An assoc array containing URLs and media type.
+     */
+    function createMediaArray($mediaObject): array
+    {
+        $arr = [];
+        foreach ($mediaObject as $media) {
+            switch ($media->type) {
+                case 'video':
+                    $url = $media->video_info->variants[0]->url;
+                    break;
+                case 'photo':
+                    $url = $media->media_url_https;
+                    break;
+                default:
+                    continue;
+            }
+            $arr[] = array('url' => $url, 'type' => $media->type);
+        }
+        return $arr;
     }
     /**
      * It returns an array containing all sources as a Twitter object from the DB.
@@ -114,9 +108,7 @@ class Twitter extends Source
         $fetched = $DB->fetchAllSourcesByType($type, $active);
         /** By creating the Twitter objects*/
         foreach ($fetched as $row) {
-            if ($row['type'] != $type) {
-                continue;
-            }
+            if ($row['type'] != $type) continue;
             $builder = null;
             $builder = array(
                 'dbId' => $row['id'],
@@ -150,11 +142,8 @@ class Twitter extends Source
                 ->performRequest();
             $httpsStatus = $twitter->getHttpStatusCode();
             echo "HTTP STATUS CODE: "  . $httpsStatus . "\n";
-            if ($httpsStatus === 200) {
-                return json_decode($json_data);
-            } else {
-                return false;
-            }
+            if ($httpsStatus != 200) return false;
+            return json_decode($json_data);
         } catch (Exception $ex) {
             handleException($ex);
         }
@@ -179,9 +168,7 @@ class Twitter extends Source
             $id = $row['id'];
             $successName = $DB->updateSourcesFieldById($fieldName, $valueName, $id);
             $successImage = $DB->updateSourcesFieldById($fieldImage, $valueImage, $id);
-            if (!$successName or !$successImage) {
-                return false;
-            }
+            if (!$successName or !$successImage) return false;
         }
         return true;
     }
@@ -196,6 +183,7 @@ class Twitter extends Source
         $apiUrl = 'https://api.twitter.com/1.1/users/show.json';
         $getfield = '&screen_name=' . $reference;
         $twitterData = Twitter::twitterQuery($apiUrl, $getfield);
+        if (!$twitterData) return new stdClass;
         return $twitterData;
     }
 }

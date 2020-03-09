@@ -10,37 +10,28 @@ require $CFG->dirroot . '/inc/html/nav.php';
 if (isset($_POST['submitpages'])) {
     unset($_POST['submitpages']);
     $sourcesIds = Source::getAllSourcesIds();
-    $newSubscribeList = array();
+    $newSubscribeList = [];
     foreach ($sourcesIds as $id) {
-        $string = strval($id);
-        $isInArray = in_array($string, $_POST, true);
-        if ($isInArray) {
-            $newSubscribeList[] = $id;
-        }
+        $idString = strval($id);
+        $isInArray = in_array($idString, $_POST, true);
+        if ($isInArray) $newSubscribeList[] = $id;
     }
     $CURRENTUSER->updatePreferences($newSubscribeList, 'source');
     $CURRENTUSER->updateUserSubcribedList();
     $CURRENTUSER = new User($_SESSION['userName']);
-} else {
-    unset($_POST['submitpages']);
 }
-
 if (isset($_POST['submittopics'])) {
     unset($_POST['submittopics']);
     $topicsIds = Article::getAllTopicsIds();
-    $newTopicsList = array();
+    $newTopicsList = [];
     foreach ($topicsIds as $id) {
-        $string = strval($id);
-        $isInArray = in_array($string, $_POST, true);
-        if ($isInArray) {
-            $newTopicsList[] = $id;
-        }
+        $idString = strval($id);
+        $isInArray = in_array($idString, $_POST, true);
+        if ($isInArray) $newTopicsList[] = $id;
     }
     $CURRENTUSER->updatePreferences($newTopicsList, 'topic');
     $CURRENTUSER->updateUserTopicsList();
     $CURRENTUSER = new User($_SESSION['userName']);
-} else {
-    unset($_POST['submittopics']);
 }
 ?>
 <div class="row ">
@@ -63,7 +54,7 @@ if (isset($_POST['submittopics'])) {
 </div>
 
 <?php
-$_POST = array();
+$_POST = [];
 include $CFG->dirroot . '/inc/html/modal-pages.php';
 include $CFG->dirroot . '/inc/html/modal-topics.php';
 ?>

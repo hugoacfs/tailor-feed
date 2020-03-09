@@ -49,7 +49,7 @@ class Source
      * Array containing Article objects, linked to this Source object.
      * @var array $articles
      */
-    protected $articles = array();
+    protected $articles = [];
     /**
      * Constructor for Sources.
      * Dynamic constructor, it will build the Source object depending on 
@@ -64,9 +64,7 @@ class Source
     function __construct(array $builder)
     {
         foreach ($builder as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
+            if (property_exists($this, $key)) $this->$key = $value;
         }
     }
     public function getDbId(): int
@@ -97,12 +95,9 @@ class Source
     public static function getAllSources(bool $active = false): array
     {
         global $DB;
-        $sources = array();
-        if ($active) {
-            $result = $DB->fetchAllActiveSources();
-        } else {
-            $result = $DB->fetchAllSources();
-        }
+        $sources = [];
+        if ($active) $result = $DB->fetchAllActiveSources();
+        else $result = $DB->fetchAllSources();
         foreach ($result as $row) {
             $type = $row['type'];
             $reference = $row['reference'];
@@ -118,15 +113,6 @@ class Source
         }
         return $sources;
     }
-    /** @deprecated
-     * It returns the number of sources in the DB as an integer.
-     * @return int
-     */
-    public static function getTotalNumberOfSources(): int
-    {
-        global $DB;
-        return intval(count($DB->fetchAllSources()));
-    }
     /**
      * It returns the ids of all sources in the DB as an array.
      * @return array All the DB ids of sources
@@ -134,11 +120,9 @@ class Source
     public static function getAllSourcesIds(): array
     {
         global $DB;
-        $sourcesIds = array();
+        $sourcesIds = [];
         $fetched = $DB->fetchAllSources();
-        foreach ($fetched as $row) {
-            $sourcesIds[] = $row['id'];
-        }
+        foreach ($fetched as $row) $sourcesIds[] = $row['id'];
         return $sourcesIds;
     }
     /**
@@ -149,9 +133,8 @@ class Source
     public static function updateAllSourcesDetails(): bool
     {
         $twitterSuccess = Twitter::updateSourcesDetails();
-        // $rssSuccess = Rss::updateSourcesDetails();
-        if ($twitterSuccess) {
-            return true;
-        }
+        // $rssSuccess = Rss::updateSourcesDetails(); //Exmaple of further implm.
+        if ($twitterSuccess) return true;
+        return false;
     }
 }

@@ -40,7 +40,7 @@ class Facebook extends Source
      */
     public static function getAllSources(): array
     {
-        return array();
+        return [];
     }
     /**
      * Performs a query to Graph API

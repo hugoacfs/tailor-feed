@@ -1,7 +1,7 @@
 <?php
 define('CONFIG_PROTECTION', false);
 session_start();
-$_SESSION = array();
+$_SESSION = [];
 unset($_SESSION);
 // require __DIR__ . '/config.php';
 // require_once('/var/simplesamlphp/lib/_autoload.php');

@@ -9,17 +9,15 @@ if ($forbid === 'true') {
 require_once __DIR__ . '/../../config.php';
 if (!isset($_POST['page'])) {
     echo 'page not set';
-    die();
+    exit;
 } else {
     $page = intval($_POST['page']);
     unset($_POST['page']);
 }
-if (isset($_POST['username'])) {
-    $user = new User($_POST['username']);;
-}
+if (isset($_POST['username'])) $user = new User($_POST['username']);;
 if (!isset($user)) {
     echo 'No user is set.';
-    die();
+    exit;
 }
 $newfeed = $user->displaySubscribedArticles($page);
 echo $newfeed;
