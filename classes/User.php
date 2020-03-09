@@ -102,13 +102,14 @@ class User
      */
     public function getPreferences(string $type)
     {
-        if ($type === 'source') {
-            return $this->subscribedList;
+        switch ($type) {
+            case 'source':
+                return $this->subscribedList;
+            case 'topic':
+                return $this->topicsList;
+            default:
+                return [];
         }
-        if ($type === 'topic') {
-            return $this->topicsList;
-        }
-        return array();
     }
     /**
      * Checks if a specific source is subscribed by the user.
@@ -120,11 +121,8 @@ class User
     {
         global $DB;
         $fetched = $DB->userPreferencesCrudQuery($type, $preferenceId, $this->dbId, 'select');
-        if ($fetched) {
-            return true;
-        } else {
-            return false;
-        }
+        if ($fetched) return true;
+        return false;
     }
     /**
      * Inserts a source as subscribed to DB by sourceID.
@@ -136,11 +134,8 @@ class User
     {
         global $DB;
         $isPreferenceSubscribed = $this->isPreferenceSubscribed($preferenceId, $type);
-        if (!($isPreferenceSubscribed)) {
-            return $DB->userPreferencesCrudQuery($type, $preferenceId, $this->dbId, 'insert');
-        } else {
-            return $isPreferenceSubscribed;
-        }
+        if ($isPreferenceSubscribed) return $isPreferenceSubscribed;
+        return $DB->userPreferencesCrudQuery($type, $preferenceId, $this->dbId, 'insert');
     }
     /**
      * Removes a source as subscribed from DB by sourceID.
@@ -154,9 +149,8 @@ class User
         $isPreferenceSubscribed = $this->isPreferenceSubscribed($preferenceId, $type);
         if ($isPreferenceSubscribed) {
             return $DB->userPreferencesCrudQuery($type, $preferenceId, $this->dbId, 'delete');
-        } else {
-            return !$isPreferenceSubscribed;
         }
+        return !$isPreferenceSubscribed;
     }
     /**
      * Makes changes to the DB user's preferences accordin to the new preferences list.
@@ -169,7 +163,7 @@ class User
         $toAddList = array();
         $toRemoveList = array();
         $currentList = array();
-        switch($type){
+        switch ($type) {
             case 'source':
                 $operatingList = $this->subscribedList;
                 break;
@@ -179,27 +173,19 @@ class User
             default:
                 return;
         }
-
-        if (!empty($operatingList)) {
+        if ($operatingList) {
             foreach ($operatingList as $object) {
-                if (is_a($object, 'Source')) {
-                    $currentList[] = $object->getDbId();
-                } else {
-                    $currentList[] = $object->dbId;
-                }
+                if (is_a($object, 'Source')) $currentList[] = $object->getDbId();
+                else $currentList[] = $object->dbId;
             }
         }
         foreach ($preferencesList as $preference) {
             $isInArray = in_array($preference, $currentList, true);
-            if (!($isInArray)) {
-                $toAddList[] = $preference;
-            }
+            if (!($isInArray)) $toAddList[] = $preference;
         }
         foreach ($currentList as $preference) {
             $isInArray = in_array($preference, $preferencesList, true);
-            if (!($isInArray)) {
-                $toRemoveList[] = $preference;
-            }
+            if (!($isInArray)) $toRemoveList[] = $preference;
         }
         foreach ($toRemoveList as $removeId) {
             $this->removePreference($removeId, $type);
@@ -219,38 +205,38 @@ class User
     private function buildSubscribedArticles(int $page = 1): array
     {
         global $DB;
-        $articlesList = array();
+        $articlesList = [];
         $timeInterval = weeksAgo(8);
-        $subscribedList = $this->subscribedList ?? array();
-        $topicsList = $this->topicsList ?? array();
+        $subscribedList = $this->subscribedList ?? [];
+        $topicsList = $this->topicsList ?? [];
         $fetched = $DB->fetchUserSubscribedArticles($subscribedList, $topicsList, $timeInterval, $page);
-        if ($fetched != null) {
-            foreach ($fetched as $row) {
-                // DEBUGGING
-                // echo ('<pre>');
-                // print_r($row);
-                // echo ('</pre>');
-                $media = array();
-                $fetchMedia = $DB->fetchMediaUrlsPerArticleId($row['id']);
-                foreach ($fetchMedia as $m) {
-                    $media[] = array('url' => $m['url'], 'type' => $m['type']);
-                }
-                $builder = array(
-                    'dbId' => $row['id'],
-                    'uniqueId' => $row['uniqueidentifier'],
-                    'ownerReference' => $row['reference'],
-                    'ownerName' => $row['screenname'],
-                    'ownerId' => $row['sourceid'],
-                    'creationDate' => $row['creationdate'],
-                    'body' => $row['body'],
-                    'url' => '',
-                    'type' => $row['type'],
-                    'imageSource' => $row['imagesource'],
-                    'topics' => extractHashtags($row['body']),
-                    'media' => $media
+        if ($fetched == null) {
+            return $articlesList;
+        }
+        foreach ($fetched as $row) {
+            $fetchMedia = $DB->fetchMediaUrlsPerArticleId($row['id']);
+            $media = [];
+            foreach ($fetchMedia as $m) {
+                $media[] = array(
+                    'url' => $m['url'],
+                    'type' => $m['type']
                 );
-                $articlesList[] = new Article($builder);
             }
+            $builder = array(
+                'dbId' => $row['id'],
+                'uniqueId' => $row['uniqueidentifier'],
+                'ownerReference' => $row['reference'],
+                'ownerName' => $row['screenname'],
+                'ownerId' => $row['sourceid'],
+                'creationDate' => $row['creationdate'],
+                'body' => $row['body'],
+                'url' => '',
+                'type' => $row['type'],
+                'imageSource' => $row['imagesource'],
+                'topics' => extractHashtags($row['body']),
+                'media' => $media
+            );
+            $articlesList[] = new Article($builder);
         }
         return $articlesList;
     }
@@ -270,16 +256,29 @@ class User
      * And "key" is string is a variable name
      * and "value" is the corresponding variable.
      */
-    private function buildTimelineHtml($builder): string
+    private function buildTimelineHtml(array $builder): string
     {
         /**
          * TIMELINE HTML is the html of the feed to be returned
          * Change this to meet the requirements of the client where this
          * will be displayed
          */
-        if (!empty($builder)) {
-            $html = '
-            <div class="card-body ">
+        if (!$builder) {
+            $message = "Nothing to show 😮. Looks like you've reached the end of the page.";
+            return '
+            <div id="end-news" class="card-body ">
+                    <h4 class="card-title">
+                        <a class=" card-link">
+                            Uh oh!
+                        </a>
+                    </h4>
+                    <p class="card-text">' . $message . '</p>
+                    <span style="display: none;">newscode:340</span>
+            </div>
+            <hr class="thin-hr">';
+        }
+        return '
+        <div class="card-body ">
             <a href="' . $builder['accountUrl'] . '" target="uni_news" class=" card-link">
                 <div class="timeline-badge mt-1 ml-1">
                     <div class="spinner-border text-primary">
@@ -294,31 +293,18 @@ class User
                     <i class="fab fa-twitter-square"></i>
                 </a>
             </h5>
-            <p><a title="Link to source." href="' . $builder['originalUrl'] . '" target="uni_news">
-                <small class="text-muted">
-                    <i class="glyphicon glyphicon-time"></i>
-                    <i class="far fa-clock"> </i> ' . timeAgo($builder['timestamp']) . ' via ' . $builder['type'] . '
-                </small>
-                <i class="fas fa-link fa-xs"></i>
+            <p>
+                <a title="Link to source." href="' . $builder['originalUrl'] . '" target="uni_news">
+                    <small class="text-muted">
+                        <i class="glyphicon glyphicon-time"></i>
+                        <i class="far fa-clock"> </i> ' . timeAgo($builder['timestamp']) . ' via ' . $builder['type'] . '
+                    </small>
+                    <i class="fas fa-link fa-xs"></i>
                 </a>
             </p>
             <p class="card-text">' . $builder['message'] . $builder['media'] . ' </p>
         </div>
         <hr class="thin-hr">';
-        } else {
-            $message = "Nothing to show 😮. Looks like you've reached the end of the page.";
-            $html = '
-            <div id="end-news" class="card-body ">
-                    <h4 class="card-title">
-                        <a class=" card-link">
-                        Uh oh!
-                        </a>
-                    </h4>
-                    <p class="card-text">' . $message . '</p>
-                    <span style="display: none;">newscode:340</span>
-            </div><hr class="thin-hr">';
-        }
-        return $html;
     }
     /**
      * Returns html for the articles to be displayed
@@ -329,39 +315,40 @@ class User
     {
         $articlesToDisplay = $this->buildSubscribedArticles($page);
         $htmlHolder = '';
-        if (count($articlesToDisplay) > 0) {
-            foreach ($articlesToDisplay as $article) {
-                $message = convertHashtags(convertMentions(convertLinks($article->body)));
-                // $message = ($article->body);
-                $timestamp = $article->creationDate;
-                $name = $article->ownerName;
-                $screen_name = $article->ownerReference;
-                if ($article->type === 'twitter') {
-                    $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
-                    $profile_image = $article->imageSource;
-                    $accountUrl = 'https://twitter.com/' . $screen_name;
+        if (!$articlesToDisplay) {
+            return $this->buildTimelineHtml([]); //builds empty HTML
+        }
+        foreach ($articlesToDisplay as $article) {
+            $message = convertHashtags(convertMentions(convertLinks($article->body)));
+            $timestamp = $article->creationDate;
+            $name = $article->ownerName;
+            $screen_name = $article->ownerReference;
+            if ($article->type === 'twitter') {
+                $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
+                $profile_image = $article->imageSource;
+                $accountUrl = 'https://twitter.com/' . $screen_name;
+            }
+            $media = $article->media ?? array();
+            $mediaHTML = '';
+            $firstStatus = 'active';
+            foreach ($media as $m) {
+                switch ($m['type']) {
+                    case 'photo':
+                        $mediaHTML .= '
+                        <div class="carousel-item ' . $firstStatus . '">
+                            <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
+                        </div>';
+                    case 'video':
+                        $mediaHTML .= '
+                        <div class="carousel-item ' . $firstStatus . '">
+                            <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
+                        </div>';
                 }
-                $media = $article->media ?? array();
-                $mediaHTML = '';
-                $status = 'active';
-                foreach ($media as $m) {
-                    if ($m['type'] === 'photo') {
-                        $mediaHTML = $mediaHTML . '
-                    <div class="carousel-item ' . $status . '">
-                        <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
-                    </div>';
-                    } elseif ($m['type'] === 'video') {
-                        $mediaHTML = $mediaHTML . '
-                    <div class="carousel-item ' . $status . '">
-                        <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
-                    </div>';
-                    }
-                    $status = '';
-                    // $mediaHTML = $mediaHTML . '<img alt="Article Image" src="' . $m . '?name=small" class="media-img">';
-                }
-
-                if (count($article->media) > 1) {
-                    $carouselHtml = '
+                $firstStatus = '';
+            }
+            $carouselHtml = $mediaHTML;
+            if ($article->media) {
+                $carouselHtml = '
                 <div id="carouselArticle' . $article->dbId . '" class="carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
@@ -375,28 +362,20 @@ class User
                         <span class="sr-only">Next</span>
                     </a>
                 </div>';
-                } else {
-                    $carouselHtml = $mediaHTML;
-                }
-                $builder = null;
-                $builder = array(
-                    'type' => ucfirst($article->type),
-                    'profile_image' => $profile_image,
-                    'accountUrl' => $accountUrl,
-                    'name' => $name,
-                    'message' => $message,
-                    'screen_name' => strtolower($screen_name),
-                    'timestamp' => $timestamp,
-                    'originalUrl' => $originalUrl,
-                    'media' => $carouselHtml
-                );
-                $timelinehtml = $this->buildTimelineHtml($builder);
-                $htmlHolder = $htmlHolder . $timelinehtml;
             }
-        } else {
-            $builder = array();
-            $timelinehtml = $timelinehtml = $this->buildTimelineHtml($builder);;
-            return $timelinehtml;
+            $builder = null;
+            $builder = array(
+                'type' => ucfirst($article->type),
+                'profile_image' => $profile_image,
+                'accountUrl' => $accountUrl,
+                'name' => $name,
+                'message' => $message,
+                'screen_name' => strtolower($screen_name),
+                'timestamp' => $timestamp,
+                'originalUrl' => $originalUrl,
+                'media' => $carouselHtml
+            );
+            $htmlHolder .= $this->buildTimelineHtml($builder);
         }
         return $htmlHolder;
     }
