@@ -3,19 +3,12 @@ $forbid = $_POST['safelock'] ?? 'true';
 if ($forbid === 'true') {
     header('HTTP/1.0 403 Forbidden', true, 403);
     exit;
-} else {
-    define('CONFIG_PROTECTION', false);
-}
+} else define('CONFIG_PROTECTION', false);
 require_once __DIR__ . '/../../config.php';
 if (isset($_POST['username'])) {
     $user = new User($_POST['username']);
-} elseif (isset($_SESSION['currentUser'])) {
-    $user = $_SESSION['currentUser'];
-}
-if (!isset($user)) {
-    echo 'No user is set.';
-    die();
-}
+} elseif (isset($_SESSION['currentUser'])) $user = $_SESSION['currentUser'];
+if (!isset($user)) die();
 $user_pref_list = $user->getPreferences('source');
 $active = true;
 $allSources = Source::getAllSources($active);
@@ -43,9 +36,7 @@ foreach ($allSources as $source) {
     $type = '<i class="fab fa-' . $type . '-square"></i>';
     $isInArray = in_array($sourceId, $arrayOfIds, true);
     $checkedStatus = '';
-    if ($isInArray) {
-        $checkedStatus = 'checked';
-    }
+    if ($isInArray) $checkedStatus = 'checked';
     echo '
         <div class="form-row search-item">
             <div class="col">

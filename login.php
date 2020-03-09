@@ -8,9 +8,8 @@ require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
-    if ($CFG->auth_method === 'SSAML') {
-        $_SESSION['USER'] = new SSAML();
-    } else {
+    if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
+    else {
         if ($_POST) {
             try {
                 // $mode = isset($_POST['newaccount']) ?? false;
@@ -65,9 +64,8 @@ if (!isset($_SESSION['signedIn'])) {
     session_unset();
     $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
-} else {
-    redirectUserToTimeline();
-}
+} else redirectUserToTimeline();
+
 ?>
 <script type="text/javascript">
     $('#newaccount').click(function() {

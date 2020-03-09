@@ -54,7 +54,7 @@ if (isset($_POST['submittopics'])) {
 </div>
 
 <?php
-$_POST = array();
+$_POST = [];
 include $CFG->dirroot . '/inc/html/modal-pages.php';
 include $CFG->dirroot . '/inc/html/modal-topics.php';
 ?>

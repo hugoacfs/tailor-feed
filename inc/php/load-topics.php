@@ -3,19 +3,11 @@ $forbid = $_POST['safelock'] ?? 'true';
 if ($forbid === 'true') {
     header('HTTP/1.0 403 Forbidden', true, 403);
     exit;
-} else {
-    define('CONFIG_PROTECTION', false);
-}
+} else define('CONFIG_PROTECTION', false);
 require_once __DIR__ . '/../../config.php';
-if (isset($_POST['username'])) {
-    $user = new User($_POST['username']);;
-} elseif (isset($_SESSION['currentUser'])) {
-    $user = $_SESSION['currentUser'];
-}
-if (!isset($user)) {
-    echo 'No user is set.';
-    die();
-}
+if (isset($_POST['username'])) $user = new User($_POST['username']);
+elseif (isset($_SESSION['currentUser'])) $user = $_SESSION['currentUser'];
+if (!isset($user)) exit;
 $user_pref_list = $user->getPreferences('topic');
 $active = true;
 $allTopics = Article::getAllTopics();

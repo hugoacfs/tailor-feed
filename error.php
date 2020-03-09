@@ -60,9 +60,9 @@
                     <h1>
                         Oops!</h1>
                     <h2>
-                        <?php 
+                        <?php
                         global $EXCEPTION;
-                        echo $EXCEPTION->code .' - We seem to have ran into a problem'; ?></h2>
+                        echo $EXCEPTION->code . ' - We seem to have ran into a problem'; ?></h2>
                     <div class="error-details">
                         Sorry, an error has occured, <?php echo $EXCEPTION->message; ?>
                     </div>

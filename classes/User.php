@@ -44,8 +44,7 @@ class User
         $this->dbId = intval($fetchedUser['id']);
         $this->userName = $userName;
         $this->givenName = $fetchedUser['givenname'];
-        $this->subscribedList = array();
-        $this->topicsList = array();
+        $this->subscribedList = $this->topicsList = [];
         $this->updateUserSubcribedList();
         $this->updateUserTopicsList();
     }
@@ -160,9 +159,7 @@ class User
      */
     public function updatePreferences(array $preferencesList, string $type): void
     {
-        $toAddList = array();
-        $toRemoveList = array();
-        $currentList = array();
+        $toAddList = $toRemoveList = $currentList = [];
         switch ($type) {
             case 'source':
                 $operatingList = $this->subscribedList;
@@ -210,9 +207,7 @@ class User
         $subscribedList = $this->subscribedList ?? [];
         $topicsList = $this->topicsList ?? [];
         $fetched = $DB->fetchUserSubscribedArticles($subscribedList, $topicsList, $timeInterval, $page);
-        if ($fetched == null) {
-            return $articlesList;
-        }
+        if ($fetched == null) return $articlesList;
         foreach ($fetched as $row) {
             $fetchMedia = $DB->fetchMediaUrlsPerArticleId($row['id']);
             $media = [];
@@ -330,7 +325,7 @@ class User
                     $accountUrl = 'https://twitter.com/' . $screen_name;
                     break;
             }
-            $media = $article->media ?? array();
+            $media = $article->media ?? [];
             $mediaHTML = '';
             $firstStatus = 'active';
             $carouselHtml = '';

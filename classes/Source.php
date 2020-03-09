@@ -49,7 +49,7 @@ class Source
      * Array containing Article objects, linked to this Source object.
      * @var array $articles
      */
-    protected $articles = array();
+    protected $articles = [];
     /**
      * Constructor for Sources.
      * Dynamic constructor, it will build the Source object depending on 
@@ -120,7 +120,7 @@ class Source
     public static function getAllSourcesIds(): array
     {
         global $DB;
-        $sourcesIds = array();
+        $sourcesIds = [];
         $fetched = $DB->fetchAllSources();
         foreach ($fetched as $row) $sourcesIds[] = $row['id'];
         return $sourcesIds;
