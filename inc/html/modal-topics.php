@@ -5,16 +5,6 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 ?>
-<script>
-    $(document).ready(function() {
-        $("#search-area-topics").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $(".search-item").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 <!-- The Modal -->
 <div class="modal" id="topicsModal" tabindex="-1" role="dialog" aria-labelledby="topicsModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -30,9 +20,9 @@ if (!defined('CONFIG_PROTECTION')) {
                     <div class="col-12">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Search</span>
+                                <span class="input-group-text">Search</span>
                             </div>
-                            <input id="search-area-topics" type="text" class="form-control" placeholder="Example: brc" aria-label="Search" aria-describedby="basic-addon1">
+                            <input id="search-area-topics" type="text" class="form-control search-me" placeholder="Example: brc" aria-label="Search">
                         </div>
                     </div>
                     <div class="col-12">

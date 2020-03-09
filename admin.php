@@ -221,6 +221,7 @@ unset($_POST);
 </div>
 <?php
 require $CFG->dirroot . '/inc/html/admin/modal.php';
+require_once 'inc/html/footer.php'
 ?>
 </body>
 
