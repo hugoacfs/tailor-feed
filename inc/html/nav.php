@@ -6,11 +6,8 @@ if (!defined('CONFIG_PROTECTION')) {
 }
 function displayHomeLink($pageId)
 {
-    if ($pageId === 'home') {
-        $status = 'active';
-    } else {
-        $status = '';
-    }
+    $status = '';
+    if ($pageId === 'home') $status = 'active';
     echo '<li title="Home link." class="nav-item ">
                 <a class="nav nav-link ' . $status . ' ml-auto" href="index.php">
                     <i class="fas fa-home">
@@ -20,7 +17,6 @@ function displayHomeLink($pageId)
 }
 function displayPagesBtn()
 {
-    // <span class="fas fa-th-list menu-fa"></span> alternative
     echo '<button id="pages-btn" type="button" class="btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#pagesModal">
             <span class="fas fa-at menu-fa"></span> 
             <span class="preferences-btn-text">Pages</span>
@@ -35,13 +31,9 @@ function displayTopicsBtn()
 }
 function displayMyTimelineLink($pageId)
 {
-    if (!isLoggedIn()) {
-        $status = 'disabled';
-    } elseif ($pageId === 'timeline') {
-        $status = 'active';
-    } else {
-        $status = '';
-    }
+    $status = '';
+    if (!isLoggedIn()) $status = 'disabled';
+    elseif ($pageId === 'timeline') $status = 'active';
     echo '<li class="nav-item ">
                 <a class="nav-link ' . $status . '" href="timeline.php"><i class="fas fa-stream">
                     </i> My Timeline
@@ -50,13 +42,10 @@ function displayMyTimelineLink($pageId)
 }
 function displayAdminLink($pageId)
 {
-    if (!isLoggedIn()) {
-        $status = 'disabled';
-    } elseif ($pageId === 'admin') {
-        $status = 'active';
-    } else {
-        $status = '';
-    }
+    $status = '';
+    if (!isLoggedIn()) $status = 'disabled';
+    elseif ($pageId === 'admin') $status = 'active';
+
     echo '<li class="nav-item ">
                 <a class="nav-link ' . $status . '" href="admin.php"><i class="fas fa-users-cog">
                     </i> Admin
@@ -64,19 +53,14 @@ function displayAdminLink($pageId)
             </li>';
 }
 function displayLoginLink($pageId)
-{  
+{
+    $url = 'login.php';
+    $text = 'Login';
     $status = '';
-    if (!isLoggedIn()) {
-        $url = 'login.php';
-        $text = 'Login';
-        if($pageId === 'login'){
-            $status = 'active';
-        }
-    } else {
+    if ($pageId === 'login') $status = 'active';
+    if (isLoggedIn()) {
         $url = 'logout.php';
-        if (isset($_SESSION['logout_url'])) {
-            $url = $_SESSION['logout_url'];
-        }
+        if (isset($_SESSION['logout_url'])) $url = $_SESSION['logout_url']; //SSAML STUFF
         $text = 'Logout';
     }
     echo '<li class="nav-item ' . $status . '">
@@ -89,9 +73,7 @@ function displayAboutLink($pageId)
 {
     $status = '';
     if (isLoggedIn()) {
-        if ($pageId === 'about') {
-            $status = 'active';
-        }
+        if ($pageId === 'about') $status = 'active';
         $url = 'about.php';
         $text = 'About';
         echo '<li class="nav-item ">
@@ -105,9 +87,7 @@ function displayFeedbackLink($pageId)
 {
     $status = '';
     if (isLoggedIn()) {
-        if ($pageId === 'feedback') {
-            $status = 'active';
-        }
+        if ($pageId === 'feedback') $status = 'active';
         $url = 'feedback.php';
         $text = 'Feedback';
         echo '<li class="nav-item ">
@@ -118,6 +98,7 @@ function displayFeedbackLink($pageId)
     }
 }
 ?>
+
 <body class="no-gutters pb-0 overflow-hidden">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <a class="navbar-brand mr-auto" href="#">
@@ -141,7 +122,7 @@ function displayFeedbackLink($pageId)
                 if (isAdminLoggedIn()) {
                     displayAdminLink($pageId);
                 }
-                // displayAboutLink($pageId);
+                // displayAboutLink($pageId); //disabled until needed
                 displayFeedbackLink($pageId);
                 displayLoginLink($pageId);
                 ?>

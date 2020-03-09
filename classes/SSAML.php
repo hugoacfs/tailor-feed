@@ -20,16 +20,14 @@ class SSAML extends Authenticate
         $this->userName = $username;
         $givenname = ucfirst(strtolower($SSAMLuser['givenName'][0]));
         $this->givenName = $givenname;
-        //echo $givenname;
-        print_r($this);
         $DBuser = $this->getUser();
         $exists = false;
         if ($DBuser) $exists = true;
-        //echo 'exists: '. $exists;
         if (!$exists) {
-            $this->passWord = null;
+            $this->passWord = null; //needs null password to attempt building user profile
             $this->signedIn = $this->buildUserProfile() ?? false;
-        } else {
+        }
+        if ($exists) {
             $this->role = $DBuser['role'];
             $this->signedIn = true;
         }
@@ -43,7 +41,6 @@ class SSAML extends Authenticate
     }
     protected function buildUserProfile(): bool
     {
-        echo 'building user profile';
         global $DB;
         $success = $DB->insertUser($this->userName, $this->givenName, 'none');
         if ($success) {

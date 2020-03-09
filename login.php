@@ -8,14 +8,11 @@ require $CFG->dirroot . '/inc/html/head.php';
 require $CFG->dirroot . '/inc/html/nav.php';
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
-    //echo 'not signedin';
-
     if ($CFG->auth_method === 'SSAML') {
         $_SESSION['USER'] = new SSAML();
     } else {
         if ($_POST) {
             try {
-                print_r($_POST);
                 // $mode = isset($_POST['newaccount']) ?? false;
                 if (isset($_POST['newaccount'])) $mode = true;
                 else $mode = false;
@@ -23,7 +20,6 @@ if (!$isLoggedIn) {
                 else $givenname = '';
                 $_SESSION['USER'] = new Authenticate($_POST['username'], $_POST['password'], $givenname, $mode);
             } catch (Exception $ex) {
-                // header('Location: login.php?loginerror=true');
                 handleException($ex);
             }
         }
@@ -37,13 +33,10 @@ if (!$isLoggedIn) {
         $_SESSION['currentUser'] = new User($_SESSION['userName']);
     }
 }
-
 if (!isset($_SESSION['signedIn'])) {
     if ($CFG->auth_method === 'SSAML') {
-        //do simple saml stuff
-        echo '<h1>ssaml</h1>';
         header('Location: timeline.php');
-        die();
+        exit();
     } else {
         echo '<div class="text-center my-auto">
         <form class="form-signin" action="login.php" method="POST">
@@ -69,7 +62,6 @@ if (!isset($_SESSION['signedIn'])) {
     </body>';
     };
 } elseif (!$_SESSION['signedIn']) {
-    echo 'not signedin';
     session_unset();
     $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();

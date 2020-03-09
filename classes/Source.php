@@ -97,12 +97,9 @@ class Source
     public static function getAllSources(bool $active = false): array
     {
         global $DB;
-        $sources = array();
-        if ($active) {
-            $result = $DB->fetchAllActiveSources();
-        } else {
-            $result = $DB->fetchAllSources();
-        }
+        $sources = [];
+        if ($active) $result = $DB->fetchAllActiveSources();
+        else $result = $DB->fetchAllSources();
         foreach ($result as $row) {
             $type = $row['type'];
             $reference = $row['reference'];
@@ -118,15 +115,6 @@ class Source
         }
         return $sources;
     }
-    /** @deprecated
-     * It returns the number of sources in the DB as an integer.
-     * @return int
-     */
-    public static function getTotalNumberOfSources(): int
-    {
-        global $DB;
-        return intval(count($DB->fetchAllSources()));
-    }
     /**
      * It returns the ids of all sources in the DB as an array.
      * @return array All the DB ids of sources
@@ -137,7 +125,6 @@ class Source
         $sourcesIds = array();
         $fetched = $DB->fetchAllSources();
         foreach ($fetched as $row) $sourcesIds[] = $row['id'];
-
         return $sourcesIds;
     }
     /**
@@ -150,5 +137,6 @@ class Source
         $twitterSuccess = Twitter::updateSourcesDetails();
         // $rssSuccess = Rss::updateSourcesDetails(); //Exmaple of further implm.
         if ($twitterSuccess) return true;
+        return false;
     }
 }
