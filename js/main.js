@@ -1,11 +1,12 @@
 define([
     'jquery',
     'methods',
+    'modal',
+    'feed',
     'bootstrap',
     'toggle',
-    'lodash',
-    'topics'
-], function ($, methods) {
+    'lodash'
+], function ($, methods, modal, feed) {
     $("body").tooltip({
         selector: '[data-toggle=tooltip]'
     });
@@ -15,7 +16,13 @@ define([
     }
     var username = methods.getUserName();
     var safelock = methods.getSafeLock();
+    console.log(username)
+
     $(".search-me").on("keyup", methods.searchOnKeyUp);
-    // console.log(username);
-    // console.log(safelock);
+    if ($("#news-feed").length) {
+        feed.loadMore(username, safelock);
+    };
+    modal.refreshSubscribed(username, safelock, 'topics');
+    modal.refreshSubscribed(username, safelock, 'pages');
+
 });
