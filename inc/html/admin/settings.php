@@ -5,23 +5,13 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 ?>
-<script>
-    $(document).ready(function() {
-        $("#search-area-admin").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $(".table tbody tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 <div class="col-xs-12 col-sm-12 col-lg-12">
     <nav>
         <ol class="breadcrumb text-light bg-dark">
             <li class="breadcrumb-item">
                 <a href="admin.php">Admin</a>
             </li>
-            <li class="breadcrumb-item active text-light">
+            <li id="settings-page" class="breadcrumb-item active text-light">
                 Settings
             </li>
         </ol>
@@ -243,8 +233,3 @@ if (!defined('CONFIG_PROTECTION')) {
     </div>
     <hr>
 </div>
-<script>
-    $('.update-setting .btn .btn-success').click(function() {
-        $('form[name="modalForm"]').submit();
-    });
-</script>

@@ -10,6 +10,9 @@ define(['jquery'], function ($) {
             case 'search-area-pages':
                 container = '#pages-modal-form .search-item';
                 break;
+            case 'search-area-admin':
+                container = '.table tbody tr';
+                break;
             default:
                 break;
         }

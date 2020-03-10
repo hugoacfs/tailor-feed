@@ -86,45 +86,6 @@ if ($table) {
 }
 unset($_POST);
 ?>
-<script>
-    //prevents form resubmission
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cname) {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    function toggleMenu() {
-        var adminMenu = getCookie('adminMenu');
-        if (adminMenu != 'open') {
-            setCookie('adminMenu', 'open', 50);
-        } else {
-            setCookie('adminMenu', 'closed', 50);
-        }
-        // alert(adminMenu);
-    }
-</script>
 <div id="wrapper" class="container-fluid bg-darker h-100" style="height: 100vh !important;">
     <div class="spacer d-flex justify-content-center align-items-center">
     </div>

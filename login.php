@@ -66,9 +66,4 @@ if (!isset($_SESSION['signedIn'])) {
     redirectGuestToLogin();
 } else redirectUserToTimeline();
 
-?>
-<script type="text/javascript">
-    $('#newaccount').click(function() {
-        $('#name-input').toggle();
-    });
-</script>
+require_once 'inc/html/footer.php';

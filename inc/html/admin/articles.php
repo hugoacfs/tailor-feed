@@ -20,16 +20,6 @@ function buildGetString(array $params): string
     return $parmastring;
 }
 ?>
-<script>
-    $(document).ready(function() {
-        $("#search-area-admin").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $(".table tbody tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 <div class="col-xs-12 col-sm-12 col-lg-12">
     <nav>
         <ol class="breadcrumb bg-dark text-light">
@@ -66,7 +56,7 @@ function buildGetString(array $params): string
         <div class="input-group-prepend">
             <span class="input-group-text text-light bg-dark" id="basic-addon1">Search</span>
         </div>
-        <input id="search-area-admin" type="text" class="form-control text-light bg-dark" placeholder="Example: chiuni" aria-label="Search" aria-describedby="basic-addon1">
+        <input id="search-area-admin" type="text" class="form-control text-light bg-dark search-me" placeholder="Example: chiuni" aria-label="Search">
     </div>
     <div class="table-responsive" style="max-height: 65vh;">
         <table class="table table-dark tableFixHead table-striped table-sm rounded" data-sortable>
@@ -163,8 +153,3 @@ function buildGetString(array $params): string
         </nav>
     </div>
 </div>
-<script>
-    $('.add-source .btn .btn-success').click(function() {
-        $('form[name="modalForm"]').submit();
-    });
-</script>
