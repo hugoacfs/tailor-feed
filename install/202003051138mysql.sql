@@ -114,7 +114,7 @@ CREATE TABLE `media_links` (
 CREATE TABLE `sources` (
   `id` int(11) NOT NULL,
   `reference` varchar(55) NOT NULL,
-  `screenname` varchar(45) NOT NULL DEFAULT 'Update this name',
+  `screenname` varchar(55) NOT NULL DEFAULT 'Update this name',
   `type` varchar(45) NOT NULL,
   `status` varchar(12) NOT NULL DEFAULT 'active',
   `imagesource` varchar(255) DEFAULT NULL
