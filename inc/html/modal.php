@@ -5,16 +5,6 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 ?>
-<script>
-    $(document).ready(function() {
-        $("#search-area").on("keyup", function() {
-            var value = $("#search-area").val().toLowerCase();
-            $(".search-item").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 <!-- The Modal -->
 <div class="modal" id="modal" tabindex="1" role="dialog" aria-labelledby="modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">

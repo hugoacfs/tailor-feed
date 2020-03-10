@@ -1,13 +1,13 @@
 <?php
 if (!defined('CONFIG_PROTECTION')) {
-    header('HTTP/1.0 403 Forbidden', true, 403);
-    http_response_code(403);
-    exit;
+  header('HTTP/1.0 403 Forbidden', true, 403);
+  http_response_code(403);
+  exit;
 }
 if (isset($_SESSION['givenName']) && isset($_SESSION['welcomemessage'])) {
-    // unset($_SESSION['welcomemessage']);
-    $name = $_SESSION['givenName'];
-    echo '  <div class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0; min-width: 210px;">
+  // unset($_SESSION['welcomemessage']);
+  $name = $_SESSION['givenName'];
+  echo '  <div class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0; min-width: 210px;">
             <div class="toast-header">
               <strong class="mr-auto text-primary">Welcome Message</strong>
               <small class="text-muted"> ' . timeAgo($_SESSION['wmtimestamp']) . '</small>
@@ -20,12 +20,5 @@ if (isset($_SESSION['givenName']) && isset($_SESSION['welcomemessage'])) {
             </div>
           </div>';
 }
-?>
-<script>
-    $(document).ready(function() {
-        $('.toast').toast('show');
-    });
-</script>
-<?php
+
 unset($_SESSION['welcomemessage']);
-?>

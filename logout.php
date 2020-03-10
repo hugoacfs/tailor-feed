@@ -10,4 +10,5 @@ unset($_SESSION);
 // $CFG->session->cleanup();
 session_destroy();
 header('Location: index.php');
+exit;
 die();
