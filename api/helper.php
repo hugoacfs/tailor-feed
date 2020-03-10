@@ -193,8 +193,9 @@ function performAdminTask(string $action, array $actionArray, int $adminId): boo
 function handleException($ex, $message = 'Please contact support to let us know about this problem.')
 {
     global $CFG, $EXCEPTION;
+    $EXCEPTION = new stdClass;
     $EXCEPTION->code = '500';
-    $EXCEPTION->message = $message;
+    $EXCEPTION->message = $message ?? 'Please contact support to let us know about this problem.';
     if ($CFG->debug_mode === 'on') {
         echo '<h5>' . $message . '</h5>';
         echo '<pre>';
