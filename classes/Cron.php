@@ -30,6 +30,9 @@ class Cron
             case 'rss':
                 $config = $CFG->sources['rss'];
                 continue;
+            case 'sources':
+                // $config = $CFG->sources['rss'];
+                continue;
         }
         $update_articles = $config['update_articles']; //if true, then get articles
         $update_sources = $config['update_sources']; //if true then get sources
@@ -40,9 +43,9 @@ class Cron
             if ($update_articles) {
                 $this->articlesStatus = $this->updateArticles();
             }
-            if ($update_sources) {
-                $this->sourcesStatus = $this->updateSources();
-            }
+            // if ($update_sources) {
+            //     $this->sourcesStatus = $this->updateSources();
+            // }
             // UPDATE LAST RUN BY TYPE
         }
         //TODO:FIX make into function
@@ -91,14 +94,15 @@ class Cron
         echo "Instanciating Twitter objs... \n";
         $sources = Twitter::getAllSources('twitter');
         //Tweet publisher
+        $success = True;
         foreach ($sources as $source) {
             echo ('Building articles for ' . $source->getReference() . " object... \n");
             $source->buildArticles();
             echo ('Publishing articles for ' . $source->getReference() . " object... \n");
-            $success = Article::publishArticles($source->getArticles());
-            if (!$success) return false;
+            $status = Article::publishArticles($source->getArticles());
+            if (!$status) $success = false;
         }
-        return true;
+        return $success;
     }
     private function updateFacebookArticles()
     {
@@ -115,12 +119,8 @@ class Cron
     private function updateSources(): bool
     {
         switch ($this->type) {
-            case 'twitter':
+            case 'sources-twitter':
                 return $this->updateTwitterSources();
-            case 'facebook':
-                return $this->updateFacebookSources();
-            case 'rss':
-                return $this->updateRssSources();
         }
     }
     private function updateTwitterSources(): bool

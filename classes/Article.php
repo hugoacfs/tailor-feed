@@ -101,6 +101,7 @@ class Article
     {
         global $DB;
         if (empty($articlesToPublish)) return false;
+        $success = True;
         foreach ($articlesToPublish as $article) {
             $fetched = $DB->fetchArticleByUniqueId($article->uniqueId);
             $uniqueIdExists = !(count($fetched) === 0);
@@ -111,13 +112,13 @@ class Article
                 $article->creationDate,
                 $article->body
             );
-            if (!$insertSuccess) return false;
+            if (!$insertSuccess) $success = false;
             $lastInsertId = $DB->PDOgetlastinsertid();
             $article->dbId = intval($lastInsertId);
             Article::linkTopics($article->topics, $article->dbId);
             Article::linkMedia($article->media, $article->dbId);
         }
-        return true;
+        return $success;
     }
     /**
      * Finds the latest Article in DB by Source ID and Type.
