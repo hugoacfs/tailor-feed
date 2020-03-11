@@ -24,6 +24,7 @@ require $CFG->dirroot . '/inc/html/nav.php';
         <div style="display: none;">
             <i id="current-username"><?php echo 'default'; ?></i>
             <i id="current-safelock"><?php echo false; ?></i>
+            <i id="current-page">1</i>
         </div>
     </div>
 </div>
