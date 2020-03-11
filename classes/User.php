@@ -259,12 +259,16 @@ class User
          * will be displayed
          */
         if (!$builder) {
-            $message = "Nothing to show 😮. Looks like you've reached the end of the page.";
+            $button =  '<button type="button" class="pages-btn btn btn-dark btn-outline-light mr-1 ml-1 border" data-toggle="modal" data-content="pages" data-target="#pagesModal">
+                            <span class="fas fa-at menu-fa" aria-hidden="true"></span> 
+                            <span class="preferences-btn-text">Following</span>
+                        </button>';
+            $message = "There is no new activity on your timeline 😮. <br> Try following an account here " . $button;
             return '
             <div id="end-news" class="card-body ">
                     <h4 class="card-title">
                         <a class=" card-link">
-                            Uh oh!
+                            No new activity...
                         </a>
                     </h4>
                     <p class="card-text">' . $message . '</p>

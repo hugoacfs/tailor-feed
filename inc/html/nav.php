@@ -17,14 +17,14 @@ function displayHomeLink($pageId)
 }
 function displayPagesBtn()
 {
-    echo '<button id="pages-btn" type="button" class="btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#pagesModal">
+    echo '<button id="pages-btn" type="button" class="pages-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#pagesModal">
             <span class="fas fa-at menu-fa"></span> 
             <span class="preferences-btn-text">Following</span>
           </button>';
 }
 function displayTopicsBtn()
 {
-    echo '<button id="topics-btn" type="button" class="btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#topicsModal">
+    echo '<button id="topics-btn" type="button" class="topics-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#topicsModal">
             <span class="menu-fa fas fa-hashtag"></span> 
             <span class="preferences-btn-text">Topics</span>
           </button>';
