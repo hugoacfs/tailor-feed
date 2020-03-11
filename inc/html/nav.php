@@ -19,7 +19,7 @@ function displayPagesBtn()
 {
     echo '<button id="pages-btn" type="button" class="btn btn-outline-light mr-1 ml-1" data-toggle="modal" data-target="#pagesModal">
             <span class="fas fa-at menu-fa"></span> 
-            <span class="preferences-btn-text">Pages</span>
+            <span class="preferences-btn-text">Following</span>
           </button>';
 }
 function displayTopicsBtn()
