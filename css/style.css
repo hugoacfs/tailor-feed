@@ -243,10 +243,12 @@ body {
 
 /* MODAL */
 .modal-body {
+  /* max-height: calc(100% - 120px) !important; */
   max-height: 75vh;
+  overflow: hidden;
 }
 .modal-body div form{
-  max-height: 65vh;
+  max-height: calc(100vh - 210px); overflow-y: auto;
   overflow-y: scroll;
   overflow-x: hidden;
   overflow-x: hidden;
