@@ -2,9 +2,9 @@
 define('CONFIG_PROTECTION', false);
 
 require_once __DIR__ . '/../config.php';
-$username = 'default';
+$username = $_SESSION['username'] ?? 'default';
 //Server url
-$url = "http://localhost/tailor-feed/json.php?username=$username&page=1&mode=html";
+$url = $CFG->api_url."?user=$username&page=1&mode=html";
 $apiKey = $CFG->json_secret; // should match with Server key
 $headers = array(
     'api_key: ' . $apiKey
