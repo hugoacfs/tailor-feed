@@ -1,6 +1,6 @@
 <?php
 define('CONFIG_PROTECTION', false);
-
+session_start();
 require_once __DIR__ . '/../config.php';
 $username = $_SESSION['userName'] ?? 'default';
 //Server url
