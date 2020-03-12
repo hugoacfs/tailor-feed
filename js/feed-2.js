@@ -13,8 +13,6 @@ define(['jquery', 'lodash'], function ($, _) {
                 },
             });
             ajaxFeed.done(function (response, textStatus, jqXHR) {
-                page = parseInt(page) + 1;
-                $('#current-page').html(page);
                 // code 340 means nothing to show
                 if (~response.indexOf("newscode:340")) {
                     runscroll = false;
@@ -47,6 +45,8 @@ define(['jquery', 'lodash'], function ($, _) {
             var page = $('#current-page').text();;
             if (page != 'end') {
                 load(username, safelock, page);
+                page = parseInt(page) + 1;
+                $('#current-page').html(page);
                 console.log('exiting moreNews call with runscroll:' + runscroll);
                 console.log('next page:' + page);
             };

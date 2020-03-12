@@ -17,12 +17,7 @@ define([
     }
     var username = methods.getUserName();
     var safelock = methods.getSafeLock();
-
     $(".search-me").on("keyup", methods.searchOnKeyUp);
-    // if ($("#news-feed").length) {
-    //     document.addEventListener('scroll', feed.moreNews(username, safelock));
-    // };
-
     //Login page js, toggles new account creation mode
     if ($("#newaccount").length) {
         $('#newaccount').click(function () {
@@ -30,13 +25,12 @@ define([
         });
     };
     feed.moreNews(username, safelock);
-    // feed.loadMore(username, safelock);
     document.addEventListener('scroll',
         _.debounce(
             function () {
                 feed.moreNews(username, safelock);
                 console.log(username);
-            }, 700, { immediate: true }
+            }, 50, { immediate: true }
         )
     );
     modal.refreshSubscribed(username, safelock, 'topics');
