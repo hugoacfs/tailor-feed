@@ -223,9 +223,3 @@ function restructureString(string $str): array
     $otherStr = implode('_', $arr);
     return array($extractStr, $otherStr);
 }
-
-function stopPeeking(){
-    if(!isset($_SESSION['signedIn'])){
-        header('HTTP/1.0 403 Forbidden', true, 403);
-    }
-}
