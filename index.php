@@ -21,9 +21,19 @@ require $CFG->dirroot . '/inc/html/nav.php';
             echo ($feed);
             ?>
         </div>
-        <div style="display: none;">
-            <i id="current-username"><?php echo 'default'; ?></i>
-            <i id="current-safelock"><?php echo false; ?></i>
+        <div id="end-news" class="card-body ">
+            <h4 class="card-title">
+                <a class=" card-link">
+                    That's all for now...
+                </a>
+            </h4>
+            <p class="card-text">To see more university news, login with your university account.
+                <button onclick="location.href='login.php'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true">
+                    </i> Login
+                </button>
+            </p>
+            <span style="display: none;">newscode:340</span>
         </div>
     </div>
 </div>

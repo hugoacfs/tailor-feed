@@ -1,25 +1,30 @@
 <?php
 error_reporting(0);
-$key_not_set = !isset($_GET['secretkey']);
-$user_not_set = !isset($_GET['user']);
-if ($key_not_set || $user_not_set) {
-    echo 'Permission denied. [null user] or [null key]';
+function forbidRequest()
+{
+    header('HTTP/1.0 403 Forbidden', true, 403);
     exit;
-    die();
-} else {
-    define('CONFIG_PROTECTION', false);
 }
+$headers = apache_request_headers();
+if (isset($headers['api_key'])) $api_key = $headers['api_key'];
+else forbidRequest();
+define('CONFIG_PROTECTION', false);
 $title = 'JSON RESULT';
 require_once __DIR__ . '/config.php';
-$key_not_match = $_GET['secretkey'] != $CFG->json_private;
-if ($key_not_match) {
-    echo 'Permission denied. [invalid key]';
-    exit;
-    die();
-}
-session_start();
-header('Content-Type: application/json');
-$user = new User($_GET['user']);
+$key_not_match = $api_key != $CFG->json_secret;
+if ($key_not_match) forbidRequest();
+$username = $_GET['user'] ?? 'default';
+$user = new User($username);
 $page = $_GET['page'] ?? 1;
-$data = $user->getArticlesJSON($page);
+$mode = $_GET['mode'] ?? 'json';
+switch($mode){
+    case 'json':
+        header('Content-Type: application/json');
+        $data = $user->getArticlesJSON($page);
+        break;
+    case 'html':
+        header('Content-Type: text/html; charset=UTF-8');
+        $data = $user->displaySubscribedArticles($page);
+        break;
+}
 echo ($data);

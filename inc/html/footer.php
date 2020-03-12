@@ -13,6 +13,7 @@
             methods: 'methods'
         },
         shim: {
+            // "lodash": "jquery",
             'bootstrap': {
                 'deps': ['jquery']
             },

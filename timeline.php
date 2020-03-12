@@ -42,18 +42,16 @@ if (isset($_POST['submittopics'])) {
         <div class="spacer d-flex justify-content-center align-items-center">
         </div>
         <div id='news-feed' class="container card">
-            <?php
-            $feed = $CURRENTUSER->displaySubscribedArticles();
-            echo ($feed);
-            ?>
+            <!-- articles -->
         </div>
     </div>
     <div class="row mx-auto pt-3">
-        <span class="spinner-border text-primary"></span>
+        <span class="load-feed-spinner spinner-border text-primary"></span>
     </div>
     <div style="display: none;">
         <i id="current-username"><?php echo $_SESSION['userName']; ?></i>
         <i id="current-safelock"><?php echo false; ?></i>
+        <i id="current-page">1</i>
     </div>
 </div>
 <?php

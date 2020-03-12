@@ -11,7 +11,7 @@ define(['jquery', 'lodash', 'toggle'], function ($, _) {
             leading: true
         });
         // AJAX - it populates the modal upon opening (btn click)
-        $("body").on("click", "#" + modalType + "-btn", _.debounce(function () {
+        $("body").on("click", "." + modalType + "-btn", _.debounce(function () {
             ajaxPages = $.ajax({
                 url: "inc/php/load-" + modalType + ".php",
                 type: 'POST',

@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['signedIn'])) {
+    header('HTTP/1.0 403 Forbidden', true, 403);
+    exit;
+}
 $forbid = $_POST['safelock'] ?? 'true';
 if ($forbid === 'true') {
     header('HTTP/1.0 403 Forbidden', true, 403);

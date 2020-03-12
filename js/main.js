@@ -1,12 +1,13 @@
 define([
     'jquery',
+    'lodash',
     'methods',
     'modal',
-    'feed',
+    'feed-2',
     'admin',
     'bootstrap',
     'toggle'
-], function ($, methods, modal, feed) {
+], function ($, _, methods, modal, feed) {
     $("body").tooltip({
         selector: '[data-toggle=tooltip]'
     });
@@ -16,18 +17,22 @@ define([
     }
     var username = methods.getUserName();
     var safelock = methods.getSafeLock();
-    // console.log(username)
-
     $(".search-me").on("keyup", methods.searchOnKeyUp);
-    if ($("#news-feed").length) {
-        feed.loadMore(username, safelock);
-    };
     //Login page js, toggles new account creation mode
     if ($("#newaccount").length) {
         $('#newaccount').click(function () {
             $('#name-input').toggle();
         });
     };
+    feed.moreNews(username, safelock);
+    document.addEventListener('scroll',
+        _.debounce(
+            function () {
+                feed.moreNews(username, safelock);
+                // console.log(username);
+            }, 50, { immediate: true }
+        )
+    );
     modal.refreshSubscribed(username, safelock, 'topics');
     modal.refreshSubscribed(username, safelock, 'pages');
 });
