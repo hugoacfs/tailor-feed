@@ -14,8 +14,17 @@ require_once __DIR__ . '/config.php';
 $key_not_match = $api_key != $CFG->json_secret;
 if ($key_not_match) forbidRequest();
 $username = $_GET['user'] ?? 'default';
-header('Content-Type: application/json');
 $user = new User($username);
 $page = $_GET['page'] ?? 1;
-$data = $user->getArticlesJSON($page);
+$mode = $_GET['mode'] ?? 'json';
+switch($mode){
+    case 'json':
+        header('Content-Type: application/json');
+        $data = $user->getArticlesJSON($page);
+        break;
+    case 'html':
+        header('Content-Type: text/html; charset=UTF-8');
+        $data = $user->displaySubscribedArticles($page);
+        break;
+}
 echo ($data);
