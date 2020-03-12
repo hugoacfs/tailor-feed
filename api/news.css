@@ -1,0 +1,19 @@
+.news-container .timeline-badge {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 1em;
+    text-align: center;
+    float: right;
+    position: inherit;
+    z-index: 100;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+.news-container .timeline-img {
+    position: relative;
+    top: -100%;
+    border-radius: 100%;
+}
