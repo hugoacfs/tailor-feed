@@ -242,7 +242,7 @@ class User
      */
     public function getArticlesJSON(int $page = 1): string
     {
-        return json_encode($this->buildSubscribedArticles($page));
+        return json_encode($this->prepareArticlesBuilder($page));
     }
     /**
      * HTML builder method for displaying the articles.
@@ -276,6 +276,48 @@ class User
             </div>
             <hr class="thin-hr">';
         }
+        $media = $builder['media'] ?? [];
+        $mediaHTML = '';
+        $firstStatus = 'active';
+        $carouselHtml = '';
+        $carouselHtmlNav = '';
+        $numOfMediaItems = count($builder['media']);
+        foreach ($media as $m) {
+            switch ($m['type']) {
+                case 'photo':
+                    $mediaHTML .= '
+                        <div class="carousel-item ' . $firstStatus . '">
+                            <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
+                        </div>';
+                    break;
+                case 'video':
+                    $mediaHTML .= '
+                        <div class="carousel-item ' . $firstStatus . '">
+                            <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
+                        </div>';
+                    break;
+            }
+            $firstStatus = '';
+        }
+        if ($numOfMediaItems > 1) {
+            $carouselHtmlNav = '<a class="carousel-control-prev" href="#carouselArticle' . $builder['articleId'] . '" role="button" data-slide="prev">
+                                        <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next " href="#carouselArticle' . $builder['articleId'] . '" role="button" data-slide="next">
+                                        <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>';
+        }
+        if ($builder['media']) {
+            $carouselHtml = '
+                <div id="carouselArticle' . $builder['articleId'] . '" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <div class="carousel-inner">
+                        ' . $mediaHTML . '
+                    </div>
+                    ' . $carouselHtmlNav . '
+                </div>';
+        }
         return '
         <div class="card-body ">
             <a href="' . $builder['accountUrl'] . '" target="uni_news" class=" card-link">
@@ -301,29 +343,14 @@ class User
                     <i class="fas fa-link fa-xs"></i>
                 </a>
             </p>
-            <p class="card-text">' . $builder['message'] . $builder['media'] . ' </p>
+            <p class="card-text">' . $builder['message'] . $carouselHtml . ' </p>
         </div>
         <hr class="thin-hr">';
     }
-
-    public function prepareArticlesBuilder()
+    public function prepareArticlesBuilder(int $page = 1): array
     {
-        return;
-    }
-
-
-    /**
-     * Returns html for the articles to be displayed
-     * @param int page to return by, default is 1 meaning not offset
-     * @return string HTML of articles subscribed by user
-     */
-    public function displaySubscribedArticles(int $page = 1): string
-    {
+        $builder = [];
         $articlesToDisplay = $this->buildSubscribedArticles($page);
-        $htmlHolder = '';
-        if (!$articlesToDisplay) {
-            return $this->buildTimelineHtml([]); //builds empty HTML
-        }
         foreach ($articlesToDisplay as $article) {
             $message = convertHashtags(convertMentions(convertLinks($article->body)));
             $timestamp = $article->creationDate;
@@ -336,50 +363,8 @@ class User
                     $accountUrl = 'https://twitter.com/' . $screen_name;
                     break;
             }
-            $media = $article->media ?? [];
-            $mediaHTML = '';
-            $firstStatus = 'active';
-            $carouselHtml = '';
-            $carouselHtmlNav = '';
-            $numOfMediaItems = count($article->media);
-            foreach ($media as $m) {
-                switch ($m['type']) {
-                    case 'photo':
-                        $mediaHTML .= '
-                        <div class="carousel-item ' . $firstStatus . '">
-                            <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
-                        </div>';
-                        break;
-                    case 'video':
-                        $mediaHTML .= '
-                        <div class="carousel-item ' . $firstStatus . '">
-                            <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
-                        </div>';
-                        break;
-                }
-                $firstStatus = '';
-            }
-            if ($numOfMediaItems > 1) {
-                $carouselHtmlNav = '<a class="carousel-control-prev" href="#carouselArticle' . $article->dbId . '" role="button" data-slide="prev">
-                                        <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next " href="#carouselArticle' . $article->dbId . '" role="button" data-slide="next">
-                                        <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>';
-            }
-            if ($article->media) {
-                $carouselHtml = '
-                <div id="carouselArticle' . $article->dbId . '" class="carousel slide" data-ride="carousel" data-interval="false">
-                    <div class="carousel-inner">
-                        ' . $mediaHTML . '
-                    </div>
-                    ' . $carouselHtmlNav . '
-                </div>';
-            }
-            $builder = null;
-            $builder = array(
+            $builder[] = array(
+                'articleId' => $article->dbId,
                 'type' => ucfirst($article->type),
                 'profile_image' => $profile_image,
                 'accountUrl' => $accountUrl,
@@ -388,8 +373,22 @@ class User
                 'screen_name' => strtolower($screen_name),
                 'timestamp' => $timestamp,
                 'originalUrl' => $originalUrl,
-                'media' => $carouselHtml
+                'media' => $article->media
             );
+        }
+        return $builder;
+    }
+    /**
+     * Returns html for the articles to be displayed
+     * @param int page to return by, default is 1 meaning not offset
+     * @return string HTML of articles subscribed by user
+     */
+    public function displaySubscribedArticles(int $page = 1): string
+    {
+        $htmlHolder = '';
+        $blocks = $this->prepareArticlesBuilder($page);
+        if(!$blocks) return $this->buildTimelineHtml([]);
+        foreach ($blocks as $builder) {
             $htmlHolder .= $this->buildTimelineHtml($builder);
         }
         return $htmlHolder;
