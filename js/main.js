@@ -29,7 +29,7 @@ define([
         _.debounce(
             function () {
                 feed.moreNews(username, safelock);
-                console.log(username);
+                // console.log(username);
             }, 50, { immediate: true }
         )
     );

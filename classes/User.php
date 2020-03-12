@@ -305,6 +305,13 @@ class User
         </div>
         <hr class="thin-hr">';
     }
+
+    public function prepareArticlesBuilder()
+    {
+        return;
+    }
+
+
     /**
      * Returns html for the articles to be displayed
      * @param int page to return by, default is 1 meaning not offset

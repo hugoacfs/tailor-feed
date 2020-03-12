@@ -1,7 +1,7 @@
 define(['jquery', 'lodash'], function ($, _) {
     load = _.debounce(
         function (username, safelock, page) {
-            console.log('received page:' + page);
+            // console.log('received page:' + page);
             runscroll = true;
             ajaxFeed = $.ajax({
                 url: "inc/php/load-feed.php",
@@ -24,7 +24,7 @@ define(['jquery', 'lodash'], function ($, _) {
                 } else {
                     $("#news-feed").append(response);
                 }
-                console.log('exiting ajax call with runscroll:' + runscroll);
+                // console.log('exiting ajax call with runscroll:' + runscroll);
             });
             return runscroll;
         }, 1000, { leading: true })
@@ -34,7 +34,7 @@ define(['jquery', 'lodash'], function ($, _) {
         var position = element.getBoundingClientRect();
         scrollEvent = ($(window).scrollTop() + $(window).height()) >= $(document).height() - 100;
         visibleEvent = position.top < window.innerHeight && position.bottom >= 0;
-        console.log('scroll is:' + scrollEvent + ' visible is:' + visibleEvent);
+        // console.log('scroll is:' + scrollEvent + ' visible is:' + visibleEvent);
         if (scrollEvent || visibleEvent) {
             return true;
         }
@@ -47,8 +47,8 @@ define(['jquery', 'lodash'], function ($, _) {
                 load(username, safelock, page);
                 page = parseInt(page) + 1;
                 $('#current-page').html(page);
-                console.log('exiting moreNews call with runscroll:' + runscroll);
-                console.log('next page:' + page);
+                // console.log('exiting moreNews call with runscroll:' + runscroll);
+                // console.log('next page:' + page);
             };
         };
     };
