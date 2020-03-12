@@ -31,7 +31,7 @@ spl_autoload_register(
  * Loading extra helper methods.
  * Custom methods added here.
  */
-require_once $CFG->dirroot . '/api/helper.php';
+require_once $CFG->dirroot . '/helper.php';
 /**
  * Global DB and CONNECTION objects.
  */
