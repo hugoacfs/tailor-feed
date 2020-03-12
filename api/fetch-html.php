@@ -4,7 +4,7 @@ define('CONFIG_PROTECTION', false);
 require_once __DIR__ . '/../config.php';
 $username = $_SESSION['userName'] ?? 'default';
 //Server url
-$url = $CFG->api_url."?user=$username&page=1&mode=html";
+$url = $CFG->api_url."?user=$user&page=1&mode=html";
 $apiKey = $CFG->json_secret; // should match with Server key
 $headers = array(
     'api_key: ' . $apiKey
