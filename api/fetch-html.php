@@ -38,10 +38,10 @@ $response .= '
         </a>
     </h4>
     <p class="card-text">To see more university news, login to the News Site.
-        <button onclick="location.href=\'' . $loginLink . '\'" class="btn btn-primary mr-1 ml-1 border">
+        <a href="' . $loginLink . '" target="news" class="btn btn-primary text-white float-right">
             <i class="fas fa-sign-out-alt" aria-hidden="true">
             </i> Login to News
-        </button>
+        </a>
     </p>
     <span style="display: none;">newscode:340</span>
 </div>';
