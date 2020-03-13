@@ -18,7 +18,7 @@ function createCORSRequest(method, url) {
 // Make the actual CORS request.
 function makeCorsRequest() {
     // This is a sample server that supports CORS.
-    var url = 'fetch-html.php';
+    var url = 'fetch-html.php'; //your-website.com/news.css
 
     var xhr = createCORSRequest('GET', url);
     if (!xhr) {
@@ -42,7 +42,7 @@ var script = document.createElement("script");
 // set the attributes for link element 
 link.rel = 'stylesheet';
 link.type = 'text/css';
-link.href = 'news.css';
+link.href = 'news.css'; //your-website.com/news.css
 script.type = "text/javascript";
 script.src = "https://kit.fontawesome.com/8427edd71b.js";
 script.crossorigin = 'anonymous';
