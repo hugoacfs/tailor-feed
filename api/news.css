@@ -12,6 +12,11 @@
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
 }
+
+.news-container hr {
+    border-width: 2px;
+}
+
 .news-container .timeline-img {
     position: relative;
     top: -100%;

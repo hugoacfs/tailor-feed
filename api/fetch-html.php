@@ -57,18 +57,29 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 // Get response
 $loginLink = 'login.php';
 $response = '';
+if($username != 'default'){
+$response = '
+<div class="card-body">
+    <a href="' . $loginLink . '" target="news" class="btn btn-primary text-white float-right">
+        <i class="fas fa-cog" aria-hidden="true">
+        </i> Preferences
+    </a>
+</div>
+<br>';
+}
 $response .= curl_exec($ch) ?? '';
 // Add end of response message, leading them to website to see more news.
-$response .= '<div class="card-body ">
+$response .= '
+<div class="card-body ">
     <h4 class="card-title">
         <a class=" card-link">
-            That`s all for now...
+            That\'s all for now...
         </a>
     </h4>
-    <p class="card-text">To see more university news, login with your university account.
-        <button onclick="location.href='.$loginLink.'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+    <p class="card-text">To see more university news, login to the News Site.
+        <button onclick="location.href=\'' . $loginLink . '\'" class="btn btn-primary mr-1 ml-1 border">
             <i class="fas fa-sign-out-alt" aria-hidden="true">
-            </i> Login
+            </i> Login to News
         </button>
     </p>
     <span style="display: none;">newscode:340</span>
