@@ -18,7 +18,7 @@ function createCORSRequest(method, url) {
 // Make the actual CORS request.
 function makeCorsRequest() {
     // This is a sample server that supports CORS.
-    var url = 'fetch-html.php'; //your-website.com/news.css
+    var url = 'its-me.php'; //your-website.com/news.css
 
     var xhr = createCORSRequest('GET', url);
     if (!xhr) {
@@ -27,8 +27,8 @@ function makeCorsRequest() {
     }
     // Response handlers.
     xhr.onload = function () {
-        // alert('Response from CORS request to ' + url);
-        document.getElementsByClassName("news-container")[0].innerHTML = xhr.responseText;
+        alert('Response from CORS request to ' + url);
+        // document.getElementsByClassName("news-container")[0].innerHTML = xhr.responseText;
     };
     xhr.onerror = function () {
         alert('Woops, there was an error making the request.');
@@ -43,14 +43,8 @@ var script = document.createElement("script");
 link.rel = 'stylesheet';
 link.type = 'text/css';
 link.href = 'news.css'; //your-website.com/news.css
-script.type = "text/javascript";
-script.src = "https://kit.fontawesome.com/8427edd71b.js";
-script.crossorigin = 'anonymous';
 
 // Get HTML head element to append  
 // link element to it  
 document.getElementsByTagName('HEAD')[0].appendChild(link);
-document.getElementsByTagName('HEAD')[0].appendChild(script);
-document.addEventListener("DOMContentLoaded", function () {
-    makeCorsRequest();
-});
+makeCorsRequest();

@@ -38,7 +38,7 @@ $response .= '
         </a>
     </h4>
     <p class="card-text">To see more university news, login to the News Site.
-        <a href="' . $loginLink . '" target="news" class="btn btn-primary text-white float-right">
+        <a href="' . $loginLink . '" target="news" class="btn btn-primary text-white">
             <i class="fas fa-sign-out-alt" aria-hidden="true">
             </i> Login to News
         </a>
