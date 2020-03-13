@@ -16,8 +16,8 @@ function cors()
     // Allow from any origin
     if (isset($_SERVER['HTTP_ORIGIN'])) {
         // Decide if the origin in $_SERVER['HTTP_ORIGIN'] is one
+        if ($_SERVER['HTTP_ORIGIN'] != 'your-website.com') exit('Your site is not whitelisted!');
         // you want to allow, and if so:
-        if($_SERVER['HTTP_ORIGIN'] != 'your-website.com') exit('Your site is not whitelisted!');
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Max-Age: 86400');    // cache for 1 day
@@ -44,7 +44,7 @@ session_start();
 require_once __DIR__ . '/../config.php';
 $username = $_SESSION['userName'] ?? 'default';
 //Server url
-$url = $CFG->api_url."?user=$username&page=1&mode=html";
+$url = $CFG->api_url . "?user=$username&page=1&mode=html";
 $apiKey = $CFG->json_secret; // should match with Server key
 $headers = array(
     'api_key: ' . $apiKey
@@ -55,5 +55,22 @@ $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 // Get response
-$response = curl_exec($ch);
+$loginLink = 'login.php';
+$response = '';
+$response .= curl_exec($ch) ?? '';
+// Add end of response message, leading them to website to see more news.
+$response .= '<div class="card-body ">
+    <h4 class="card-title">
+        <a class=" card-link">
+            That`s all for now...
+        </a>
+    </h4>
+    <p class="card-text">To see more university news, login with your university account.
+        <button onclick="location.href='.$loginLink.'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+            <i class="fas fa-sign-out-alt" aria-hidden="true">
+            </i> Login
+        </button>
+    </p>
+    <span style="display: none;">newscode:340</span>
+</div>';
 echo ($response);
