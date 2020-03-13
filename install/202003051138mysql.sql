@@ -81,6 +81,12 @@ CREATE TABLE `config` (
 --
 
 INSERT INTO `config` (`id`, `name`, `value`) VALUES
+(16, 'authorised_cors', 'your-website.com,another-website.com'),
+(15, 'api_url', 'your-website.com'),
+(14, 'users_recycle_cron', '86400'),
+(13, 'users_recycle_interval', '2592000'),
+(12, 'users_recycle_last_cron', '0'),
+(11, 'users_recycle_mode', 'on'),
 (10, 'articles_recycle_cron', '86400'),
 (9, 'articles_recycle_interval', '2592000'),
 (8, 'articles_recycle_last_cron', '0'),

@@ -55,6 +55,10 @@ foreach ($config as $c) {
     $CFG->$name = $value;
 }
 /**
+ * API Configuration Adjustment
+ */
+$CFG->authorised_cors_array = explode(',', $CFG->authorised_cors);
+/**
  * Populating SOURCES configuration from DB
  */
 $configArr = array();
