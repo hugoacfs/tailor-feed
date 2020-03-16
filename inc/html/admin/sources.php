@@ -53,7 +53,7 @@ if (!defined('CONFIG_PROTECTION')) {
                         $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
                     }
                     echo '<tr id="row-' . $id . '">';
-                    echo '<td><a href="admin.php?table=articles&id=' . $id . '"><i class="fas fa-table fa-lg"></i></a></td>';
+                    echo '<td><a href="admin.php?table=articles&sourceid=' . $id . '"><i class="fas fa-table fa-lg"></i></a></td>';
                     echo '<td class="reference">' . $reference . '</td>';
                     echo '<td class="screenname">' . $screenname . '</td>';
                     echo '<td class="type">' . ucfirst($type) . '</td>';
