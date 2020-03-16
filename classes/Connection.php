@@ -203,7 +203,7 @@ class Connection
     {
         $sql_string = "SELECT * FROM `topics`";
         if ($active) $sql_string .= " WHERE `status` = 'active'";
-        $sql_string .= ";";
+        $sql_string .= " ORDER BY `name` ASC;";
         $stmt = $this->PDOprepare($sql_string);
         return $this->ExecuteAndFetchArray($stmt);
     }
@@ -269,7 +269,7 @@ class Connection
      */
     public function fetchAllSources(): array
     {
-        $stmt = $this->PDOprepare("SELECT * FROM sources;");
+        $stmt = $this->PDOprepare("SELECT * FROM sources ORDER BY `reference` ASC;");
         return $this->ExecuteAndFetchArray($stmt);
     }
     /**
@@ -279,7 +279,7 @@ class Connection
      */
     public function fetchAllActiveSources(): array
     {
-        $stmt = $this->PDOprepare("SELECT * FROM sources WHERE `status` = 'active';");
+        $stmt = $this->PDOprepare("SELECT * FROM sources WHERE `status` = 'active' ORDER BY `reference` ASC;");
         return $this->ExecuteAndFetchArray($stmt);
     }
     /**
@@ -449,32 +449,40 @@ class Connection
         $limit = 10;
         $offset = ($offset - 1) * 10;
         $sql_string = "SELECT `a`.*, `s`.`reference`, `s`.`type`, `s`.`screenname`, `s`.`imagesource`
-            FROM `articles` AS `a`
+                FROM `articles` AS `a`
                 JOIN `sources` AS `s` ON `s`.`id` = `a`.`sourceid`
                 LEFT JOIN `articles_topics` AS `at` ON `a`.`id` = `at`.`articleid`
                 LEFT JOIN `topics` AS `t` ON `at`.`topicid` = `t`.`id`
-            WHERE `s`.`status` = 'active' AND ";
-        $sourceTopicsIds = $sourceIds = $topicsIds = [];
+                WHERE `s`.`status` = 'active' AND ";
+        $sourceTopicsIds = $sourceIds = $topicIds = [];
         if (count($subscribedList) > 0) {
-            foreach ($subscribedList as $source) $sourceIds[] = $source->getDbId();
-            $sourceTopicsIds[] = " `a`.`sourceid` IN (" . join(',', $sourceIds) . ") ";
+            foreach ($subscribedList as $key => $source) $sourceIds[':source' . $key] = $source->getDbId();
+            $sourceTopicsIds[] = " `a`.`sourceid` IN (" . join(',', array_keys($sourceIds)) . ") ";
         }
         if (count($topicsList) > 0) {
-            foreach ($topicsList as $topic) $topicsIds[] = $topic->dbId;
-            $sourceTopicsIds[] = " `at`.`topicid` IN (" . join(',', $topicsIds) . ") ";
+            foreach ($topicsList as $key =>  $topic) $topicIds[':topic' . $key] = $topic->dbId;
+            $sourceTopicsIds[] = " `at`.`topicid` IN (" . join(',', array_keys($topicIds)) . ") ";
         }
-
-        $sql_sourceTopics = " ( " . join(' OR ', $sourceTopicsIds) . " ) ";
-        $sql_where =  " AND `creationdate` > " . $timeInterval . " 
-                            ORDER BY `creationdate` DESC LIMIT " . $offset . "," . $limit;
+        $sql_sourceTopics = " (" . join(' OR ', $sourceTopicsIds) . ") ";
+        $sql_where =  " AND `creationdate` > :time 
+                        ORDER BY `creationdate` DESC 
+                        LIMIT :offset, :limit";
         $sql_string .= $sql_sourceTopics . $sql_where . ';';
-        return $this->PDOquery($sql_string);
+        $statement = $this->PDOprepare($sql_string);
+        $execute_array = array_merge($sourceIds, $topicIds);
+        $execute_array[':time'] = $timeInterval;
+        $execute_array[':offset'] = $offset;
+        $execute_array[':limit'] = $limit;
+        foreach ($execute_array as $key => $param) {
+            $statement->bindValue($key, $param, PDO::PARAM_INT);
+        }
+        return $this->ExecuteAndFetchArray($statement);
     }
     /**
      * Fetch User by Username
      * User DB query
      * @param string $username of the user
-     * @return PDOStatement Query Result
+     * @return array Query Result
      */
     public function fetchUserByUsername(string $username): array
     {
