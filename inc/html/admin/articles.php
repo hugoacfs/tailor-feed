@@ -8,7 +8,7 @@ if (!defined('CONFIG_PROTECTION')) {
 $params = [];
 $s_id = $_GET['sourceid'] ?? false;
 if ($s_id) $params['sourceid'] = $s_id;
-$params['max'] = $_GET['max'] ?? 10;
+$params['max'] = $_GET['max'] ?? 0;
 $params['page'] = $_GET['page'] ?? 1;
 function buildGetString(array $params): string
 {
@@ -30,7 +30,7 @@ function buildGetString(array $params): string
                 Articles
             </li>
             <div class="dropdown ml-auto ">
-                <span>Number of Articles</span>
+                <span>Showing: </span>
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?php if ($params['max'] != 0) echo $params['max'];
                     else echo 'All'; ?>
@@ -114,7 +114,7 @@ function buildGetString(array $params): string
         </table>
     </div>
     <hr>
-    <div class="row">
+    <div class="row" <?php if ($params['max'] == 0) echo 'style="display: none;"'; ?>>
         <div class="btn-group btn-group " role="group">
             <?php
             $tparams = $params;
