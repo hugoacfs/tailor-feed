@@ -1,0 +1,126 @@
+\hypertarget{class_user}{}\doxysection{User Class Reference}
+\label{class_user}\index{User@{User}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_user_a9759763f920e8eac73fafea74b82c4b6}{\+\_\+\+\_\+construct}} (string \$user\+Name)
+\item 
+\mbox{\hyperlink{class_user_a9b6d85a0d79dba285e867463c161f85f}{update\+User\+Subcribed\+List}} ()
+\item 
+\mbox{\hyperlink{class_user_a40001c853951fb6921c70dd4b8d7be24}{update\+User\+Topics\+List}} ()
+\item 
+\mbox{\hyperlink{class_user_ab7f7dc16317c10046716d664e124f7f2}{get\+Preferences}} (string \$type)
+\item 
+\mbox{\hyperlink{class_user_abbe9e9c6f7fd698c47485d8b471daa76}{update\+Preferences}} (array \$preferences\+List, string \$type)
+\item 
+\mbox{\hyperlink{class_user_a67c7fd945ff3ab840ef8ac7d3e4da841}{get\+Articles\+J\+S\+ON}} (int \$page=1)
+\item 
+\mbox{\Hypertarget{class_user_ad4f3c134e2ba70acf5ca539825203116}\label{class_user_ad4f3c134e2ba70acf5ca539825203116}} 
+{\bfseries prepare\+Articles\+Builder} (int \$page=1)
+\item 
+\mbox{\hyperlink{class_user_a3b5900901711c0b3f5851ade3134ddbc}{display\+Subscribed\+Articles}} (int \$page=1)
+\end{DoxyCompactItemize}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_user_a21aef64e3cb717e5205cfc651659b7d4}\label{class_user_a21aef64e3cb717e5205cfc651659b7d4}} 
+{\bfseries \$db\+Id}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_user_a9759763f920e8eac73fafea74b82c4b6}\label{class_user_a9759763f920e8eac73fafea74b82c4b6}} 
+\index{User@{User}!\_\_construct@{\_\_construct}}
+\index{\_\_construct@{\_\_construct}!User@{User}}
+\doxysubsubsection{\texorpdfstring{\_\_construct()}{\_\_construct()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+construct (\begin{DoxyParamCaption}\item[{string}]{\$user\+Name }\end{DoxyParamCaption})}
+
+Constructor class gets the user\textquotesingle{}s details from the DB by username. The subscribed list is built. 
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$user\+Name} & is the username as found in the DB. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_user_a3b5900901711c0b3f5851ade3134ddbc}\label{class_user_a3b5900901711c0b3f5851ade3134ddbc}} 
+\index{User@{User}!displaySubscribedArticles@{displaySubscribedArticles}}
+\index{displaySubscribedArticles@{displaySubscribedArticles}!User@{User}}
+\doxysubsubsection{\texorpdfstring{displaySubscribedArticles()}{displaySubscribedArticles()}}
+{\footnotesize\ttfamily display\+Subscribed\+Articles (\begin{DoxyParamCaption}\item[{int}]{\$page = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+Returns html for the articles to be displayed 
+\begin{DoxyParams}{Parameters}
+{\em int} & page to return by, default is 1 meaning not offset \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string H\+T\+ML of articles subscribed by user 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_user_a67c7fd945ff3ab840ef8ac7d3e4da841}\label{class_user_a67c7fd945ff3ab840ef8ac7d3e4da841}} 
+\index{User@{User}!getArticlesJSON@{getArticlesJSON}}
+\index{getArticlesJSON@{getArticlesJSON}!User@{User}}
+\doxysubsubsection{\texorpdfstring{getArticlesJSON()}{getArticlesJSON()}}
+{\footnotesize\ttfamily get\+Articles\+J\+S\+ON (\begin{DoxyParamCaption}\item[{int}]{\$page = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+Turns Array of objects into J\+S\+ON 
+\begin{DoxyParams}{Parameters}
+{\em int} & page to return by, default is 1 meaning not offset \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string J\+S\+ON data. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_user_ab7f7dc16317c10046716d664e124f7f2}\label{class_user_ab7f7dc16317c10046716d664e124f7f2}} 
+\index{User@{User}!getPreferences@{getPreferences}}
+\index{getPreferences@{getPreferences}!User@{User}}
+\doxysubsubsection{\texorpdfstring{getPreferences()}{getPreferences()}}
+{\footnotesize\ttfamily get\+Preferences (\begin{DoxyParamCaption}\item[{string}]{\$type }\end{DoxyParamCaption})}
+
+Returns the user preferences by type 
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$type} & of preference, could be \textquotesingle{}source\textquotesingle{} or \textquotesingle{}topic\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array of preferences 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_user_abbe9e9c6f7fd698c47485d8b471daa76}\label{class_user_abbe9e9c6f7fd698c47485d8b471daa76}} 
+\index{User@{User}!updatePreferences@{updatePreferences}}
+\index{updatePreferences@{updatePreferences}!User@{User}}
+\doxysubsubsection{\texorpdfstring{updatePreferences()}{updatePreferences()}}
+{\footnotesize\ttfamily update\+Preferences (\begin{DoxyParamCaption}\item[{array}]{\$preferences\+List,  }\item[{string}]{\$type }\end{DoxyParamCaption})}
+
+Makes changes to the DB user\textquotesingle{}s preferences accordin to the new preferences list. 
+\begin{DoxyParams}[1]{Parameters}
+array & {\em \$preferences\+List} & a list of preferences to update as requested by H\+T\+ML form. \\
+\hline
+string & {\em \$type} & of preference, could be \textquotesingle{}source\textquotesingle{} or \textquotesingle{}topic\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_user_a9b6d85a0d79dba285e867463c161f85f}\label{class_user_a9b6d85a0d79dba285e867463c161f85f}} 
+\index{User@{User}!updateUserSubcribedList@{updateUserSubcribedList}}
+\index{updateUserSubcribedList@{updateUserSubcribedList}!User@{User}}
+\doxysubsubsection{\texorpdfstring{updateUserSubcribedList()}{updateUserSubcribedList()}}
+{\footnotesize\ttfamily update\+User\+Subcribed\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Creates the user\textquotesingle{}s subscribed list. Creates \$this-\/$>$subscribed\+List \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_user_a40001c853951fb6921c70dd4b8d7be24}\label{class_user_a40001c853951fb6921c70dd4b8d7be24}} 
+\index{User@{User}!updateUserTopicsList@{updateUserTopicsList}}
+\index{updateUserTopicsList@{updateUserTopicsList}!User@{User}}
+\doxysubsubsection{\texorpdfstring{updateUserTopicsList()}{updateUserTopicsList()}}
+{\footnotesize\ttfamily update\+User\+Topics\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Creates the user\textquotesingle{}s topics list. Creates \$this-\/$>$topics\+List \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/xampp/htdocs/github/tailor-\/feed/classes/User.\+php\end{DoxyCompactItemize}

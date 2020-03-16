@@ -1,0 +1,125 @@
+\hypertarget{class_twitter}{}\doxysection{Twitter Class Reference}
+\label{class_twitter}\index{Twitter@{Twitter}}
+Inheritance diagram for Twitter\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_twitter}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_twitter_adadc7b30cada038ebb855bd330461fd2}{build\+Articles}} ()
+\item 
+\mbox{\hyperlink{class_twitter_a848c4c049e42758fdc5f79965e4c0920}{create\+Media\+Array}} (\$media\+Object)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_twitter_abd0198f74f70360defbb08d4c04b2614}{get\+All\+Sources}} (\$active=null)
+\item 
+static \mbox{\hyperlink{class_twitter_aa7d950247e680ac0459b2ebe95830791}{update\+Sources\+Details}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_twitter_a3b841761798fd4ffc1ec6c46ba81d3a9}{get\+Source\+Data}} (string \$reference)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_twitter_acc2aa5a5f78c6542c08a053d82e999c7}{\$url}} = \textquotesingle{}https\+://twitter.\+com/\textquotesingle{}
+\item 
+\mbox{\hyperlink{class_twitter_aa40cc7876dc0b694eda3c898140a0ac8}{\$type}} = \textquotesingle{}twitter\textquotesingle{}
+\item 
+\mbox{\hyperlink{class_twitter_a8648b214eb29e087daa374f72527c870}{\$tweets}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{class_twitter}{Twitter}} class. Extends \mbox{\hyperlink{class_source}{Source}}. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_twitter_adadc7b30cada038ebb855bd330461fd2}\label{class_twitter_adadc7b30cada038ebb855bd330461fd2}} 
+\index{Twitter@{Twitter}!buildArticles@{buildArticles}}
+\index{buildArticles@{buildArticles}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{buildArticles()}{buildArticles()}}
+{\footnotesize\ttfamily build\+Articles (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Builds an array of Articles belonging to the \mbox{\hyperlink{class_twitter}{Twitter}} object. Populates \$this-\/$>$articles with the relevant \mbox{\hyperlink{class_article}{Article}} objects, using Twitter\+A\+P\+I\+Exchange. \begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_twitter_a848c4c049e42758fdc5f79965e4c0920}\label{class_twitter_a848c4c049e42758fdc5f79965e4c0920}} 
+\index{Twitter@{Twitter}!createMediaArray@{createMediaArray}}
+\index{createMediaArray@{createMediaArray}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{createMediaArray()}{createMediaArray()}}
+{\footnotesize\ttfamily create\+Media\+Array (\begin{DoxyParamCaption}\item[{}]{\$media\+Object }\end{DoxyParamCaption})}
+
+Creates an array required for media parsing into \mbox{\hyperlink{class_article}{Article}} object for publishing. 
+\begin{DoxyParams}{Parameters}
+{\em object} & From \mbox{\hyperlink{class_twitter}{Twitter}} A\+PI\textquotesingle{}s J\+S\+ON request. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+array An assoc array containing U\+R\+Ls and media type. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_twitter_abd0198f74f70360defbb08d4c04b2614}\label{class_twitter_abd0198f74f70360defbb08d4c04b2614}} 
+\index{Twitter@{Twitter}!getAllSources@{getAllSources}}
+\index{getAllSources@{getAllSources}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{getAllSources()}{getAllSources()}}
+{\footnotesize\ttfamily static get\+All\+Sources (\begin{DoxyParamCaption}\item[{}]{\$active = {\ttfamily null} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+It returns an array containing all sources as a \mbox{\hyperlink{class_twitter}{Twitter}} object from the DB. \begin{DoxyReturn}{Returns}
+array of all the twitter sources that exist 
+\end{DoxyReturn}
+Getting the account handles from db to request from twitter
+
+By creating the \mbox{\hyperlink{class_twitter}{Twitter}} objects\mbox{\Hypertarget{class_twitter_a3b841761798fd4ffc1ec6c46ba81d3a9}\label{class_twitter_a3b841761798fd4ffc1ec6c46ba81d3a9}} 
+\index{Twitter@{Twitter}!getSourceData@{getSourceData}}
+\index{getSourceData@{getSourceData}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{getSourceData()}{getSourceData()}}
+{\footnotesize\ttfamily static get\+Source\+Data (\begin{DoxyParamCaption}\item[{string}]{\$reference }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+Fetches the data for a \mbox{\hyperlink{class_twitter}{Twitter}} account \$reference given. Makes the \mbox{\hyperlink{class_twitter}{Twitter}} A\+PI request required to get public account data. 
+\begin{DoxyParams}[1]{Parameters}
+string & {\em \$reference} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+object \$twitter\+Data 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_twitter_aa7d950247e680ac0459b2ebe95830791}\label{class_twitter_aa7d950247e680ac0459b2ebe95830791}} 
+\index{Twitter@{Twitter}!updateSourcesDetails@{updateSourcesDetails}}
+\index{updateSourcesDetails@{updateSourcesDetails}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{updateSourcesDetails()}{updateSourcesDetails()}}
+{\footnotesize\ttfamily static update\+Sources\+Details (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Updates the DB details for all of the \mbox{\hyperlink{class_twitter}{Twitter}} sources. Fetches all twitter sources, then for each source it gathers \mbox{\hyperlink{class_twitter}{Twitter}} data, then updates the DB\textquotesingle{}s fields. \begin{DoxyReturn}{Returns}
+bool Returns true on success. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{class_twitter_a8648b214eb29e087daa374f72527c870}\label{class_twitter_a8648b214eb29e087daa374f72527c870}} 
+\index{Twitter@{Twitter}!\$tweets@{\$tweets}}
+\index{\$tweets@{\$tweets}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{\$tweets}{$tweets}}
+{\footnotesize\ttfamily object \$tweets\hspace{0.3cm}{\ttfamily [protected]}}
+
+An object containing the Tweets fetched from the \mbox{\hyperlink{class_twitter}{Twitter}} A\+PI query. \mbox{\Hypertarget{class_twitter_aa40cc7876dc0b694eda3c898140a0ac8}\label{class_twitter_aa40cc7876dc0b694eda3c898140a0ac8}} 
+\index{Twitter@{Twitter}!\$type@{\$type}}
+\index{\$type@{\$type}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{\$type}{$type}}
+{\footnotesize\ttfamily string \$type = \textquotesingle{}twitter\textquotesingle{}\hspace{0.3cm}{\ttfamily [protected]}}
+
+Type of \mbox{\hyperlink{class_source}{Source}} object as in DB. e.\+g. \mbox{\hyperlink{class_twitter}{Twitter}} is \textquotesingle{}twitter\textquotesingle{}, as in the database. \mbox{\Hypertarget{class_twitter_acc2aa5a5f78c6542c08a053d82e999c7}\label{class_twitter_acc2aa5a5f78c6542c08a053d82e999c7}} 
+\index{Twitter@{Twitter}!\$url@{\$url}}
+\index{\$url@{\$url}!Twitter@{Twitter}}
+\doxysubsubsection{\texorpdfstring{\$url}{$url}}
+{\footnotesize\ttfamily string \$url = \textquotesingle{}https\+://twitter.\+com/\textquotesingle{}\hspace{0.3cm}{\ttfamily [protected]}}
+
+Url refers to the url of the \mbox{\hyperlink{class_source}{Source}}, which for \mbox{\hyperlink{class_twitter}{Twitter}} it should always be \textquotesingle{}\href{https://twitter.com/'}{\texttt{ https\+://twitter.\+com/\textquotesingle{}}}. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/xampp/htdocs/github/tailor-\/feed/classes/Twitter.\+php\end{DoxyCompactItemize}
