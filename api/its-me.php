@@ -6,7 +6,7 @@ cors();
 echo '<pre>';
 print_r(getallheaders());
 echo '</pre>';
-
+print_r($_SESSION);
 $user = $_SESSION['USER'] ?? new SSAML();
 $username = $_SESSION['USER']->getUserName() ?? new SSAML();
 //Server url

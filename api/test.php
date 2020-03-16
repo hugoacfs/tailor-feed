@@ -5,8 +5,10 @@
 </head>
 
 <body>
-    <script src="news.js"></script>
+    <div id='dump'></div>
     <div class="news-container"></div>
+    <script src="auth.js"></script>
+    <!-- <script src="news.js"></script> -->
 </body>
 
 </html>

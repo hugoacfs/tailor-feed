@@ -16,9 +16,8 @@ function createCORSRequest(method, url) {
     return xhr;
 }
 // Make the actual CORS request.
-function makeCorsRequest() {
+function makeCorsRequest(url, classname) {
     // This is a sample server that supports CORS.
-    var url = 'fetch-html.php'; //your-website.com/news.css
 
     var xhr = createCORSRequest('GET', url);
     if (!xhr) {
@@ -28,13 +27,17 @@ function makeCorsRequest() {
     // Response handlers.
     xhr.onload = function () {
         // alert('Response from CORS request to ' + url);
-        document.getElementsByClassName("news-container")[0].innerHTML = xhr.responseText;
+        document.getElementsByClassName(classname)[0].innerHTML = xhr.responseText;
     };
     xhr.onerror = function () {
         alert('Woops, there was an error making the request.');
     };
     xhr.send();
 }
+
+var url = 'fetch-html.php'; //your-website.com/news.css
+var classname = 'news-container'; //div class name
+
 // Create new link Element 
 var link = document.createElement('link');
 var script = document.createElement("script");
@@ -52,5 +55,5 @@ script.crossorigin = 'anonymous';
 document.getElementsByTagName('HEAD')[0].appendChild(link);
 document.getElementsByTagName('HEAD')[0].appendChild(script);
 document.addEventListener("DOMContentLoaded", function () {
-    makeCorsRequest();
+    makeCorsRequest(url, classname);
 });
