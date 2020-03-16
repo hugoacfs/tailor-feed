@@ -473,9 +473,7 @@ class Connection
         $execute_array[':time'] = $timeInterval;
         $execute_array[':offset'] = $offset;
         $execute_array[':limit'] = $limit;
-        foreach ($execute_array as $key => $param) {
-            $statement->bindValue($key, $param, PDO::PARAM_INT);
-        }
+        foreach ($execute_array as $key => $param) $statement->bindValue($key, $param, PDO::PARAM_INT);
         return $this->ExecuteAndFetchArray($statement);
     }
     /**
