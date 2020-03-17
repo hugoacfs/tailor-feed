@@ -8,7 +8,7 @@ if (!defined('CONFIG_PROTECTION')) {
 $params = [];
 $s_id = $_GET['sourceid'] ?? false;
 if ($s_id) $params['sourceid'] = $s_id;
-$params['max'] = $_GET['max'] ?? 0;
+$params['max'] = $_GET['max'] ?? 100;
 $params['page'] = $_GET['page'] ?? 1;
 function buildGetString(array $params): string
 {
@@ -37,7 +37,7 @@ function buildGetString(array $params): string
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <?php
-                    $options = [10, 20, 40, 80];
+                    $options = [25, 50, 100];
                     $tparams = $params;
                     foreach ($options as $option) {
                         $tparams['max'] = $option;
