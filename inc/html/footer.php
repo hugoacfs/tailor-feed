@@ -1,4 +1,4 @@
-<script data-main="js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" crossorigin="anonymous"></script>
+<script data-main="js/main" src="js/dependencies/require.min.js" crossorigin="anonymous"></script>
 <script>
     requirejs.config({
         baseUrl: 'js',
