@@ -49,10 +49,12 @@ foreach ($allSources as $source) {
                 <div class="md-form">
                     <div class="row ">
                         <div class="col-8 align-self-center">
-                            <label class="form-text text-muted text-left" for="preferences">' . $type . ' @' . $source->getReference() . '</label>
-                        
+                            <label class="form-text text-muted text-left" for="preferences">
+                                <a class="card-link text-primary" target="twitter" href="'.$source->getUrl().'">' . $type . ' @' . $source->getReference() . '
+                                </a>
+                            </label>
                             <!-- Name -->
-                            <label class="form-text text-muted text-left" for="preferences">' . $source->getName() . '</label>
+                            <label class="form-text text-dark text-left" for="preferences">' . $source->getName() . '</label>
                         </div>
                         <div class="col-4 align-self-center">
                             <input type="checkbox" name="' . $sourceId . '" value="' . $sourceId . '" ' . $checkedStatus . ' data-toggle="toggle" data-style="ios">

@@ -75,6 +75,10 @@ class Source
     {
         return $this->name;
     }
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
     public function getType(): string
     {
         return $this->type;
@@ -103,11 +107,20 @@ class Source
             $reference = $row['reference'];
             $id = $row['id'];
             $name = $row['screenname'];
+            switch($type){
+                case 'twitter':
+                    $url = 'https://twitter.com/'.$reference;
+                    break;
+                default:
+                    $url = '';
+                    break;
+            }
             $builder = array(
                 'dbId' => $id,
                 'reference' => strtolower($reference),
                 'type' => $type,
-                'name' => $name
+                'name' => $name,
+                'url' => $url
             );
             $sources[] = new Source($builder);
         }

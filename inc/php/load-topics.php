@@ -48,7 +48,7 @@ foreach ($allTopics as $topic) {
                 <div class="md-form">
                     <div class="row ">
                         <div class="col-8 align-self-center">
-                            <label class="form-text text-muted text-left" for="preferences">' . $topic->description . '</label>
+                            <label class="form-text text-dark text-left" for="preferences">' . $topic->description . '</label>
 
                             <label class="form-text text-muted text-left" for="preferences"><strong>#' . $topic->name . '</strong></label>
                         </div>
