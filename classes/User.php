@@ -250,6 +250,7 @@ class User
      * Where $builder = ["key" => $var]
      * And "key" is string is a variable name
      * and "value" is the corresponding variable.
+     * @return string HTML - Returns html for a card which has all the articles ready for display on a bootstrap4 site.
      */
     private function buildTimelineHtml(array $builder): string
     {
@@ -347,6 +348,11 @@ class User
         </div>
         <hr class="thin-hr">';
     }
+    /**
+     * Prepares an array with all article data requested.
+     * @param int $page The page which the articles will be built, 1 being the first (most recent) articles.
+     * @return array $builder - An associative array which holds the data for all the articles prepared.
+     */
     public function prepareArticlesBuilder(int $page = 1): array
     {
         $builder = [];

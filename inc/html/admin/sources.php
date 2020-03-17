@@ -50,7 +50,7 @@ if (!defined('CONFIG_PROTECTION')) {
                         $btnStyle = 'class="btn btn-success mr-1"><i class="fas fa-eye"></i></button>';
                     } else {
                         $quickAction = 'activate-source';
-                        $btnStyle = 'class="btn btn-danger mr-1"><i class="fas fa-eye-slash"></i></button>';
+                        $btnStyle = 'class="btn btn-warning mr-1"><i class="fas fa-eye-slash"></i></button>';
                     }
                     echo '<tr id="row-' . $id . '">';
                     echo '<td><a href="admin.php?table=articles&sourceid=' . $id . '"><i class="fas fa-table fa-lg"></i></a></td>';

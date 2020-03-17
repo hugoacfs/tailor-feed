@@ -522,7 +522,7 @@ class Connection
     {
         $lastlogin = time();
         $stmt = $this->PDOprepare(
-            "UPDATE `users` SET `lastlogin`= :lastlogin  WHERE username = :username;"
+            "UPDATE `users` SET `lastlogin`= :lastlogin  WHERE `username` = :username;"
         );
         $stmt->bindValue('username', $username, PDO::PARAM_STR);
         $stmt->bindValue('lastlogin', $lastlogin, PDO::PARAM_INT);
@@ -530,51 +530,36 @@ class Connection
     }
     /** END User QUERIES */
     /** ADMIN QUERIES */
-    //TODO:REVIEW
-    public function updateSourceStatusById(int $sourceId, int $adminId): bool
+    private function updateStatusById(int $id, int $adminId, string $tableName): bool
     {
-        $id = intval($sourceId);
-        $sql_string = "SELECT `status` FROM sources WHERE `id` = $id";
-        $logDescription = new stdClass;
-        $logDescription->action = 'Source Status Update';
-        $logDescription->sourceId = $id;
-        $fetch = $this->PDOquery($sql_string);
-        $fetched = $fetch->fetch();
-        $stmt = $this->PDOprepare("UPDATE `sources` SET `status`=:newstatus WHERE `id`= :id");
-        if ($fetched['status'] === 'suspended') $newstatus = 'active';
+
+        $sql_string = "SELECT `status` FROM `$tableName` WHERE `id` = :id;";
+        $id = intval($id);
+        $select_stmt = $this->PDOprepare($sql_string);
+        $select_stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $fetched = $this->ExecuteAndFetchArray($select_stmt)[0];
+        $stmt = $this->PDOprepare("UPDATE `$tableName` SET `status`=:newstatus WHERE `id`= :id");
+        if ($fetched['status'] == 'suspended') $newstatus = 'active';
         else $newstatus = 'suspended';
-        $logDescription->newstatus = $newstatus;
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
-        $success = $stmt->execute();
+        $success = $this->PDOexecute($stmt);
+        $logDescription = new stdClass;
+        $logDescription->action = ucfirst($tableName) . ' Status Update';
+        $logDescription->topicId = $id;
+        $logDescription->newstatus = $newstatus;
         $logDescription->success = $success;
         $logDescription = json_encode($logDescription);
-        $now = time();
-        // $this->insertAdminLog($adminId, $now, $logDescription);
+        //$admin id should be used to log this event
         return $success;
     }
-    // TODO:REVIEW
+    public function updateSourceStatusById(int $sourceId, int $adminId): bool
+    {
+        return $this->updateStatusById($sourceId, $adminId, 'sources');
+    }
     public function updateTopicStatusById(int $topicId, int $adminId): bool
     {
-        $id = intval($topicId);
-        $sql_string = "SELECT `status` FROM `topics` WHERE `id` = $id";
-        $logDescription = new stdClass;
-        $logDescription->action = 'Topic Status Update';
-        $logDescription->topicId = $id;
-        $fetch = $this->PDOquery($sql_string);
-        $fetched = $fetch->fetch();
-        $stmt = $this->PDOprepare("UPDATE `topics` SET `status`=:newstatus WHERE `id`= :id");
-        if ($fetched['status'] === 'suspended') $newstatus = 'active';
-        else $newstatus = 'suspended';
-        $logDescription->newstatus = $newstatus;
-        $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('newstatus', $newstatus, PDO::PARAM_STR);
-        $success = $stmt->execute();
-        $logDescription->success = $success;
-        $logDescription = json_encode($logDescription);
-        $now = time();
-        // $this->insertAdminLog($adminId, $now, $logDescription);
-        return $success;
+        return $this->updateStatusById($topicId, $adminId, 'topics');
     }
     // might be merged with updatetopicbyid
     //TODO:REVIEW

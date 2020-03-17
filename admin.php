@@ -49,9 +49,11 @@ if ($table) {
                 $message = 'updated the topic`s details.';
                 break;
             case 'suspend-source':
+            case 'activate-source':
                 $message = 'updated the source status.';
                 break;
             case 'suspend-topic':
+            case 'activate-topic':
                 $message = 'updated the topic status.';
                 break;
             case 'delete-article':
