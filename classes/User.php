@@ -382,7 +382,7 @@ class User
         $builder = [];
         $articlesToDisplay = $this->buildSubscribedArticles($page);
         $lastArticles = false;
-        if (count($articlesToDisplay) < 10 && count($articlesToDisplay) > 1) $lastArticles = true;
+        if (count($articlesToDisplay) < 10 && count($articlesToDisplay) > 0) $lastArticles = true;
         foreach ($articlesToDisplay as $article) {
             $message = convertHashtags(convertMentions(convertLinks($article->body)));
             $timestamp = $article->creationDate;
