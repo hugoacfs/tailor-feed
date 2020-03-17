@@ -259,7 +259,7 @@ class User
          * Change this to meet the requirements of the client where this
          * will be displayed
          */
-        if (isset($builder['lastArticle'])) {
+        if (isset($builder['lastArticle']) && $this->userName != 'default') {
             $sourcesButton =  '<button type="button" class="pages-btn btn btn-dark btn-outline-light mr-1 ml-1 border" data-toggle="modal" data-content="pages" data-target="#pagesModal">
                             <span class="fas fa-at menu-fa" aria-hidden="true"></span> 
                             <span class="preferences-btn-text">Following</span>
