@@ -27,4 +27,3 @@
         }
     });
 </script>
-<!-- https://stackoverflow.com/questions/46004087/issue-loading-popperjs-and-bootstrap-via-requirejs-even-after-using-recommended -->
