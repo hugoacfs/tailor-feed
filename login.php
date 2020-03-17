@@ -62,7 +62,7 @@ if (!isset($_SESSION['signedIn'])) {
     };
 } elseif (!$_SESSION['signedIn']) {
     session_unset();
-    $_SESSION['USER'] = new SSAML();
+    if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
 } else redirectUserToTimeline();
 
