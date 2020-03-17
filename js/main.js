@@ -3,7 +3,7 @@ define([
     'lodash',
     'methods',
     'modal',
-    'feed-2',
+    'feed',
     'admin',
     'bootstrap',
     'toggle'

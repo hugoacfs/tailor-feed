@@ -259,13 +259,36 @@ class User
          * Change this to meet the requirements of the client where this
          * will be displayed
          */
+        if (isset($builder['lastArticle'])) {
+            $sourcesButton =  '<button type="button" class="pages-btn btn btn-dark btn-outline-light mr-1 ml-1 border" data-toggle="modal" data-content="pages" data-target="#pagesModal">
+                            <span class="fas fa-at menu-fa" aria-hidden="true"></span> 
+                            <span class="preferences-btn-text">Following</span>
+                        </button>';
+            $topicsButton =  '<button type="button" class="topics-btn btn btn-dark btn-outline-light mr-1 ml-1 border" data-toggle="modal" data-content="topics" data-target="#topicsModal">
+                            <span class="fas fa-hashtag menu-fa" aria-hidden="true"></span> 
+                            <span class="preferences-btn-text">Topics</span>
+                        </button>';
+            $message = "For more news, follow more accounts here " . $sourcesButton . " <br> Or try following some topics here ". $topicsButton;
+            $endMessage = '
+            <div id="end-news" class="card-body ">
+                    <h4 class="card-title">
+                        <a class=" card-link">
+                            You are all caught up!
+                        </a>
+                    </h4>
+                    <p class="card-text">' . $message . '</p>
+                    <span style="display: none;">newscode:340</span>
+            </div>
+            <hr class="thin-hr">'; //newscode:340 means stop refreshing ajax
+            return $endMessage;
+        }
         if (!$builder) {
             $button =  '<button type="button" class="pages-btn btn btn-dark btn-outline-light mr-1 ml-1 border" data-toggle="modal" data-content="pages" data-target="#pagesModal">
                             <span class="fas fa-at menu-fa" aria-hidden="true"></span> 
                             <span class="preferences-btn-text">Following</span>
                         </button>';
-            $message = "There is no new activity on your timeline 😮. <br> Try following an account here " . $button;
-            return '
+            $message = "Uh oh, there is no new activity on your timeline 😮. <br> Try following an account here " . $button;
+            $endMessage = '
             <div id="end-news" class="card-body ">
                     <h4 class="card-title">
                         <a class=" card-link">
@@ -275,7 +298,8 @@ class User
                     <p class="card-text">' . $message . '</p>
                     <span style="display: none;">newscode:340</span>
             </div>
-            <hr class="thin-hr">';
+            <hr class="thin-hr">'; //newscode:340 means stop refreshing ajax
+            return $endMessage;
         }
         $media = $builder['media'] ?? [];
         $mediaHTML = '';
@@ -357,6 +381,8 @@ class User
     {
         $builder = [];
         $articlesToDisplay = $this->buildSubscribedArticles($page);
+        $lastArticles = false;
+        if (count($articlesToDisplay) < 10 && count($articlesToDisplay) > 1) $lastArticles = true;
         foreach ($articlesToDisplay as $article) {
             $message = convertHashtags(convertMentions(convertLinks($article->body)));
             $timestamp = $article->creationDate;
@@ -382,6 +408,7 @@ class User
                 'media' => $article->media
             );
         }
+        if ($lastArticles) $builder[] = array('lastArticle' => true);
         return $builder;
     }
     /**
@@ -393,10 +420,8 @@ class User
     {
         $htmlHolder = '';
         $blocks = $this->prepareArticlesBuilder($page);
-        if(!$blocks) return $this->buildTimelineHtml([]);
-        foreach ($blocks as $builder) {
-            $htmlHolder .= $this->buildTimelineHtml($builder);
-        }
+        if (!$blocks) return $this->buildTimelineHtml([]);
+        foreach ($blocks as $builder) $htmlHolder .= $this->buildTimelineHtml($builder);
         return $htmlHolder;
     }
 }
