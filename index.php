@@ -20,20 +20,39 @@ require $CFG->dirroot . '/inc/html/nav.php';
             $feed = (new User('default'))->displaySubscribedArticles();
             echo ($feed);
             ?>
-            <div id="end-news" class="card-body ">
-                <h4 class="card-title">
-                    <a class=" card-link">
-                        That's all for now...
-                    </a>
-                </h4>
-                <p class="card-text">To see more university news, login with your university account.
-                    <button onclick="location.href='login.php'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
-                        <i class="fas fa-sign-out-alt" aria-hidden="true">
-                        </i> Login
-                    </button>
-                </p>
-                <span style="display: none;">newscode:340</span>
-            </div>
+            <?php
+            $endMessage = '<div id="end-news" class="card-body ">
+                                <h4 class="card-title">
+                                    <a class=" card-link">
+                                        That\'s all for now...
+                                    </a>
+                                </h4>
+                                <p class="card-text">To see more university news, login with your university account.
+                                    <button onclick="location.href=\'login.php\'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+                                        <i class="fas fa-sign-out-alt" aria-hidden="true">
+                                        </i> Login
+                                    </button>
+                                </p>
+                                <span style="display: none;">newscode:340</span>
+                            </div>';
+            if (isset($_SESSION['USER'])) {
+                $endMessage = '<div id="end-news" class="card-body ">
+                                    <h4 class="card-title">
+                                        <a class=" card-link">
+                                            That\'s all for now...
+                                        </a>
+                                    </h4>
+                                    <p class="card-text">To see more university news, go to your timeline.
+                                        <button onclick="location.href=\'timeline.php\'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+                                            <i class="fas fa-stream" aria-hidden="true">
+                                            </i> My Timeline
+                                        </button>
+                                    </p>
+                                    <span style="display: none;">newscode:340</span>
+                                </div>';
+            }
+            echo $endMessage;
+            ?>
         </div>
     </div>
 </div>
