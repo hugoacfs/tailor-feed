@@ -31,12 +31,16 @@ function displayTopicsBtn()
 }
 function displayMyTimelineLink($pageId)
 {
-    $status = '';
-    if (!isLoggedIn()) $status = 'disabled';
-    elseif ($pageId === 'timeline') $status = 'active';
+    $status = 'disabled';
+    $user = 'My ';
+    if (isLoggedIn()) {
+        $status = '';
+        $user = $_SESSION['givenName'] . '\'s ' ?? 'My ';
+    }
+    if ($pageId === 'timeline') $status = 'active';
     echo '<li class="nav-item ">
                 <a class="nav-link ' . $status . '" href="timeline.php"><i class="fas fa-stream">
-                    </i> My Timeline
+                    </i> ' . $user . 'Timeline
                 </a>
             </li>';
 }
