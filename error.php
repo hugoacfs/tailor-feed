@@ -62,7 +62,7 @@
                     <h2>
                         <?php
                         global $EXCEPTION;
-                        echo $EXCEPTION->code . ' - We seem to have ran into a problem'; ?></h2>
+                        echo $EXCEPTION->code . ' - We seem to have run into a problem'; ?></h2>
                     <div class="error-details">
                         Sorry, an error has occured, <?php echo $EXCEPTION->message; ?>
                     </div>
