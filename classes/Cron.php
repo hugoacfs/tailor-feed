@@ -9,31 +9,45 @@ class Cron
     public $startTime;
     public $finishTime;
     public $type;
+    public $origin;
     public $sourcesStatus = false;
     public $articlesStatus = false;
     public $articlesRecycleStatus = false;
     public $usersRecycleStatus = false;
-    public function __construct(string $type)
+    public function __construct(string $type, string $origin)
     {
         global $CFG;
         $this->type = $type;
+        $this->origin = $origin;
         $this->startTime = time();
-        echo "Initiating Cron Job for " . ucfirst($type) . "... \n";
+        echo "Initiating Cron Job for " . $origin . " " . ucfirst($type) . "... \n";
         echo "Server Time: " . date('r', $this->startTime) . "\n";
-        switch ($this->type) {
+        switch ($this->origin) {
             case 'twitter':
                 $config = $CFG->sources['twitter'];
-                continue;
+                break;
             case 'facebook':
                 $config = $CFG->sources['facebook'];
-                continue;
+                break;
             case 'rss':
                 $config = $CFG->sources['rss'];
-                continue;
-            case 'sources':
-                // $config = $CFG->sources['rss'];
-                continue;
+                break;
+            default:
+                $config = null;
+                break;
         }
+        switch ($this->type) {
+            case 'articles':
+                $update_articles = $config['update_articles']; //if true, then get articles
+                break;
+            case 'sources':
+                $update_sources = $config['update_sources']; //if true then get sources
+                break;
+            default:
+                $config = null;
+                break;
+        }
+        
         $update_articles = $config['update_articles']; //if true, then get articles
         $update_sources = $config['update_sources']; //if true then get sources
         $sources_cron = intval($config['cron']); //cron interval
