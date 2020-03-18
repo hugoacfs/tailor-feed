@@ -744,11 +744,13 @@ class Connection
     }
     /** END ADMIN QUERIES */
     /** CRON QUERIES */
-    public function updateLastSourcesCronTime(string $type): bool
+    public function updateLastCronTimeByType(string $type, string $which): bool
     {
-        $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = 'last_cron';");
+        $which .= '_last_cron';
+        $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = :name;");
         $stmt->bindValue('time', time(), PDO::PARAM_STR);
         $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        $stmt->bindValue('name', $which, PDO::PARAM_STR);
         return $this->PDOexecute($stmt);
     }
     public function updateRecycleCronTime(string $type): bool

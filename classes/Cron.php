@@ -20,33 +20,35 @@ class Cron
         $this->startTime = time();
         echo "Initiating Cron Job for " . ucfirst($type) . "... \n";
         echo "Server Time: " . date('r', $this->startTime) . "\n";
+        //switching to the right config array by type
         switch ($this->type) {
             case 'twitter':
                 $config = $CFG->sources['twitter'];
-                continue;
+                break;
             case 'facebook':
                 $config = $CFG->sources['facebook'];
-                continue;
+                break;
             case 'rss':
                 $config = $CFG->sources['rss'];
-                continue;
-            case 'sources':
-                // $config = $CFG->sources['rss'];
-                continue;
+                break;
+            default:
+                $config = null;
+                break;
         }
         $update_articles = $config['update_articles']; //if true, then get articles
+        $articles_cron = intval($config['articles_cron']); //cron interval
+        $articles_last_cron = intval($config['articles_last_cron']); //last time run
         $update_sources = $config['update_sources']; //if true then get sources
-        $sources_cron = intval($config['cron']); //cron interval
-        $sources_last_cron = intval($config['last_cron']); //last time run
-        $run_now = $this->timeToRun($sources_cron, $sources_last_cron, time());
-        if ($run_now) {
-            if ($update_articles) {
-                $this->articlesStatus = $this->updateArticles();
-            }
-            // if ($update_sources) {
-            //     $this->sourcesStatus = $this->updateSources();
-            // }
-            // UPDATE LAST RUN BY TYPE
+        $sources_cron = intval($config['sources_cron']); //cron interval
+        $sources_last_cron = intval($config['sources_last_cron']); //last time run
+
+        $sources_run_now = $this->timeToRun($sources_cron, $sources_last_cron, time());
+        $articles_run_now = $this->timeToRun($articles_cron, $articles_last_cron, time());
+        if ($articles_run_now && $update_articles) {
+            $this->articlesStatus = $this->updateArticles();
+        }
+        if ($sources_run_now && $update_sources) {
+            $this->sourcesStatus = $this->updateSources();
         }
         //TODO:FIX make into function
         $articles_cron = intval($CFG->articles_recycle_cron); //cron interval
@@ -119,8 +121,10 @@ class Cron
     private function updateSources(): bool
     {
         switch ($this->type) {
-            case 'sources-twitter':
+            case 'twitter':
                 return $this->updateTwitterSources();
+            default:
+                return false;
         }
     }
     private function updateTwitterSources(): bool
@@ -144,10 +148,13 @@ class Cron
     {
         global $DB;
         echo 'Updating last run time -> ' . $this->type . "\n";
-        if ($this->sourcesStatus || $this->articlesStatus) $DB->updateLastSourcesCronTime($this->type);
+        if ($this->sourcesStatus) $DB->updateLastCronTimeByType($this->type, 'sources');
+        if ($this->articlesStatus) $DB->updateLastCronTimeByType($this->type, 'articles');
         if ($this->articlesRecycleStatus) $DB->updateRecycleCronTime('articles');
         if ($this->usersRecycleStatus) $DB->updateRecycleCronTime('users');
     }
+
+    // recycle stuff
     private function removeOldArticles($since): bool
     {
         global $DB;
