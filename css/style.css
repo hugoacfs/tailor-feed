@@ -177,10 +177,6 @@ body {
   border-radius: 100%;
 }
 
-.carousel-control-next, .carousel-control-prev{
-  background-color: #ffffff42;
-}
-
 .thin-hr {
   background-color: #2125293b;
   margin: 0;
@@ -260,4 +256,20 @@ body {
   max-width: 100% !important;
   background-color: #00000000 !important;
   border-style: none !important;
+}
+
+.carousel-control-next, .carousel-control-prev{
+  background-color: #ffffff42;
+}
+
+#carousel-lander .carousel-control-next, #carousel-lander .carousel-control-prev{
+  background-color: #00000000;
+}
+
+#carousel-lander .carousel-control-next span, #carousel-lander .carousel-control-prev span{
+  background-color: #0000008a;
+}
+
+.modal {
+  padding-right: 0px !important;
 }

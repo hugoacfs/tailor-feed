@@ -69,11 +69,11 @@ define(['jquery', 'lodash'], function ($, _) {
             if (children.length > 1) {
                 // get outta here;
                 chtml += '<a class="carousel-control-prev" href="#carousel-lander" role="button" data-slide="prev">' +
-                            '<span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>' +
+                            '<span class="fas fa-arrow-left fa-lg text-primary p-5 rounded" aria-hidden="true"></span>' +
                             '<span class="sr-only">Previous</span>' +
                         '</a>' +
                         '<a class="carousel-control-next " href="#carousel-lander" role="button" data-slide="next">' +
-                            '<span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>' +
+                            '<span class="fas fa-arrow-right fa-lg text-primary p-5 rounded" aria-hidden="true"></span>' +
                             '<span class="sr-only">Next</span>' +
                         '</a>';
             }
