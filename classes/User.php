@@ -318,7 +318,7 @@ class User
                     break;
                 case 'video':
                     $mediaHTML .= '
-                        <div class="carousel-item ' . $firstStatus . '">
+                        <div class="my-carousel carousel-item ' . $firstStatus . '">
                             <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
                         </div>';
                     break;
@@ -327,18 +327,18 @@ class User
         }
         if ($numOfMediaItems > 1) {
             $carouselHtmlNav = '<a class="carousel-control-prev" href=".carouselArticle' . $builder['articleId'] . '" role="button" data-slide="prev">
-                                        <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next " href=".carouselArticle' . $builder['articleId'] . '" role="button" data-slide="next">
-                                        <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>';
+                                    <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next " href=".carouselArticle' . $builder['articleId'] . '" role="button" data-slide="next">
+                                    <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>';
         }
         if ($builder['media']) {
             $carouselHtml = '
-            <a href="#carouselArticle' . $builder['articleId'] . '" class="carousel-pop">
-                <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle' . $builder['articleId'] . ' carousel slide" data-ride="carousel" data-interval="false">
+            <a href="#" class="carousel-pop">
+                <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle carouselArticle' . $builder['articleId'] . ' carousel " data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>

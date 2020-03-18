@@ -258,6 +258,6 @@ body {
 }
 #carousel-modal .modal-content{
   max-width: 100% !important;
-  background-color: #0000000e !important;
+  background-color: #00000000 !important;
   border-style: none !important;
 }
