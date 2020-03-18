@@ -52,7 +52,22 @@ define(['jquery', 'lodash'], function ($, _) {
                 // console.log('next page:' + page);
             };
         };
+        // imagePop();
+        carouselPop();
     };
+    imagePop = function () {
+        $('.img-pop').on('click', function (e) {
+            $('.image-viewer').attr('src', $(this).find('img').attr('src'));
+            $('#image-modal').modal('show');
+        });
+    }
+    carouselPop = function () {
+        $('.carousel-pop').on('click', function (e) {
+            $('#carousel-lander').html($(this).html());
+            console.log($(this).html());
+            $('#carousel-modal').modal('show');
+        });
+    }
     return {
         moreNews: moreNews
     };

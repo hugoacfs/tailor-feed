@@ -269,7 +269,7 @@ class User
                             <span class="fas fa-hashtag menu-fa" aria-hidden="true"></span> 
                             <span class="preferences-btn-text">Topics</span>
                         </button>';
-            $message = "For more news, follow more accounts here " . $sourcesButton . " <br> Or try following some topics here ". $topicsButton;
+            $message = "For more news, follow more accounts here " . $sourcesButton . " <br> Or try following some topics here " . $topicsButton;
             $endMessage = '
             <div id="end-news" class="card-body ">
                     <h4 class="card-title">
@@ -312,7 +312,7 @@ class User
             switch ($m['type']) {
                 case 'photo':
                     $mediaHTML .= '
-                        <div class="carousel-item ' . $firstStatus . '">
+                        <div class="my-carousel carousel-item ' . $firstStatus . '">
                             <img class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=medium" alt="Article Image">
                         </div>';
                     break;
@@ -326,23 +326,25 @@ class User
             $firstStatus = '';
         }
         if ($numOfMediaItems > 1) {
-            $carouselHtmlNav = '<a class="carousel-control-prev" href="#carouselArticle' . $builder['articleId'] . '" role="button" data-slide="prev">
+            $carouselHtmlNav = '<a class="carousel-control-prev" href=".carouselArticle' . $builder['articleId'] . '" role="button" data-slide="prev">
                                         <span class="fas fa-arrow-left fa-lg text-dark" aria-hidden="true"></span>
                                         <span class="sr-only">Previous</span>
                                     </a>
-                                    <a class="carousel-control-next " href="#carouselArticle' . $builder['articleId'] . '" role="button" data-slide="next">
+                                    <a class="carousel-control-next " href=".carouselArticle' . $builder['articleId'] . '" role="button" data-slide="next">
                                         <span class="fas fa-arrow-right fa-lg text-dark" aria-hidden="true"></span>
                                         <span class="sr-only">Next</span>
                                     </a>';
         }
         if ($builder['media']) {
             $carouselHtml = '
-                <div id="carouselArticle' . $builder['articleId'] . '" class="carousel slide" data-ride="carousel" data-interval="false">
+            <a href="#carouselArticle' . $builder['articleId'] . '" class="carousel-pop">
+                <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle' . $builder['articleId'] . ' carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>
                     ' . $carouselHtmlNav . '
-                </div>';
+                </div>
+            </a>';
         }
         return '
         <div class="card-body ">

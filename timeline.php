@@ -58,6 +58,7 @@ if (isset($_POST['submittopics'])) {
 $_POST = [];
 include $CFG->dirroot . '/inc/html/modal-pages.php';
 include $CFG->dirroot . '/inc/html/modal-topics.php';
+include $CFG->dirroot . '/inc/html/modal-images.php';
 require_once 'inc/html/footer.php'
 ?>
 </body>
