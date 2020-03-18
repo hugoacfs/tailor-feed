@@ -24,10 +24,6 @@ class Authenticate
         if($user) $exists = true;
         if (!$newUserMode && $exists) {
             $this->passWord = $user['password'];
-            // echo $passWord;
-            // echo '<br>users password from input, hashed>'.password_hash($passWord, PASSWORD_BCRYPT);
-            // echo '<br>users password from DB, hashed>'.$this->passWord;
-            // echo 'is signed in>>>>' . $isSignedIn;
             $this->signedIn = password_verify($passWord, $this->passWord);
             $this->givenName = $user['givenname'];
             $this->role = $user['role'];
@@ -83,8 +79,9 @@ class Authenticate
     }
     protected function displayWelcomeMessage()
     {
-        $_SESSION['welcomemessage'] = true;
-        $_SESSION['wmtimestamp'] = time();
+        setcookie('welcomemessage', 'display');
+        $now = strval(time());
+        setcookie('wmtimestamp', $now);
     }
     function getUserName()
     {
