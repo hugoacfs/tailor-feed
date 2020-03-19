@@ -32,10 +32,12 @@ define([
         _.debounce(
             function () {
                 feed.moreNews(username, safelock);
-                // console.log(username);
             }, 50, { immediate: true }
         )
     );
+    $(document).ready(function () {
+        feed.carouselPop();
+    });
     modal.refreshSubscribed(username, safelock, 'topics');
     modal.refreshSubscribed(username, safelock, 'pages');
 });
