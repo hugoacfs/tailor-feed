@@ -55,6 +55,9 @@ require $CFG->dirroot . '/inc/html/nav.php';
             ?>
         </div>
     </div>
+    <div class="row mx-auto pt-3">
+        <span class="load-feed-spinner spinner-border text-primary hide-input"></span>
+    </div>
 </div>
 </div>
 <?php require_once 'inc/html/footer.php' ?>

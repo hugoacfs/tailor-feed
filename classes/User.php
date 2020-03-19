@@ -337,14 +337,14 @@ class User
         }
         if ($builder['media']) {
             $carouselHtml = '
-            <a href="#" class="carousel-pop">
+            <button class="carousel-pop">
                 <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle carouselArticle' . $builder['articleId'] . ' carousel " data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>
                     ' . $carouselHtmlNav . '
                 </div>
-            </a>';
+            </button>';
         }
         return '
         <div class="card-body ">
@@ -371,7 +371,7 @@ class User
                     <i class="fas fa-link fa-xs"></i>
                 </a>
             </p>
-            <p class="card-text">' . $builder['message'] . $carouselHtml . ' </p>
+            <p class="card-text">' . $builder['message'] . '</p><p><div class="text-center" >' . $carouselHtml . ' </div></p>
         </div>
         <hr class="thin-hr">';
     }
