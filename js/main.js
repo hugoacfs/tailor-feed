@@ -11,6 +11,7 @@ define([
     $("body").tooltip({
         selector: '[data-toggle=tooltip]'
     });
+    $('.carousel').carousel('pause');
     methods.showToast();
     methods.hideWelcomeToast();
     // prevents form re-submission
