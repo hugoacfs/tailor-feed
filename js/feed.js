@@ -52,6 +52,42 @@ define(['jquery', 'lodash'], function ($, _) {
                 // console.log('next page:' + page);
             };
         };
+        // imagePop();
+        carouselPop();
+    };
+    imagePop = function () {
+        $('.img-pop').on('click', function (e) {
+            $('.image-viewer').attr('src', $(this).find('img').attr('src'));
+            $('#image-modal').modal('show');
+        });
+    };
+    carouselPop = function () {
+        $('.carousel-pop').on('click', function (e) {
+            var chtml = $(e.currentTarget).html();
+            var children = $(e.currentTarget).find('.carousel-inner').children('.carousel-item');
+            if (children.length > 1) {
+                chtml += '<a class="carousel-control-prev" href="#carousel-lander" role="button" data-slide="prev">' +
+                    '<span class="fas fa-arrow-left fa-lg text-primary p-5 rounded" aria-hidden="true"></span>' +
+                    '<span class="sr-only">Previous</span>' +
+                    '</a>' +
+                    '<a class="carousel-control-next " href="#carousel-lander" role="button" data-slide="next">' +
+                    '<span class="fas fa-arrow-right fa-lg text-primary p-5 rounded" aria-hidden="true"></span>' +
+                    '<span class="sr-only">Next</span>' +
+                    '</a>';
+            } else {
+                for (const item of children) {
+                    console.log(children);
+                    item.setAttribute('data-dismiss', 'modal');
+                };
+            }
+            var imgChildren = $(e.currentTarget).find('.carousel-inner').find('.carousel-item').children('img');
+            for (const img of imgChildren) {
+                img.setAttribute('data-dismiss', 'modal');
+            };
+            $('#carousel-lander').html(chtml);
+            $('#carousel-lander').carousel('pause');
+            $('#carousel-modal').modal('show');
+        });
     };
     return {
         moreNews: moreNews

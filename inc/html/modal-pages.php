@@ -6,7 +6,7 @@ if (!defined('CONFIG_PROTECTION')) {
 }
 ?>
 <!-- The Modal -->
-<div class="modal" id="pagesModal" tabindex="-1" role="dialog" aria-labelledby="pagesModal" aria-hidden="true">
+<div class="modal fade" id="pagesModal" tabindex="-1" role="dialog" aria-labelledby="pagesModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -6,6 +6,7 @@ body {
   font-size: 15px;
   font-family:  'Roboto', 'PT Sans', sans-serif;
   scroll-behavior: smooth;
+  padding-right: 0 !important;
 }
 
 body {
@@ -22,6 +23,10 @@ body {
   padding-top: 0px;
   padding-bottom: 40px;
   background-color: #f5f5f5;
+}
+
+nav{
+  padding: .375rem .75rem !important;
 }
 
 .bg-darker{
@@ -240,4 +245,43 @@ body {
 }
 
 /* End accessibility */
+/* IMAGE AND CAROUSEL */
+.my-carousel{
+  max-height: 100vh;
+  height: auto !important;
+}
 
+#carousel-modal .modal-dialog{
+  max-width: 100% !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+#carousel-modal .modal-content{
+  max-width: 100% !important;
+  background-color: #00000000 !important;
+  border-style: none !important;
+  width: auto !important;
+}
+
+.carousel-control-next, .carousel-control-prev{
+  background-color: #ffffff42;
+}
+
+#carousel-lander .carousel-control-next, #carousel-lander .carousel-control-prev{
+  background-color: #00000000;
+}
+
+
+#carousel-lander .carousel-control-next:hover, #carousel-lander .carousel-control-prev:hover{
+  background-color: #0000004b;
+}
+
+.modal {
+  padding-right: 0px !important;
+}
+.carousel-pop{
+  border-style: none;
+  background-color: #00000000;
+  outline: none !important;
+}

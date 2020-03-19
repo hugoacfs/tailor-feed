@@ -56,6 +56,7 @@ define(['jquery'], function ($) {
             deleteCookie('wmtimestamp');
         });
     }
+
     return {
         searchOnKeyUp: searchOnKeyUp,
         getUserName: getUserName,
