@@ -319,7 +319,9 @@ class User
                 case 'video':
                     $mediaHTML .= '
                         <div class="my-carousel carousel-item ' . $firstStatus . '">
-                            <video class="img-fluid mx-auto d-block rounded " src="' . $m['url'] . '?name=small" controls="" alt="Article Video">
+                            <video class="img-fluid mx-auto d-block rounded " controls muted loop alt="Article Video">
+                                <source src="' . $m['url'] . '?name=small" type="video/mp4"/>
+                            </video>
                         </div>';
                     break;
             }

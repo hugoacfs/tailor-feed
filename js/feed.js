@@ -1,7 +1,6 @@
 define(['jquery', 'lodash'], function ($, _) {
     load = _.debounce(
         function (username, safelock, page) {
-            // console.log('received page:' + page);
             runscroll = true;
             ajaxFeed = $.ajax({
                 url: "inc/php/load-feed.php",
@@ -25,7 +24,9 @@ define(['jquery', 'lodash'], function ($, _) {
                     $("#news-feed").append(response);
                 }
                 carouselPop();
-                // console.log('exiting ajax call with runscroll:' + runscroll);
+                $('video').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function () {
+                    this.muted = document.fullscreenElement !== this;
+                });
             });
             return runscroll;
         }, 1000, { leading: true })
@@ -35,11 +36,9 @@ define(['jquery', 'lodash'], function ($, _) {
         var position = element.getBoundingClientRect();
         scrollEvent = ($(window).scrollTop() + $(window).height()) >= $(document).height() - 100;
         visibleEvent = position.top < window.innerHeight && position.bottom >= 0;
-        // console.log('scroll is:' + scrollEvent + ' visible is:' + visibleEvent);
         if (scrollEvent || visibleEvent) {
             return true;
         }
-        console.log(visibleEvent + ' event.');
         return false;
     };
     moreNews = function (username, safelock) {
@@ -49,19 +48,16 @@ define(['jquery', 'lodash'], function ($, _) {
                 load(username, safelock, page);
                 page = parseInt(page) + 1;
                 $('#current-page').html(page);
-                // console.log('exiting moreNews call with runscroll:' + runscroll);
-                // console.log('next page:' + page);
             };
         };
     };
 
     carouselPop = function () {
-        $('.carousel-pop .carouselArticle .carousel-inner').on('click', function (e) {
+        $('.carousel-pop .carouselArticle .carousel-inner ').on('click', function (e) {
             var chtml = $(e.currentTarget).parent().html();
-            // console.log(e);
             var children = $(e.currentTarget).children('.carousel-item');
-            // console.log(chtml);
-            if (children.length > 1) {
+            var vidChildren = $(e.currentTarget).find('.carousel-item').children('video');
+            if (children.length > 1 && vidChildren.length < 1) {
                 chtml += '<a class="carousel-control-prev" href="#carousel-lander" role="button" data-slide="prev">' +
                     '<span class="fas fa-arrow-left fa-lg text-primary p-5 rounded" aria-hidden="true"></span>' +
                     '<span class="sr-only">Previous</span>' +
@@ -75,13 +71,15 @@ define(['jquery', 'lodash'], function ($, _) {
                     item.setAttribute('data-dismiss', 'modal');
                 };
             };
-            var imgChildren = $(e.currentTarget).find('.carousel-item').children('img');
-            for (const img of imgChildren) {
-                img.setAttribute('data-dismiss', 'modal');
+            if (vidChildren.length < 1) { //ignores videos
+                var imgChildren = $(e.currentTarget).find('.carousel-item').children('img');
+                for (const img of imgChildren) {
+                    img.setAttribute('data-dismiss', 'modal');
+                };
+                $('#carousel-lander').html(chtml);
+                $('#carousel-lander').carousel('pause');
+                $('#carousel-modal').modal('show');
             };
-            $('#carousel-lander').html(chtml);
-            $('#carousel-lander').carousel('pause');
-            $('#carousel-modal').modal('show');
         });
     };
     return {
