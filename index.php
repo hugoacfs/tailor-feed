@@ -60,7 +60,10 @@ require $CFG->dirroot . '/inc/html/nav.php';
     </div>
 </div>
 </div>
-<?php require_once 'inc/html/footer.php' ?>
+<?php
+include $CFG->dirroot . '/inc/html/modal-images.php';
+require_once 'inc/html/footer.php';
+?>
 </body>
 
 </html>
