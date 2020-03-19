@@ -338,7 +338,7 @@ class User
         if ($builder['media']) {
             $carouselHtml = '
             <button class="carousel-pop">
-                <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle carouselArticle' . $builder['articleId'] . ' carousel " data-ride="carousel" data-interval="false">
+                <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle carouselArticle' . $builder['articleId'] . ' carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>
