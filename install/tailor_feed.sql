@@ -432,58 +432,6 @@ ALTER TABLE `subscribed_topics`
   ADD CONSTRAINT `fk_sub_top_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
---
--- Metadata
---
-USE `phpmyadmin`;
-
---
--- Metadata for table admin_logs
---
-
---
--- Metadata for table articles
---
-
---
--- Metadata for table articles_topics
---
-
---
--- Metadata for table config
---
-
---
--- Metadata for table media_links
---
-
---
--- Metadata for table sources
---
-
---
--- Metadata for table sources_config
---
-
---
--- Metadata for table subscribed_sources
---
-
---
--- Metadata for table subscribed_topics
---
-
---
--- Metadata for table topics
---
-
---
--- Metadata for table users
---
-
---
--- Metadata for database tailor_feed
---
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
