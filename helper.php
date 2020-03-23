@@ -262,6 +262,56 @@ function restructureString(string $str): array
     $otherStr = implode('_', $arr);
     return array($extractStr, $otherStr);
 }
+/**
+ * @param array $bread is an array which contains all the necessary strings to populate the toast
+ * @return string HTML of all toasts
+ */
+function serveToast(array $bread): string
+{
+    $serving = ''; //our return string of html toasts;
+    foreach ($bread as $butter => $slice) {
+        // echo '<pre>';
+        // print_r($slice);
+        // echo '</pre>';
+        //each slice must consist of 3 parts: timestamp, header, body
+        if (!isset($slice['header'])) continue;
+        if (!isset($slice['timestamp'])) continue;
+        if (!isset($slice['body'])) continue;
+        $toast = '  <div id="' . $butter . '-toast" class="toast" data-autohide="false" data-cookie="' . $butter . '">
+            <div class="toast-header">
+              <img src="img/favicon.ico" class="rounded mr-2" style="max-width: 25px;" alt="icon">
+              <strong class="mr-auto text-primary">' . $slice['header'] . '</strong>
+              <small class="text-muted"> ' . timeAgo($slice['timestamp']) . '</small>
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+            </div>
+            <div class="toast-body bg-dark text-light">
+              ' . $slice['body'] . '
+            </div>
+          </div>';
+        $serving .= $toast; //add the toast to our serving
+    }
+    return $serving; //return our serving
+}
+
+/**
+ * @param int $userId the id of the user which to create the cookies for
+ * @param int $timestamp the time of message creation
+ * @param 
+ * @param 
+ * @return 
+ */
+function makeSomeToast(int $userId, string $body, string $toastName, string $header = 'New notification', int $timestamp = -1)
+{
+    if ($timestamp < 0) $timestamp = time();
+    $myToast = unserialize($_COOKIE[$userId]) ?? [];
+    $bread = [];
+    $bread['timestamp'] = strval($timestamp);
+    $bread['header'] = $header;
+    $bread['body'] = $body;
+    $myToast[$toastName] = $bread;
+    setcookie($userId, serialize($myToast), 0, '/');
+}
+
 function buildModal(string $type): string
 {
     $modal = '  <div class="modal fade" id="' . $type . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . $type . 'Modal" aria-hidden="true">

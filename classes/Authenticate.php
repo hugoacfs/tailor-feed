@@ -74,14 +74,18 @@ class Authenticate
         if ($fetch) {
             return $fetch[0];
         } else {
-            return array();
+            return [];
         }
     }
     protected function displayWelcomeMessage()
     {
-        setcookie('welcomemessage', 'display');
-        $now = strval(time());
-        setcookie('wmtimestamp', $now);
+        $userId = $this->userId;
+        $toastName = 'welcomemessage';
+        $header = 'Welcome to News';
+        $body = 'Hello ' . $this->givenName . ', welcome to the news site!
+                <br>
+                Click on \'@\' and \'#\' to follow accounts and topics.';        
+        makeSomeToast($userId, $body, $toastName, $header); //no need for timestamp as its created now
     }
     function getUserName()
     {
