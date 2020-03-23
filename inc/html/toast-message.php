@@ -11,9 +11,6 @@ $loaf = $_COOKIE[$userId] ?? null;
 if ($loaf) {
   $bread = unserialize($loaf) ?? [];
   $serving = serveToast($bread);
-  // echo '<pre>';
-  // print_r($bread);
-  // echo '</pre>';
   echo $serving;
 }
 echo '</div>';

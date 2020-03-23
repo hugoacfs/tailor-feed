@@ -270,9 +270,6 @@ function serveToast(array $bread): string
 {
     $serving = ''; //our return string of html toasts;
     foreach ($bread as $butter => $slice) {
-        // echo '<pre>';
-        // print_r($slice);
-        // echo '</pre>';
         //each slice must consist of 3 parts: timestamp, header, body
         if (!isset($slice['header'])) continue;
         if (!isset($slice['timestamp'])) continue;
