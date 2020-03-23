@@ -52,8 +52,8 @@ if (isset($_POST['submittopics'])) {
 </div>
 <?php
 $_POST = [];
-require_once($CFG->dirroot . '/inc/html/modal-pages.php');
-require_once($CFG->dirroot . '/inc/html/modal-topics.php');
+echo buildModal('pages');
+echo buildModal('topics');
 require_once($CFG->dirroot . '/inc/html/modal-images.php');
 require_once('inc/html/footer.php');
 ?>

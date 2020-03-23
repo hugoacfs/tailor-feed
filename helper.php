@@ -262,7 +262,7 @@ function restructureString(string $str): array
     $otherStr = implode('_', $arr);
     return array($extractStr, $otherStr);
 }
-function buildModal(string $type)
+function buildModal(string $type): string
 {
     $modal = '  <div class="modal fade" id="' . $type . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . $type . 'Modal" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -301,5 +301,5 @@ function buildModal(string $type)
                         </div>
                     </div>
                 </div>';
-    echo $modal;
+    return $modal;
 }
