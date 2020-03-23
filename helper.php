@@ -110,9 +110,9 @@ function convertLinks($text): string
 }
 function convertHashtags($text)
 {
-    $regex = "/#([a-zA-Z0-9_]+)\b/";
+    $regex = "/#([a-zA-Z0-9_ー-]+)\b/";
     if (preg_match_all($regex, $text, $tag)) {
-        $toReplace = '<a title="https://twitter.com/hashtag/$1" href="https://twitter.com/hashtag/$1" data-toggle="tooltip" data-placement="top" target="uni_news"">$0</a>';
+        $toReplace = '<a title="https://twitter.com/hashtag/$1" href="https://twitter.com/hashtag/$1" data-toggle="tooltip" data-placement="top" target="uni_news">$0</a>';
         return preg_replace($regex, $toReplace, $text);
     } else {
 
