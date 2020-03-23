@@ -5,7 +5,7 @@ if (php_sapi_name() != 'cli') {
     exit;
 }
 define('CONFIG_PROTECTION', false);
-require __DIR__ .'/../config.php';
+require_once(__DIR__ .'/../config.php');
 echo "Getting ".__DIR__."/cron.php ...\n";
 $cronStartTime = time();
 echo "Server Time: ".date( 'r',$cronStartTime)."\n";

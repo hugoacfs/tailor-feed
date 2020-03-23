@@ -2,14 +2,14 @@
 define('CONFIG_PROTECTION', false);
 $title = 'About Community News';
 $pageId = 'about';
-require __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 ?>
 <div class="row ">
     <?php
-    require $CFG->dirroot . '/inc/html/toast-message.php';
+    require_once($CFG->dirroot . '/inc/html/toast-message.php');
     ?>
 
     <div class="container-fluid">

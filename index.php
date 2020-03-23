@@ -2,14 +2,14 @@
 define('CONFIG_PROTECTION', false);
 $title = 'Community News';
 $pageId = 'home';
-require __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 ?>
 <div class="row ">
     <?php
-    require $CFG->dirroot . '/inc/html/toast-message.php';
+    require_once($CFG->dirroot . '/inc/html/toast-message.php');
     ?>
 
     <div class="container-fluid">
@@ -58,11 +58,12 @@ require $CFG->dirroot . '/inc/html/nav.php';
     <div class="row mx-auto pt-3">
         <span class="load-feed-spinner spinner-border text-primary hide-input"></span>
     </div>
+    <?php if (isset($_SESSION['signedIn'])) require_once($CFG->dirroot . '/inc/html/identity.php'); ?>
 </div>
 </div>
 <?php
-include $CFG->dirroot . '/inc/html/modal-images.php';
-require_once 'inc/html/footer.php';
+require_once($CFG->dirroot . '/inc/html/modal-images.php');
+require_once('inc/html/footer.php');
 ?>
 </body>
 

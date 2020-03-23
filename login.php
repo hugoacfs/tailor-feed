@@ -2,10 +2,10 @@
 define('CONFIG_PROTECTION', false);
 $title = 'Login';
 $pageId = 'login';
-require_once __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
     if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
@@ -66,4 +66,4 @@ if (!isset($_SESSION['signedIn'])) {
     redirectGuestToLogin();
 } else redirectUserToTimeline();
 
-require_once 'inc/html/footer.php';
+require_once('inc/html/footer.php');

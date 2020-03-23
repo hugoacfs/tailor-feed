@@ -5,14 +5,14 @@ $title = 'Admin Menu';
 $pageId = 'admin';
 require_once __DIR__ . '/config.php';
 session_start();
-require $CFG->dirroot . '/inc/php/authenticate.php';
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once $CFG->dirroot . '/inc/php/authenticate.php';
+require_once $CFG->dirroot . '/inc/html/head.php';
+require_once $CFG->dirroot . '/inc/html/nav.php';
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
 $adminCookie = $_COOKIE['adminMenu'] ?? false;
-$adminMenu = strip_tags($adminCookie) ;
+$adminMenu = strip_tags($adminCookie);
 $adminState = 'show';
 if ($adminMenu === 'closed') {
     $adminState = '';
@@ -28,7 +28,7 @@ if ($table) {
     if ($action) $action = strip_tags($action);
     unset($_POST['action']);
     if ($action) {
-        foreach($_POST as $k => $v){
+        foreach ($_POST as $k => $v) {
             $actionArray[$k] = strip_tags($v);
         }
         unset($_POST);
@@ -163,19 +163,19 @@ unset($_POST);
             <?php
             switch ($table) {
                 case 'sources':
-                    require $CFG->dirroot . '/inc/html/admin/sources.php';
+                    require_once($CFG->dirroot . '/inc/html/admin/sources.php');
                     break;
                 case 'topics':
-                    require $CFG->dirroot . '/inc/html/admin/topics.php';
+                    require_once($CFG->dirroot . '/inc/html/admin/topics.php');
                     break;
                 case 'articles':
-                    require $CFG->dirroot . '/inc/html/admin/articles.php';
+                    require_once($CFG->dirroot . '/inc/html/admin/articles.php');
                     break;
                 case 'settings':
-                    require $CFG->dirroot . '/inc/html/admin/settings.php';
+                    require_once($CFG->dirroot . '/inc/html/admin/settings.php');
                     break;
                 default:
-                    require $CFG->dirroot . '/inc/html/admin/home.php';
+                    require_once($CFG->dirroot . '/inc/html/admin/home.php');
                     break;
             }
             ?>
@@ -183,8 +183,8 @@ unset($_POST);
     </div>
 </div>
 <?php
-require $CFG->dirroot . '/inc/html/admin/modal.php';
-require_once 'inc/html/footer.php'
+require_once($CFG->dirroot . '/inc/html/admin/modal.php');
+require_once('inc/html/footer.php');
 ?>
 </body>
 

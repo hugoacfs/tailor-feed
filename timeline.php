@@ -2,11 +2,11 @@
 define('CONFIG_PROTECTION', false);
 $title = 'Your Timeline';
 $pageId = 'timeline';
-require_once __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require $CFG->dirroot . '/inc/php/authenticate.php';
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/php/authenticate.php');
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 if (isset($_POST['submitpages'])) {
     unset($_POST['submitpages']);
     $sourcesIds = Source::getAllSourcesIds();
@@ -36,7 +36,7 @@ if (isset($_POST['submittopics'])) {
 ?>
 <div class="row ">
     <?php
-    require $CFG->dirroot . '/inc/html/toast-message.php';
+    require_once($CFG->dirroot . '/inc/html/toast-message.php');
     ?>
     <div class="container-fluid">
         <div class="spacer d-flex justify-content-center align-items-center">
@@ -48,18 +48,14 @@ if (isset($_POST['submittopics'])) {
     <div class="row mx-auto pt-3">
         <span class="load-feed-spinner spinner-border text-primary"></span>
     </div>
-    <div style="display: none;">
-        <i id="current-username"><?php echo $_SESSION['userName']; ?></i>
-        <i id="current-safelock"><?php echo false; ?></i>
-        <i id="current-page">1</i>
-    </div>
+    <?php if (isset($_SESSION['signedIn'])) require_once($CFG->dirroot . '/inc/html/identity.php'); ?>
 </div>
 <?php
 $_POST = [];
-include $CFG->dirroot . '/inc/html/modal-pages.php';
-include $CFG->dirroot . '/inc/html/modal-topics.php';
-include $CFG->dirroot . '/inc/html/modal-images.php';
-require_once 'inc/html/footer.php'
+require_once($CFG->dirroot . '/inc/html/modal-pages.php');
+require_once($CFG->dirroot . '/inc/html/modal-topics.php');
+require_once($CFG->dirroot . '/inc/html/modal-images.php');
+require_once('inc/html/footer.php');
 ?>
 </body>
 

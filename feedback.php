@@ -2,11 +2,11 @@
 define('CONFIG_PROTECTION', false);
 $title = 'Feedback';
 $pageId = 'feedback';
-require_once __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require $CFG->dirroot . '/inc/php/authenticate.php';
-require $CFG->dirroot . '/inc/html/head.php';
-require $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/php/authenticate.php');
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 if (!isLoggedIn()) {
     redirectGuestToLogin();
 }
