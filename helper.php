@@ -244,7 +244,7 @@ function handleException($ex, $message = 'Please contact support to let us know 
         $EXCEPTION->message = $ex->getMessage();
     }
 
-    if (php_sapi_name() != 'cli') include $CFG->dirroot . '/error.php';
+    if (php_sapi_name() != 'cli') require_once($CFG->dirroot . '/error.php');
     exit();
 }
 function contains(string $str, array $arr): bool
