@@ -123,7 +123,7 @@ function convertHashtags($text)
 
 function extractHashtags($text)
 {
-    $regex = "/#([a-zA-Z0-9_]+)\b/";
+    $regex = "/#([a-zA-Z0-9_ー-]+)\b/";
     $hashtag_set = [];
     $array = explode('#', $text);
     if (preg_match_all($regex, $text, $tag)) {
