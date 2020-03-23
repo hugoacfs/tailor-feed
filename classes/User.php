@@ -320,7 +320,7 @@ class User
                     $mediaHTML .= '
                         <div class="my-carousel carousel-item ' . $firstStatus . '">
                             <video class="img-fluid mx-auto d-block rounded " controls muted loop alt="Article Video">
-                                <source src="' . $m['url'] . '?name=small" type="video/mp4"/>
+                                <source src="' . $m['url'] . '?name=small" />
                             </video>
                         </div>';
                     break;
@@ -354,7 +354,7 @@ class User
                 <div class="timeline-badge mt-1 ml-1">
                     <div class="spinner-border text-primary">
                     </div>
-                    <image alt="' . $builder['name'] . ' profile image." class="timeline-img"
+                    <img alt="' . $builder['name'] . ' profile image." class="timeline-img"
                         src="' . $builder['profile_image'] . '" width="50px">
                 </div>
             </a>
@@ -373,7 +373,10 @@ class User
                     <i class="fas fa-link fa-xs"></i>
                 </a>
             </p>
-            <p class="card-text">' . $builder['message'] . '</p><p><div class="text-center" >' . $carouselHtml . ' </div></p>
+            <p class="card-text">' . $builder['message'] . '</p>
+            <p>
+                <div class="text-center" >' . $carouselHtml . ' </div>
+            </p>
         </div>
         <hr class="thin-hr">';
     }
