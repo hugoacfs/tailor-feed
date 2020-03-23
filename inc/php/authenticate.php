@@ -4,8 +4,14 @@ if (!defined('CONFIG_PROTECTION')) {
     http_response_code(403);
     exit;
 }
+
 if (!$_SESSION['signedIn']) {
     session_unset();
     redirectGuestToLogin();
-} elseif (isset($_SESSION['userName'])) $CURRENTUSER = new User($_SESSION['userName']);
-else redirectGuestToLogin();
+}
+
+if (!isset($_SESSION['userName'])) {
+    redirectGuestToLogin();
+}
+
+$CURRENTUSER = new User($_SESSION['userName']);
