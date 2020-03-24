@@ -89,7 +89,7 @@ class Twitter extends Source
                     $url = $media->media_url_https;
                     break;
                 default:
-                    continue;
+                    continue 2;
             }
             $arr[] = array('url' => $url, 'type' => $media->type);
         }
