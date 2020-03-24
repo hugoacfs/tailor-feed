@@ -21,7 +21,7 @@ class Authenticate
         $this->userName = $userName;
         $user = $this->getUser();
         $exists = false;
-        if($user) $exists = true;
+        if ($user) $exists = true;
         if (!$newUserMode && $exists) {
             $this->passWord = $user['password'];
             $this->signedIn = password_verify($passWord, $this->passWord);
@@ -47,7 +47,6 @@ class Authenticate
         if ($this->signedIn) {
             $DB->updateLastLogin($this->userName);
         }
-        print_r($this->error);
     }
 
     public function getSignedIn()
@@ -66,25 +65,23 @@ class Authenticate
         }
         return $success;
     }
+
     function getUser()
     {
         global $DB;
         $fetch = $DB->fetchUserByUsername($this->userName);
-        print_r($fetch);
-        if ($fetch) {
-            return $fetch[0];
-        } else {
-            return [];
-        }
+        if ($fetch) return $fetch[0];
+        return [];
     }
+
     protected function displayWelcomeMessage()
     {
-        $userId = $this->userId;
+        $userId = $this->getUserId();
         $toastName = 'welcomemessage';
         $header = 'Welcome to News';
         $body = 'Hello ' . $this->givenName . ', welcome to the news site!
                 <br>
-                Click on \'@\' and \'#\' to follow accounts and topics.';        
+                Click on \'@\' and \'#\' to follow accounts and topics.';
         makeSomeToast($userId, $body, $toastName, $header); //no need for timestamp as its created now
     }
     function getUserName()
