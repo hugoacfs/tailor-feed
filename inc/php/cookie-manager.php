@@ -11,7 +11,7 @@ if ($forbid === 'true') {
 } else {
     define('CONFIG_PROTECTION', false);
 }
-require_once __DIR__ . '/../../config.php';
+require_once(__DIR__ . '/../../config.php');
 if (isset($_POST)) $str = print_r($_POST);
 if (isset($_COOKIE)) $str = print_r($_COOKIE);
 if (!isset($_POST['userid'])) {

@@ -1,7 +1,7 @@
 <?php
 define('CONFIG_PROTECTION', false);
 session_start();
-require_once __DIR__ . '/../config.php';
+require_once(__DIR__ . '/../config.php');
 cors();
 echo '<pre>';
 print_r(getallheaders());

@@ -3,11 +3,11 @@ define('CONFIG_PROTECTION', false);
 define('DESKTOP_VIEW', true);
 $title = 'Admin Menu';
 $pageId = 'admin';
-require_once __DIR__ . '/config.php';
+require_once(__DIR__ . '/config.php');
 session_start();
-require_once $CFG->dirroot . '/inc/php/authenticate.php';
-require_once $CFG->dirroot . '/inc/html/head.php';
-require_once $CFG->dirroot . '/inc/html/nav.php';
+require_once($CFG->dirroot . '/inc/php/authenticate.php');
+require_once($CFG->dirroot . '/inc/html/head.php');
+require_once($CFG->dirroot . '/inc/html/nav.php');
 if (!isAdminLoggedIn()) {
     redirectUserToTimeline();
 }
