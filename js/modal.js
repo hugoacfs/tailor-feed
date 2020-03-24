@@ -1,6 +1,5 @@
 // ajax for pages
 define(['jquery', 'lodash', 'toggle'], function ($, _) {
-
     refreshSubscribed = function (username, safelock, modalType) {
         // Hide Modal - it resets the modal upon closing
         $("#" + modalType + "Modal").on("hidden.bs.modal", _.debounce(function () {
@@ -12,12 +11,17 @@ define(['jquery', 'lodash', 'toggle'], function ($, _) {
         });
         // AJAX - it populates the modal upon opening (btn click)
         $("body").on("click", "." + modalType + "-btn", _.debounce(function () {
+            type = modalType;
+            if (modalType == 'pages') {
+                type = 'sources';
+            }
             ajaxPages = $.ajax({
-                url: "inc/php/load-" + modalType + ".php",
+                url: "inc/php/load-preferences.php",
                 type: 'POST',
                 data: {
                     username: username,
-                    safelock: safelock
+                    safelock: safelock,
+                    type: type
                 },
             });
             ajaxPages.done(function (response, textStatus, jqXHR) {

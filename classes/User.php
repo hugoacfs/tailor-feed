@@ -99,12 +99,12 @@ class User
      * @param string $type of preference, could be 'source' or 'topic'
      * @return array of preferences
      */
-    public function getPreferences(string $type)
+    public function getPreferences(string $type): array
     {
         switch ($type) {
-            case 'source':
+            case 'sources':
                 return $this->subscribedList;
-            case 'topic':
+            case 'topics':
                 return $this->topicsList;
             default:
                 return [];

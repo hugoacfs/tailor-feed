@@ -342,3 +342,93 @@ function buildModal(string $type): string
                 </div>';
     return $modal;
 }
+
+function loadPreferences(string $type, string $userName): string
+{
+    $html = '';
+    if (!isset($userName)) return 'No user.';
+    $user = new User($userName);
+    $userPrefList = $user->getPreferences($type);
+    $allPreferences = [];
+    $label = '';
+    switch ($type) {
+        case 'sources':
+            $allPreferences = Source::getAllSources(true);
+            $label = 'Account information';
+            break;
+        case 'topics':
+            $allPreferences = Article::getAllTopics();
+            $label = 'Topic Name';
+            break;
+    }
+    $html .= '
+    <div class="form-row">	
+        <div class="col">	
+            <!-- Handle -->	
+            <div class="md-form">	
+                <div class="row ">	
+                    <div class="col-8 align-self-center">	
+                        <label class="form-text text-muted text-left" for="preferences">' . $label . ':</label>	
+                    </div>	
+                    <div class="col-4 align-self-center">	
+                        <label class="form-text text-muted text-left" for="preferences"> Subscribed: </label>	
+                    </div>	
+                </div>	
+            </div>	
+        </div>                               	
+    </div>	
+    <hr class="mb-0" />';
+    $idsArray = getSubscribedIds($userPrefList);
+    foreach ($allPreferences as $pref) {
+        $id = $pref->dbId;
+        $isInArray = in_array($id, $idsArray, true);
+        $checkedStatus = '';
+        if ($isInArray) $checkedStatus = 'checked';
+        switch ($type) {
+            case 'sources':
+                $anchor = $pref->getType();
+                $anchor = '<i class="fab fa-' . $type . '-square"></i>';
+                $html .= '  <div class="form-row search-item">	
+                                <div class="col">	
+                                    <!-- Handle -->	
+                                    <div class="md-form">	
+                                        <div class="row ">	
+                                            <div class="col-8 align-self-center">	
+                                                <label class="form-text text-muted text-left" for="preferences">	
+                                                    <a class="card-link text-primary" target="twitter" href="' . $pref->getUrl() . '">' . $anchor . ' @' . $pref->getReference() . '	
+                                                    </a>	
+                                                </label>	
+                                                <!-- Name -->	
+                                                <label class="form-text text-dark text-left" for="preferences">' . $pref->getName() . '</label>	
+                                            </div>	
+                                            <div class="col-4 align-self-center">	
+                                                <input type="checkbox" name="' . $id . '" value="' . $id . '" ' . $checkedStatus . ' data-toggle="toggle" data-style="ios">	
+                                            </div>	
+                                        </div>	
+                                    </div>	
+                                </div>                               	
+                            </div>';
+                break;
+            case 'topics':
+                $html .= '  <div class="form-row search-item">	
+                                <div class="col">	
+                                    <!-- Handle -->	
+                                    <div class="md-form">	
+                                        <div class="row ">	
+                                            <div class="col-8 align-self-center">	
+                                                <label class="form-text text-dark text-left" for="preferences">' . $pref->description . '</label>	
+                                                <label class="form-text text-muted text-left" for="preferences"><strong>#' . $pref->name . '</strong></label>	
+                                            </div>	
+                                            <div class="col-4 align-self-center">	
+                                                <input type="checkbox" name="' . $id . '" value="' . $id . '" ' . $checkedStatus . ' data-toggle="toggle" data-style="ios">	
+                                            </div>	
+                                        </div>	
+                                    </div>	
+                                </div>                               	
+                            </div>';
+                break;
+        }
+    }
+
+    return $html;
+}

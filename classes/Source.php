@@ -14,7 +14,7 @@ class Source
      * Or: 'id' in 'sources'
      *  @var int $dbId
      */
-    protected $dbId;
+    public $dbId;
     /**
      * Url refers to the url of the Source. 
      * e.g. Twitter's url would be 'https://twitter.com/'
