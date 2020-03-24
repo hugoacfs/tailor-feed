@@ -24,6 +24,10 @@ define(['jquery'], function ($) {
         var value = $('#current-username').text();
         return value;
     };
+    getUserId = function () {
+        var value = $('#current-userid').text();
+        return value;
+    };
     getSafeLock = function () {
         var value = $('#current-safelock').text();
         return value;
@@ -49,19 +53,34 @@ define(['jquery'], function ($) {
                 ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
         }
     }
-    hideWelcomeToast = function () {
+
+    deleteUserCookie = function (userid, safelock) {
         $('.toast').on('hidden.bs.toast', function () {
-            // destroy 2 cookies
-            deleteCookie('welcomemessage');
-            deleteCookie('wmtimestamp');
+            cookiename = this.dataset.cookie;
+            action = 'delete';
+            ajaxFeed = $.ajax({
+                url: "inc/php/cookie-manager.php",
+                type: 'POST',
+                data: {
+                    userid: userid,
+                    cookiename: cookiename,
+                    safelock: safelock,
+                    action: action
+                },
+            });
+            ajaxFeed.done(function (response, textStatus) {
+                alert('success!' + response);
+            });
+            return runscroll;
         });
     }
 
     return {
         searchOnKeyUp: searchOnKeyUp,
         getUserName: getUserName,
+        getUserId: getUserId,
         getSafeLock: getSafeLock,
         showToast: showToast,
-        hideWelcomeToast: hideWelcomeToast
+        deleteUserCookie: deleteUserCookie
     };
 });

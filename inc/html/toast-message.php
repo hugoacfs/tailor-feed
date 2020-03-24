@@ -4,19 +4,14 @@ if (!defined('CONFIG_PROTECTION')) {
   http_response_code(403);
   exit;
 }
-if (isset($_SESSION['givenName']) && isset($_COOKIE['welcomemessage'])) {
-  $name = $_SESSION['givenName'];
-  echo '  <div id="welcome-toast" class="toast" data-autohide="false" style="position: fixed; top: 58px; right: 0; min-width: 210px;">
-            <div class="toast-header">
-              <img src="img/favicon.ico" class="rounded mr-2" style="max-width: 25px;" alt="icon">
-              <strong class="mr-auto text-primary">Welcome to News</strong>
-              <small class="text-muted"> ' . timeAgo($_COOKIE['wmtimestamp']) . '</small>
-              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
-            </div>
-            <div class="toast-body bg-dark text-light">
-              Hello ' . $name . ', welcome to the news site!
-              <br>
-              Click on \'@\' and \'#\' to follow accounts and topics.
-            </div>
-          </div>';
+echo '<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px; z-index: 1000;">';
+echo '<div style="position: fixed; top: 58px; right: 0;">';
+$userId = $_SESSION['userId'] ?? null;
+$loaf = $_COOKIE[$userId] ?? null;
+if ($loaf) {
+  $bread = unserialize($loaf) ?? [];
+  $serving = serveToast($bread);
+  echo $serving;
 }
+echo '</div>';
+echo '</div>';

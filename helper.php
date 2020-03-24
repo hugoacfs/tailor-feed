@@ -110,9 +110,9 @@ function convertLinks($text): string
 }
 function convertHashtags($text)
 {
-    $regex = "/#([a-zA-Z0-9_]+)\b/";
+    $regex = "/#([a-zA-Z0-9_ー-]+)\b/";
     if (preg_match_all($regex, $text, $tag)) {
-        $toReplace = '<a title="https://twitter.com/hashtag/$1" href="https://twitter.com/hashtag/$1" data-toggle="tooltip" data-placement="top" target="uni_news"">$0</a>';
+        $toReplace = '<a title="https://twitter.com/hashtag/$1" href="https://twitter.com/hashtag/$1" data-toggle="tooltip" data-placement="top" target="uni_news">$0</a>';
         return preg_replace($regex, $toReplace, $text);
     } else {
 
@@ -123,7 +123,7 @@ function convertHashtags($text)
 
 function extractHashtags($text)
 {
-    $regex = "/#([a-zA-Z0-9_]+)\b/";
+    $regex = "/#([a-zA-Z0-9_ー-]+)\b/";
     $hashtag_set = [];
     $array = explode('#', $text);
     if (preg_match_all($regex, $text, $tag)) {
@@ -244,7 +244,7 @@ function handleException($ex, $message = 'Please contact support to let us know 
         $EXCEPTION->message = $ex->getMessage();
     }
 
-    if (php_sapi_name() != 'cli') include $CFG->dirroot . '/error.php';
+    if (php_sapi_name() != 'cli') require_once($CFG->dirroot . '/error.php');
     exit();
 }
 function contains(string $str, array $arr): bool
@@ -261,4 +261,92 @@ function restructureString(string $str): array
     $extractStr = array_shift($arr);
     $otherStr = implode('_', $arr);
     return array($extractStr, $otherStr);
+}
+/**
+ * @param array $bread is an array which contains all the necessary strings to populate the toast
+ * @return string HTML of all toasts
+ */
+function serveToast(array $bread): string
+{
+    $serving = ''; //our return string of html toasts;
+    foreach ($bread as $butter => $slice) {
+        //each slice must consist of 3 parts: timestamp, header, body
+        if (!isset($slice['header'])) continue;
+        if (!isset($slice['timestamp'])) continue;
+        if (!isset($slice['body'])) continue;
+        $toast = '  <div id="' . $butter . '-toast" class="toast" data-autohide="false" data-cookie="' . $butter . '">
+            <div class="toast-header">
+              <img src="img/favicon.ico" class="rounded mr-2" style="max-width: 25px;" alt="icon">
+              <strong class="mr-auto text-primary">' . $slice['header'] . '</strong>
+              <small class="text-muted"> ' . timeAgo($slice['timestamp']) . '</small>
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+            </div>
+            <div class="toast-body bg-dark text-light">
+              ' . $slice['body'] . '
+            </div>
+          </div>';
+        $serving .= $toast; //add the toast to our serving
+    }
+    return $serving; //return our serving
+}
+
+/**
+ * @param int $userId the id of the user which to create the cookies for
+ * @param int $timestamp the time of message creation
+ * @param 
+ * @param 
+ * @return 
+ */
+function makeSomeToast(int $userId, string $body, string $toastName, string $header = 'New notification', int $timestamp = -1)
+{
+    if ($timestamp < 0) $timestamp = time();
+    $myToast = unserialize($_COOKIE[$userId]) ?? [];
+    $bread = [];
+    $bread['timestamp'] = strval($timestamp);
+    $bread['header'] = $header;
+    $bread['body'] = $body;
+    $myToast[$toastName] = $bread;
+    setcookie($userId, serialize($myToast), 0, '/');
+}
+
+function buildModal(string $type): string
+{
+    $modal = '  <div class="modal fade" id="' . $type . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . $type . 'Modal" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="' . $type . 'ModalCenteredLabel">Following</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Search</span>
+                                            </div>
+                                            <input id="search-area-' . $type . '" type="text" class="form-control search-me" placeholder="Example: chiuni" aria-label="Search">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <form id="' . $type . '-modal-form" class="text-center" style="color: #757575;" action="" method="POST">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </form>
+                                        <!-- Form -->
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button form="' . $type . '-modal-form" name="submit' . $type . '" class="btn btn-primary" id="submit' . $type . '" type="submit' . $type . '">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+    return $modal;
 }

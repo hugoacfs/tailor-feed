@@ -24,7 +24,7 @@ spl_autoload_register(
         global $CFG;
         $CLASSES_DIR = $CFG->dirroot . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR;  // or whatever your directory is
         $file = $CLASSES_DIR . $class_name . '.php';
-        if (file_exists($file)) require $file;  // only include if file exists, otherwise we might enter some conflicts with other pieces of code which are also using the spl_autoload_register function
+        if (file_exists($file)) require_once($file);  // only include if file exists, otherwise we might enter some conflicts with other pieces of code which are also using the spl_autoload_register function
     }
 );
 /**

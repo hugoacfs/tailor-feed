@@ -12,14 +12,15 @@ define([
         selector: '[data-toggle=tooltip]'
     });
     $('.carousel').carousel('pause');
-    methods.showToast();
-    methods.hideWelcomeToast();
     // prevents form re-submission
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
     var username = methods.getUserName();
+    var userid = methods.getUserId();
     var safelock = methods.getSafeLock();
+    methods.showToast();
+    methods.deleteUserCookie(userid, safelock);
     $(".search-me").on("keyup", methods.searchOnKeyUp);
     //Login page js, toggles new account creation mode
     if ($("#newaccount").length) {
