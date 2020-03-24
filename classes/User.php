@@ -55,7 +55,7 @@ class User
      */
     public function updateUserSubcribedList(): void
     {
-        $this->subscribedList = null;
+        $this->subscribedList = [];
         global $DB;
         $fetched = $DB->fetchUserPreferencesByUserId($this->dbId);
         foreach ($fetched as $row) {
@@ -81,7 +81,7 @@ class User
      */
     public function updateUserTopicsList(): void
     {
-        $this->topicsList = null;
+        $this->topicsList = [];
         global $DB;
         $fetched = $DB->fetchUserTopicsByUserId($this->dbId);
         foreach ($fetched as $row) {

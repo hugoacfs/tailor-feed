@@ -185,18 +185,10 @@ function redirectUserToTimeline()
     header('Location: timeline.php');
 }
 
-function getSubscribedIds($array)
+function getSubscribedIds(array $array): array
 {
-    $listOfIds = array();
-    if (!empty($array)) {
-        foreach ($array as $item) {
-            if (is_a($item, 'Source')) {
-                $listOfIds[] = $item->getDbId();
-            } else {
-                $listOfIds[] = $item->dbId;
-            }
-        }
-    }
+    $listOfIds = [];
+    foreach ($array as $item) $listOfIds[] = $item->dbId;
     return $listOfIds;
 }
 
