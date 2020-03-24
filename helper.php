@@ -301,13 +301,14 @@ function makeSomeToast(int $userId, string $body, string $toastName, string $hea
     setcookie($userId, serialize($myToast), 0, '/');
 }
 
-function buildModal(string $type): string
+function buildModal(string $type, string $title = ''): string
 {
+    $title = (!empty($title)) ? $title : ucwords($type);
     $modal = '  <div class="modal fade" id="' . $type . 'Modal" tabindex="-1" role="dialog" aria-labelledby="' . $type . 'Modal" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="' . $type . 'ModalCenteredLabel">Following</h5>
+                                <h5 class="modal-title" id="' . $type . 'ModalCenteredLabel">' . $title . '</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

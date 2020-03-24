@@ -52,7 +52,7 @@ if (isset($_POST['submittopics'])) {
 </div>
 <?php
 $_POST = [];
-echo buildModal('pages');
+echo buildModal('pages', "Following");
 echo buildModal('topics');
 require_once($CFG->dirroot . '/inc/html/modal-images.php');
 require_once('inc/html/footer.php');
