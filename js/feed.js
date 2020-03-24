@@ -22,6 +22,8 @@ define(['jquery', 'lodash'], function ($, _) {
                     }
                 } else {
                     $("#news-feed").append(response);
+                    page = parseInt(page) + 1;
+                    $('#current-page').html(page);
                 }
                 carouselPop();
                 $('video').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function () {
@@ -46,14 +48,12 @@ define(['jquery', 'lodash'], function ($, _) {
             var page = $('#current-page').text();;
             if (page != 'end') {
                 load(username, safelock, page);
-                page = parseInt(page) + 1;
-                $('#current-page').html(page);
             };
         };
     };
 
     carouselPop = function () {
-        $('.carousel-pop .carouselArticle .carousel-inner ').on('click', function (e) {
+        $('#news-feed').on('click', '.carousel-pop .carouselArticle .carousel-inner', function (e) {
             var chtml = $(e.currentTarget).parent().html();
             var children = $(e.currentTarget).children('.carousel-item');
             var vidChildren = $(e.currentTarget).find('.carousel-item').children('video');
