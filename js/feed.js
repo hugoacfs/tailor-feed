@@ -25,6 +25,10 @@ define(['jquery', 'lodash'], function ($, _) {
                     page = parseInt(page) + 1;
                     $('#current-page').html(page);
                 }
+                $('.timeline-badge .timeline-img').one('load', function () {
+                    $('.timeline-badge .img-spinner').css("display", "none");
+                    console.log('hiding');
+                });
                 carouselPop();
                 $('video').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function () {
                     this.muted = document.fullscreenElement !== this;

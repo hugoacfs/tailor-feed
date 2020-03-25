@@ -352,10 +352,9 @@ class User
         <div class="card-body ">
             <a href="' . $builder['accountUrl'] . '" target="uni_news" class=" card-link">
                 <div class="timeline-badge mt-1 ml-1">
-                    <div class="spinner-border text-primary">
-                    </div>
-                    <img alt="' . $builder['name'] . ' profile image." class="timeline-img"
+                    <img class="timeline-img"
                         src="' . $builder['profile_image'] . '" width="50">
+                    <span class="img-spinner spinner-border text-primary"></span>
                 </div>
             </a>
             <h5 class="card-subtitle mb-2 text-muted">

@@ -177,9 +177,11 @@ nav{
 }
 
 .timeline-img {
-  position: relative;
-  top: -90%;
   border-radius: 100%;
+}
+.img-spinner{
+  top: -42px;
+  position: relative;
 }
 
 .thin-hr {
