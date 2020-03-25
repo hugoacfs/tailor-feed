@@ -355,7 +355,7 @@ class User
                     <div class="spinner-border text-primary">
                     </div>
                     <img alt="' . $builder['name'] . ' profile image." class="timeline-img"
-                        src="' . $builder['profile_image'] . '" width="50px">
+                        src="' . $builder['profile_image'] . '" width="50">
                 </div>
             </a>
             <h5 class="card-subtitle mb-2 text-muted">
@@ -374,9 +374,7 @@ class User
                 </a>
             </p>
             <p class="card-text">' . $builder['message'] . '</p>
-            <p>
-                <div class="text-center" >' . $carouselHtml . ' </div>
-            </p>
+            <p><div class="text-center" >' . $carouselHtml . ' </div></p>
         </div>
         <hr class="thin-hr">';
     }
