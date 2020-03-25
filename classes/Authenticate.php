@@ -83,7 +83,6 @@ class Authenticate
                 <br>
                 Click on \'@\' and \'#\' to follow accounts and topics.';
         makeSomeToast($userId, $body, $toastName, $header); //no need for timestamp as its created now
-        error_log('made some toast');
     }
     function getUserName()
     {
