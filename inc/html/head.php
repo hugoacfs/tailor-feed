@@ -5,7 +5,8 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
