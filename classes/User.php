@@ -339,14 +339,14 @@ class User
         }
         if ($builder['media']) {
             $carouselHtml = '
-            <button class="carousel-pop">
+            <div class="carousel-pop">
                 <div id="carouselArticle' . $builder['articleId'] . '" class="carouselArticle carouselArticle' . $builder['articleId'] . ' carousel slide" data-ride="carousel" data-interval="false">
                     <div class="carousel-inner">
                         ' . $mediaHTML . '
                     </div>
                     ' . $carouselHtmlNav . '
                 </div>
-            </button>';
+            </div>';
         }
         return '
         <div class="card-body ">

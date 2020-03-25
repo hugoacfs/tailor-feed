@@ -285,3 +285,6 @@ nav{
   background-color: #00000000;
   outline: none !important;
 }
+.carousel-pop:hover{
+  cursor: pointer;
+}
