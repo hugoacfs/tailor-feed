@@ -23,9 +23,12 @@ class SSAML extends Authenticate
         $DBuser = $this->getUser();
         $exists = false;
         if ($DBuser) $exists = true;
+        $displayWelcome = false;
         if (!$exists) {
             $this->passWord = null; //needs null password to attempt building user profile
             $this->signedIn = $this->buildUserProfile() ?? false;
+            if ($this->signedIn) $DBuser = $this->getUser();
+            $displayWelcome = true;
         }
         if ($exists) {
             $this->role = $DBuser['role'];
@@ -38,7 +41,7 @@ class SSAML extends Authenticate
         if ($this->signedIn) {
             $DB->updateLastLogin($this->userName);
         }
-        if(!$exists) $this->displayWelcomeMessage(); //can only be done after sessions cleanup
+        if ($displayWelcome && $this->userId) $this->displayWelcomeMessage(); //can only be done after sessions cleanup
     }
     protected function buildUserProfile(): bool
     {

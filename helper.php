@@ -291,6 +291,10 @@ function serveToast(array $bread): string
  */
 function makeSomeToast(int $userId, string $body, string $toastName, string $header = 'New notification', int $timestamp = -1)
 {
+    if ($userId == 0) {
+        error_log('no user id provided to makeSomeToast on helper.php, skipping...');
+        return;
+    }
     if ($timestamp < 0) $timestamp = time();
     $myToast = unserialize($_COOKIE[$userId]) ?? [];
     $bread = [];

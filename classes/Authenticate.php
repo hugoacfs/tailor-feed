@@ -76,7 +76,7 @@ class Authenticate
 
     protected function displayWelcomeMessage()
     {
-        $userId = $this->getUserId();
+        $userId = $this->userId ?? 0;
         $toastName = 'welcomemessage';
         $header = 'Welcome to News';
         $body = 'Hello ' . $this->givenName . ', welcome to the news site!
