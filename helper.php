@@ -296,7 +296,8 @@ function makeSomeToast(int $userId, string $body, string $toastName, string $hea
         return;
     }
     if ($timestamp < 0) $timestamp = time();
-    $myToast = unserialize($_COOKIE[$userId]) ?? [];
+    $myToast = [];
+    if (isset($_COOKIE[$userId])) $myToast = unserialize($_COOKIE[$userId]);
     $bread = [];
     $bread['timestamp'] = strval($timestamp);
     $bread['header'] = $header;
