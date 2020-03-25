@@ -37,9 +37,9 @@ if (!isset($_SESSION['signedIn'])) {
         header('Location: timeline.php');
         exit();
     } else {
-        echo '<div class="text-center my-auto">
-        <form class="form-signin" action="login.php" method="POST">
-            <img class="mb-4" src="img/login_logo.png" alt="">
+        echo '<div class="text-center my-auto pt-5">
+        <form class="form-signin pt-5" action="login.php" method="POST">
+            <img class="login-logo mb-4" src="img/nav_logo.png" alt="">
             <label for="username" class="sr-only">Username</label>
             <input type="text" name="username" id="username" class="form-control" placeholder="Username" required="" autofocus="">
             <label for="password" class="sr-only">Password</label>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['signedIn'])) {
                 </label>
             </div>
             <input class="btn btn-lg btn-primary btn-block" value="Login" type="submit" />
-            <p class="mt-5 mb-3 text-muted">© 2020</p>
+            <p class="mt-5 mb-3 text-muted"><a href="https://github.com/hugoacfs/tailor-feed" target="github">Find us on Github</a></p>
         </form>
     
     </div>

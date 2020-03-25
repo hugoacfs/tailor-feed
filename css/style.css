@@ -186,6 +186,13 @@ nav {
   border-bottom-left-radius: 8px;
 }
 
+.login-logo{
+    width: 50%;
+    background-color: #343a40;
+    border-radius: 10%;
+    box-shadow: 12px 11px 30px -20px #0000004b;
+}
+
 .timeline-img {
   border-radius: 100%;
   z-index: 5;
