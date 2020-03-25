@@ -69,7 +69,7 @@ define(['jquery'], function ($) {
                 },
             });
             ajaxFeed.done(function (response, textStatus) {
-                alert('success!' + response);
+                console.log('success!' + response);
             });
             return runscroll;
         });
