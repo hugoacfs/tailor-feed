@@ -38,6 +38,7 @@ class SSAML extends Authenticate
         if ($this->signedIn) {
             $DB->updateLastLogin($this->userName);
         }
+        if(!$exists) $this->displayWelcomeMessage(); //can only be done after sessions cleanup
     }
     protected function buildUserProfile(): bool
     {
@@ -47,7 +48,6 @@ class SSAML extends Authenticate
             error_log('new user successfulyl created');
             $this->userId = $DB->PDOgetlastinsertid();
             $DB->updateLastLogin($this->userName);
-            $this->displayWelcomeMessage();
         }
         return $success;
     }
