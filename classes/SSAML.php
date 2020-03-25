@@ -42,8 +42,9 @@ class SSAML extends Authenticate
     protected function buildUserProfile(): bool
     {
         global $DB;
-        $success = $DB->insertUser($this->userName, $this->givenName, 'none');
+        $success = $DB->insertUser($this->userName, $this->givenName);
         if ($success) {
+            error_log('new user successfulyl created');
             $this->userId = $DB->PDOgetlastinsertid();
             $DB->updateLastLogin($this->userName);
             $this->displayWelcomeMessage();
