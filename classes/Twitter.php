@@ -141,8 +141,11 @@ class Twitter extends Source
                 ->buildOauth($apiUrl, $requestMethod)
                 ->performRequest();
             $httpsStatus = $twitter->getHttpStatusCode();
-            echo "HTTP STATUS CODE: "  . $httpsStatus . "\n";
-            if ($httpsStatus != 200) return false;
+
+            if ($httpsStatus != 200) {
+                echo "HTTP STATUS CODE: {$httpsStatus}\n";
+                return false;
+            }
             return json_decode($json_data);
         } catch (Exception $ex) {
             handleException($ex);
@@ -160,17 +163,25 @@ class Twitter extends Source
         $fetched = $DB->fetchAllSourcesByType($type);
         $fieldImage = 'imagesource';
         $fieldName = 'screenname';
+        $success = true;
         foreach ($fetched as $row) {
+            echo ".";
             $twitterData = Twitter::getSourceData($row['reference']);
             $valueImage = $twitterData->profile_image_url_https;
             $valueImage = str_replace("normal.jpg", "400x400.jpg", $valueImage);
             $valueName = $twitterData->name;
             $id = $row['id'];
-            $successName = $DB->updateSourcesFieldById($fieldName, $valueName, $id);
-            $successImage = $DB->updateSourcesFieldById($fieldImage, $valueImage, $id);
-            if (!$successName or !$successImage) return false;
+            if (!$DB->updateSourcesFieldById($fieldName, $valueName, $id)) {
+                error_log('Source failed to update details: ID:' . $id . ' Name: ' . $fieldName . ' Name failed to update on updateSourcesDetails()');
+                $success = false;
+            }
+            if (!$DB->updateSourcesFieldById($fieldImage, $valueImage, $id)) {
+                error_log('Source failed to update details: ID:' . $id . ' Name: ' . $fieldName . ' Image failed to update on updateSourcesDetails()');
+                $success = false;
+            }
         }
-        return true;
+        echo "\n";
+        return $success;
     }
     /**
      * Fetches the data for a Twitter account @$reference given.
@@ -185,5 +196,82 @@ class Twitter extends Source
         $twitterData = Twitter::twitterQuery($apiUrl, $getfield);
         if (!$twitterData) return new stdClass;
         return $twitterData;
+    }
+
+    /**
+     * Called by cron job, and manages tasks related to Twitter sources and articles.
+     */
+    public static function cron() {
+        global $CFG, $DB;
+        $start = time();
+        $type = 'twitter';
+        Cron::cronHeader($type, $start);
+        $config = $CFG->sources[$type] ?? false;
+        if ($config) {
+            self::updateSources($config);
+            self::updateArticles($config);
+        }
+        $end = time();
+        Cron::cronFooter('twitter', $start, $end);
+    }
+
+
+    /**
+     * Run by cron to update the Twitter sources.
+     * @param array $config Settings required to determine what and when to run.
+     */
+    private static function updateSources(array $config) {
+        global $DB;
+        if ($config['update_sources'] != 'true') {
+            echo " Updating sources not enabled\n";
+            return;
+        }
+        $lastrun = intval($config['sources_last_cron']); //last time run
+        $interval = intval($config['sources_cron']); //cron interval
+        if (!Cron::runNow($lastrun, $interval)) {
+            echo " Not time to update Sources.\n";
+            return;
+        }
+
+        echo " Updating all Twitter source details...\n";
+        if (self::updateSourcesDetails()) {
+            $DB->updateLastCronTimeByType('twitter', 'sources');
+        }
+    }
+
+    /**
+     * Run by Cron to update Articles.
+     * @param array $config Settings require to determine what and when to run.
+     */
+    private static function updateArticles(array $config) {
+        global $DB;
+        if ($config['update_articles'] != 'true') {
+            echo " Updating Articles not enabled\n";
+            return;
+        }
+
+        $lastrun = intval($config['articles_last_cron']); //last time run
+        $interval = intval($config['articles_cron']); //cron interval
+        if (!Cron::runNow($lastrun, $interval)) {
+            echo " Not time to update Articles.\n";
+            return;
+        }
+
+        echo " Updating all Twitter articles...\n";
+        $sources = self::getAllSources();
+        foreach ($sources as $source) {
+            // echo 'Building articles for ' . $source->getReference() . "...\n";
+            $source->buildArticles();
+            $articles = $source->getArticles();
+            if (count($articles) == 0) {
+                continue;
+            }
+            echo '  Publishing articles for ' . $source->getReference() . " ";
+            $status = Article::publishArticles($articles);
+            if ($status === false) {
+                error_log(Cron::error('Twitter', 'Failed to publish articles for ' . $source->getReference()));
+            }
+        }
+        $DB->updateLastCronTimeByType('twitter', 'articles');
     }
 }
