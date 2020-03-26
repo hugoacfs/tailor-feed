@@ -21,7 +21,7 @@ if (!defined('CONFIG_PROTECTION')) {
     <!-- CUSTOM CSS -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Fontawesome -->
-    <script src="https://kit.fontawesome.com/2a953cdc29.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/all.min.css">
     <!-- ROBOTO Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <!-- TOGGLE CSS -->
