@@ -10,11 +10,9 @@ echo "Getting ".__DIR__."/cron.php ...\n";
 $cronStartTime = time();
 echo "Server Time: ".date( 'r',$cronStartTime)."\n";
 
-$twitter = new Cron('twitter');
-// disabled until supported
-// $facebook = new Cron('facebook');
-// $rss = new Cron('rss');
-
+Twitter::cron();
+Cron::pruneArticles();
+Cron::pruneUsers();
 
 $cronEndTime = time();
 echo "All cron jobs finished at: ".date( 'r',$cronEndTime)."\n";
