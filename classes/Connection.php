@@ -501,7 +501,7 @@ class Connection
      * @param string $username of the user
      * @return bool return True on success
      */
-    public function insertUser(string $username, string $givenname = '', string $password = null): bool
+    public function insertUser(string $username, string $givenname = '', string $password = ''): bool
     {
         $stmt = $this->PDOprepare(
             "INSERT INTO `users` (`username`, `givenname`, `password`) 
@@ -509,7 +509,8 @@ class Connection
         );
         $stmt->bindValue('username', $username, PDO::PARAM_STR);
         $stmt->bindValue('givenname', $givenname, PDO::PARAM_STR);
-        $stmt->bindValue('password', $password, PDO::PARAM_STR);
+        if($password != '') $stmt->bindValue('password', $password, PDO::PARAM_STR);
+        else $stmt->bindValue('password', null, PDO::PARAM_NULL);
         return $this->PDOexecute($stmt);
     }
     public function fetchTopicNameById(int $id): array
