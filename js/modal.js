@@ -1,6 +1,6 @@
 // ajax for pages
 define(['jquery', 'lodash', 'toggle'], function ($, _) {
-    refreshSubscribed = function (username, safelock, modalType) {
+    refreshSubscribed = function (safelock, modalType) {
         // Hide Modal - it resets the modal upon closing
         $("#" + modalType + "Modal").on("hidden.bs.modal", _.debounce(function () {
             $("#" + modalType + "-modal-form").html('');
@@ -19,7 +19,6 @@ define(['jquery', 'lodash', 'toggle'], function ($, _) {
                 url: "inc/php/load-preferences.php",
                 type: 'POST',
                 data: {
-                    username: username,
                     safelock: safelock,
                     type: type
                 },

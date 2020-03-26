@@ -1,12 +1,11 @@
 define(['jquery', 'lodash'], function ($, _) {
     load = _.debounce(
-        function (username, safelock, page) {
+        function (safelock, page) {
             runscroll = true;
             ajaxFeed = $.ajax({
                 url: "inc/php/load-feed.php",
                 type: 'POST',
                 data: {
-                    username: username,
                     page: page,
                     safelock: safelock
                 },
@@ -27,7 +26,6 @@ define(['jquery', 'lodash'], function ($, _) {
                 }
                 $('.timeline-badge .timeline-img').one('load', function () {
                     $('.timeline-badge .img-spinner').css("display", "none");
-                    console.log('hiding');
                 });
                 carouselPop();
                 $('video').on('fullscreenchange webkitfullscreenchange mozfullscreenchange', function () {
@@ -47,11 +45,11 @@ define(['jquery', 'lodash'], function ($, _) {
         }
         return false;
     };
-    moreNews = function (username, safelock) {
+    moreNews = function (safelock) {
         if (condition()) {
             var page = $('#current-page').text();;
             if (page != 'end') {
-                load(username, safelock, page);
+                load(safelock, page);
             };
         };
     };

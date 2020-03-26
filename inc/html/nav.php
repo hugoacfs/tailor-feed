@@ -103,7 +103,7 @@ function displayFeedbackLink($pageId)
 }
 ?>
 
-<body class="no-gutters pb-0 overflow-hidden">
+<body data-pageid="<?php echo $pageId; ?>" class="no-gutters pb-0 overflow-hidden">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <a class="navbar-brand mr-auto" href="#">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
