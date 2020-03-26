@@ -34,6 +34,10 @@ nav {
   background-color: #252525 !important;
 }
 
+#news-feed {
+  max-width: 600px;
+}
+
 /* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
