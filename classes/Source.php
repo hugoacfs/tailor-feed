@@ -150,4 +150,10 @@ class Source
         if ($twitterSuccess) return true;
         return false;
     }
+
+    /**
+     * Cron should be implemented for each child class with their own particular needs.
+     */
+    public static function cron() {
+    }
 }

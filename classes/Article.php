@@ -94,30 +94,36 @@ class Article
     /**
      * Inserts a new article entry on the DB as per article objects generated from external sources.
      * @param array $articlesToPublish Array containing Article objects to publish.
-     * @return bool Returns true on publish. False on failure to publish or nothing to publish.
+     * @return bool Returns true on publish or nothing to publish. False on failure to publish.
      * @throws PDOException On PDO issues when inserting new Articles or media/topics links.
      */
     public static function publishArticles(array $articlesToPublish): bool
     {
         global $DB;
-        if (empty($articlesToPublish)) return false;
-        $success = True;
+        if (empty($articlesToPublish)) return true;
+        $success = true;
         foreach ($articlesToPublish as $article) {
+            echo ".";
             $fetched = $DB->fetchArticleByUniqueId($article->uniqueId);
             $uniqueIdExists = !(count($fetched) === 0);
-            if ($uniqueIdExists) return false;
+            if ($uniqueIdExists) continue;
             $insertSuccess = $DB->insertNewArticleEntry(
                 $article->ownerId,
                 $article->uniqueId,
                 $article->creationDate,
                 $article->body
             );
-            if (!$insertSuccess) $success = false;
+            if (!$insertSuccess) {
+                $success = false;
+                error_log("Failed to insert article for Source ID: {$article->ownerId}\n");
+                continue;
+            }
             $lastInsertId = $DB->PDOgetlastinsertid();
             $article->dbId = intval($lastInsertId);
             Article::linkTopics($article->topics, $article->dbId);
             Article::linkMedia($article->media, $article->dbId);
         }
+        echo "\n";
         return $success;
     }
     /**
