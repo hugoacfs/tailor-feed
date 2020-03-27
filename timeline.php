@@ -58,8 +58,8 @@ echo buildModal('topics');
 require_once($CFG->dirroot . '/inc/html/modal-images.php');
 require_once('inc/html/footer.php');
 ?>
-<div class="smooth-scroll position-fixed back-to-top p-2">
-    <a href="#" class="btn btn-primary">
+<div class="smooth-scroll position-fixed back-to-top p-1 m-5">
+    <a href="#" class="btn btn-primary pr-3 pl-3 pt-2 pb-2">
         <i class="fa fa-arrow-up"></i>
     </a>
 </div>
