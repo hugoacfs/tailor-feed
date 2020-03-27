@@ -106,12 +106,12 @@ function displayFeedbackLink($pageId)
 <body data-pageid="<?php echo $pageId; ?>" class="no-gutters pb-0 overflow-hidden">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <?php
-        $homeLink = 'index.php';
-        if (isLoggedIn()) $homeLink = 'timeline.php';
+        $homeLink = $CFG->dirroot . '/index.php';
+        if (isLoggedIn()) $homeLink = $CFG->dirroot . '/timeline.php';
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
-            <span class="nav-title pr-2">uoc news </span>
+            <span class="nav-title pr-2">thefeed </span>
         </a>
         <?php
         if (isLoggedIn() && $pageId === 'timeline') {
