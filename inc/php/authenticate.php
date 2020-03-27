@@ -8,10 +8,12 @@ if (!defined('CONFIG_PROTECTION')) {
 if (!$_SESSION['signedIn']) {
     session_unset();
     redirectGuestToLogin();
+    exit;
 }
 
 if (!isset($_SESSION['userName'])) {
     redirectGuestToLogin();
+    exit;
 }
-
-$CURRENTUSER = new User($_SESSION['userName']);
+$userName = $_SESSION['userName'] ?? '';
+$CURRENTUSER = new User($userName);

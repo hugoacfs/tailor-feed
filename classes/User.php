@@ -36,17 +36,19 @@ class User
      * The subscribed list is built.
      * @param string $userName is the username as found in the DB.
      */
-    public function __construct(string $userName)
+    public function __construct(string $userName = '')
     {
         global $DB;
-        $fetchUser = $DB->fetchUserByUsername($userName);
-        $fetchedUser = $fetchUser[0];
-        $this->dbId = intval($fetchedUser['id']);
-        $this->userName = $userName;
-        $this->givenName = $fetchedUser['givenname'];
-        $this->subscribedList = $this->topicsList = [];
-        $this->updateUserSubcribedList();
-        $this->updateUserTopicsList();
+        if ($userName != '') {
+            $fetchUser = $DB->fetchUserByUsername($userName);
+            $fetchedUser = $fetchUser[0];
+            $this->dbId = intval($fetchedUser['id']);
+            $this->userName = $userName;
+            $this->givenName = $fetchedUser['givenname'];
+            $this->subscribedList = $this->topicsList = [];
+            $this->updateUserSubcribedList();
+            $this->updateUserTopicsList();
+        }
     }
     /**
      * Creates the user's subscribed list.
