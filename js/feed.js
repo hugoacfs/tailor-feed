@@ -87,14 +87,14 @@ define(['jquery', 'lodash'], function ($, _) {
     };
 
     backToTop = function () {
-        var $btn = $('.back-to-top');
+        var btn = $('.back-to-top');
         var startpoint = $(window).scrollTop() + $(window).height();
         $(window).on('scroll', function () {
             if ($(window).scrollTop() > startpoint) {
-                $btn.show();
+                btn.show();
             }
             if ($(window).scrollTop() == 0){
-                $btn.hide();
+                btn.hide();
             }
         });
     };
