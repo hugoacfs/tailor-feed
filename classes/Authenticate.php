@@ -7,14 +7,49 @@ if (!defined('CLASS_LOADER')) {
 
 class Authenticate
 {
+    /**
+     * The user's username
+     * @var string
+     */
     protected $userName;
+    /**
+     * The user's password as in the DB
+     * @var string
+     */
     protected $passWord;
+    /**
+     * The user id as in the DB
+     * @var int
+     */
     protected $userId;
+    /**
+     * The user's first name
+     * @var string
+     */
     protected $givenName;
+    /**
+     * User's signed in status - upon password verification
+     * @var bool
+     */
     protected $signedIn;
+    /**
+     * The user role as in DB, 'a' is admin 'u' is user
+     * @var string
+     */
     protected $role;
+    /**
+     * An error recorded by the constructor
+     * @var array
+     */
     protected $error;
 
+    /**
+     * Builds the user authentication vars, used in authenticate.php to build the session
+     * @param string $userName user inputed username
+     * @param string $passWord user inputed password
+     * @param string $givenName user's first (can be inputed if registring a new user, if not is ignored)
+     * @param bool $newUserMode if set to true, it will attempt to build a new user in the db.
+     */
     function __construct(string $userName, string $passWord, string $givenName = 'not-set', bool $newUserMode = false)
     {
         global $DB;
@@ -54,6 +89,10 @@ class Authenticate
         return $this->signedIn;
     }
 
+    /**
+     * Builds the user db entry, and updates the last login of the user, triggers displayWelcomeMessage
+     * @return bool if successful, returns true, else false
+     */
     protected function buildUserProfile(): bool
     {
         global $DB;
@@ -66,7 +105,11 @@ class Authenticate
         return $success;
     }
 
-    function getUser()
+    /**
+     * Gets the user from the DB by username
+     * @return array returns an array of the user information
+     */
+    function getUser(): array
     {
         global $DB;
         $fetch = $DB->fetchUserByUsername($this->userName);
@@ -74,9 +117,13 @@ class Authenticate
         return [];
     }
 
-    protected function displayWelcomeMessage()
+    /**
+     * Creates a toast notification for new users
+     */
+    protected function displayWelcomeMessage(): void
     {
         $userId = $this->userId ?? 0;
+        if ($userId == 0) return; //abort if user id not valid
         $toastName = 'welcomemessage';
         $header = 'Welcome to News';
         $body = 'Hello ' . $this->givenName . ', welcome to the news site!
