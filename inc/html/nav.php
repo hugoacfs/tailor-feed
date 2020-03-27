@@ -29,18 +29,18 @@ function displayTopicsBtn()
             <span class="preferences-btn-text">Topics</span>
           </button>';
 }
-function displayMyTimelineLink($pageId)
+function displayMyFeedLink($pageId)
 {
     $status = 'disabled';
-    $user = 'My ';
+    $user = '';
     if (isLoggedIn()) {
         $status = '';
         $user = $_SESSION['givenName'] . '\'s ' ?? 'My ';
     }
-    if ($pageId === 'timeline') $status = 'active';
+    if ($pageId === 'feed') $status = 'active';
     echo '<li class="nav-item ">
-                <a class="nav-link ' . $status . '" href="timeline.php"><i class="fas fa-stream">
-                    </i> ' . $user . 'Timeline
+                <a class="nav-link ' . $status . '" href="feed.php"><i class="fas fa-stream">
+                    </i> ' . $user . 'Feed
                 </a>
             </li>';
 }
@@ -105,14 +105,14 @@ function displayFeedbackLink($pageId)
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <?php
         $homeLink = $CFG->api_url . '/index.php';
-        if (isLoggedIn()) $homeLink = $CFG->api_url . '/timeline.php';
+        if (isLoggedIn()) $homeLink = $CFG->api_url . '/feed.php';
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
             <span class="nav-title pr-2">thefeed </span>
         </a>
         <?php
-        if (isLoggedIn() && $pageId === 'timeline') {
+        if (isLoggedIn() && $pageId === 'feed') {
             displayPagesBtn();
             displayTopicsBtn();
         }
@@ -124,7 +124,7 @@ function displayFeedbackLink($pageId)
             <ul class="navbar-nav ml-auto">
                 <?php
                 displayHomeLink($pageId);
-                displayMyTimelineLink($pageId);
+                displayMyFeedLink($pageId);
                 if (isAdminLoggedIn()) {
                     displayAdminLink($pageId);
                 }

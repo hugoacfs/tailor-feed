@@ -29,7 +29,7 @@ define([
             });
         };
     }
-    if ($('body').attr("data-pageid") == 'timeline') {
+    if ($('body').attr("data-pageid") == 'feed') {
         feed.moreNews(safelock);
         document.addEventListener('scroll',
             _.debounce(

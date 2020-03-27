@@ -42,10 +42,10 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
                                             That\'s all for now...
                                         </a>
                                     </h4>
-                                    <p class="card-text">To see more university news, go to your timeline.
-                                        <button onclick="location.href=\'timeline.php\'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
+                                    <p class="card-text">To see more university news, go to your feed.
+                                        <button onclick="location.href=\'feed.php\'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
                                             <i class="fas fa-stream" aria-hidden="true">
-                                            </i> My Timeline
+                                            </i> Feed
                                         </button>
                                     </p>
                                     <span style="display: none;">newscode:340</span>

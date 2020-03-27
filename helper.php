@@ -179,10 +179,10 @@ function redirectGuestToLogin()
     // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
     header('Location: login.php');
 }
-function redirectUserToTimeline()
+function redirectUserToFeed()
 {
     // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
-    header('Location: timeline.php');
+    header('Location: feed.php');
 }
 
 function getSubscribedIds(array $array): array

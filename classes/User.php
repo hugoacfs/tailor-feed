@@ -290,7 +290,7 @@ class User
                             <span class="fas fa-at menu-fa" aria-hidden="true"></span> 
                             <span class="preferences-btn-text">Following</span>
                         </button>';
-            $message = "Uh oh, there is no new activity on your timeline 😮. <br> Try following an account here " . $button;
+            $message = "Uh oh, there is no new activity on your feed 😮. <br> Try following an account here " . $button;
             $endMessage = '
             <div id="end-news" class="card-body ">
                     <h4 class="card-title">

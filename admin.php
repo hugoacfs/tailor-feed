@@ -9,7 +9,7 @@ require_once($CFG->dirroot . '/inc/php/authenticate.php');
 require_once($CFG->dirroot . '/inc/html/head.php');
 require_once($CFG->dirroot . '/inc/html/nav.php');
 if (!isAdminLoggedIn()) {
-    redirectUserToTimeline();
+    redirectUserToFeed();
 }
 $adminCookie = $_COOKIE['adminMenu'] ?? false;
 $adminMenu = strip_tags($adminCookie);

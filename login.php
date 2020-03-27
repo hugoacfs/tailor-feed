@@ -34,7 +34,7 @@ if (!$isLoggedIn) {
 }
 if (!isset($_SESSION['signedIn'])) {
     if ($CFG->auth_method === 'SSAML') {
-        header('Location: timeline.php');
+        header('Location: feed.php');
         exit();
     } else {
         echo '<div class="text-center my-auto pt-5">
@@ -64,6 +64,6 @@ if (!isset($_SESSION['signedIn'])) {
     session_unset();
     if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
-} else redirectUserToTimeline();
+} else redirectUserToFeed();
 
 require_once('inc/html/footer.php');
