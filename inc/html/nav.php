@@ -76,16 +76,14 @@ function displayLoginLink($pageId)
 function displayAboutLink($pageId)
 {
     $status = '';
-    if (isLoggedIn()) {
-        if ($pageId === 'about') $status = 'active';
-        $url = 'about.php';
-        $text = 'About';
-        echo '<li class="nav-item ">
+    if ($pageId === 'about') $status = 'active';
+    $url = 'about.php';
+    $text = 'About';
+    echo '<li class="nav-item ">
                 <a class="nav-link ' . $status . '" href="' . $url . '"><i class="fas fa-info-circle">
                     </i> ' . $text . '
                 </a>
             </li>';
-    }
 }
 function displayFeedbackLink($pageId)
 {
