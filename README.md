@@ -1,21 +1,21 @@
-# tailor-feed
-Tailor-feed is a news aggregation tool built on PHP. It utilises social media as a source of news, aggregating these on a DB for displaying on the browser in the desired format.
+# thefeed
+<strong>thefeed</strong> is a news aggregation tool built on PHP. It utilises social media as a source of news, aggregating these on a DB for displaying on the browser in the desired format.
 
 - It currently only supports Twitter as a news' source, but other social media platforms might be integrated in the future.
 
-- Tailor-feed has some admin functionality and enables some control over adding/removing sources and topics. It also enables removal of articles.
+- <strong>thefeed</strong> has some admin functionality and enables some control over adding/removing sources and topics. It also enables removal of articles.
 
-- Tailor-feed is ideal for organisations which aim to improve internal communication channels by using social media, but want to offer an alternative to using personal social media accounts, as well as collating all of their official social media account feeds together for the users or guests.
+- <strong>thefeed</strong> is ideal for organisations which aim to improve internal communication channels by using social media, but want to offer an alternative to using personal social media accounts, as well as collating all of their official social media account feeds together for the users or guests.
 
 - Personalisation is the focus of Tailor-feed, letting users subscribe in and out of sources or topics, building their own timelines.
 
-- Tailor-feed offers basic authentication, it is advised you implement your own, or make changes.
+- <strong>thefeed</strong> offers basic authentication, it is advised you implement your own, or make changes.
 
 <p align="center">
   <img src="/install/img/screenshots/iphone_8_plus_user_timeline.png" alt="User Timeline iPhone 8 Plus Example" width="200">
 </p>
 
-Tailor-feed is still under development, and a stable version is not yet ready.
+<strong>thefeed</strong> is still under development, and a stable version is not yet ready.
 
 Installation guide:
 1.  Download or clone `repository`;
