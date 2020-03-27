@@ -130,8 +130,8 @@ function displayFeedbackLink($pageId)
                 if (isAdminLoggedIn()) {
                     displayAdminLink($pageId);
                 }
-                // displayAboutLink($pageId); //disabled until needed
-                displayFeedbackLink($pageId);
+                displayAboutLink($pageId); //disabled until needed
+                // displayFeedbackLink($pageId); //disabled
                 displayLoginLink($pageId);
                 ?>
             </ul>

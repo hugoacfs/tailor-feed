@@ -1,4 +1,7 @@
 <?php
+// disabled
+header('Location: index.php');
+exit;
 define('CONFIG_PROTECTION', false);
 $title = 'Feedback';
 $pageId = 'feedback';
