@@ -12,9 +12,7 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
     require_once($CFG->dirroot . '/inc/html/toast-message.php');
     ?>
 
-    <div class="container-fluid">
-        <div class="spacer d-flex justify-content-center align-items-center">
-        </div>
+    <div class="container-fluid" style="max-width: 1200px;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12 p-5">
