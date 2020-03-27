@@ -46,6 +46,7 @@ define(['jquery', 'lodash'], function ($, _) {
         return false;
     };
     moreNews = function (safelock) {
+        backToTop();
         if (condition()) {
             var page = $('#current-page').text();;
             if (page != 'end') {
@@ -84,6 +85,20 @@ define(['jquery', 'lodash'], function ($, _) {
             };
         });
     };
+
+    backToTop = function () {
+        var $btn = $('.back-to-top');
+        var startpoint = $(window).scrollTop() + $(window).height();
+        $(window).on('scroll', function () {
+            if ($(window).scrollTop() > startpoint) {
+                $btn.show();
+            }
+            if ($(window).scrollTop() == 0){
+                $btn.hide();
+            }
+        });
+    };
+
     return {
         moreNews: moreNews,
         carouselPop: carouselPop

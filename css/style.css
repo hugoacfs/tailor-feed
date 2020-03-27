@@ -303,3 +303,10 @@ nav {
 .carousel-pop:hover {
   cursor: pointer;
 }
+
+.back-to-top {
+  right: 0;
+  bottom: 0;
+  z-index: 10000000;
+  display: none;
+}

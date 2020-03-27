@@ -48,6 +48,7 @@ if (isset($_POST['submittopics'])) {
     <div class="row mx-auto pt-3">
         <span class="load-feed-spinner spinner-border text-primary"></span>
     </div>
+
     <?php if (isset($_SESSION['signedIn'])) require_once($CFG->dirroot . '/inc/html/identity.php'); ?>
 </div>
 <?php
@@ -57,6 +58,11 @@ echo buildModal('topics');
 require_once($CFG->dirroot . '/inc/html/modal-images.php');
 require_once('inc/html/footer.php');
 ?>
+<div class="smooth-scroll position-fixed back-to-top p-2">
+    <a href="#" class="btn btn-primary">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+</div>
 </body>
 
 </html>
