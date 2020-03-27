@@ -18,11 +18,8 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
                 <div class="col-md-12 p-5">
                     <div class="jumbotron">
                         <h1>
-                            <span style="font-family: 'Baloo 2', cursive;">thefeed</span>
+                            <i class="fas fa-stream pr-2"></i> <span style="font-family: 'Baloo 2', cursive;">thefeed</span>
                         </h1>
-                        <p>
-                            This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
-                        </p>
 
                         <div>
                             <p>
@@ -32,6 +29,11 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
                         <div>
                             <p>
                                 <strong><span style="font-family: 'Baloo 2', cursive;">thefeed</span></strong> is an attempt at allowing you more control over the information that you do see. In this first iteration we have provided a curated list of university Twitter accounts that you can follow.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                You can follow as many or as few accounts as you like. If you want to just follow topics, we have provided a list of topics that you can follow.
                             </p>
                         </div>
                     </div>
@@ -56,8 +58,11 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
                                     We have a number of plans for improving this service; if you have any suggestions we would love to hear from you.
                                 </p>
                                 <p>
-                                    The team @
+                                    The team <i class="fas fa-arrow-right"></i>
                                     <a class="" href="mailto:thefeed@chi.ac.uk">thefeed@chi.ac.uk</a>
+                                </p>
+                                <p class="text-center">
+                                    <img class="" src="img/brand_banner.png" alt="University of Chichester News">
                                 </p>
                             </div>
                         </div>
