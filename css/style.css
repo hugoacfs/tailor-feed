@@ -30,6 +30,11 @@ nav {
   padding: .375rem .75rem !important;
 }
 
+.nav-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.19rem;
+}
+
 .bg-darker {
   background-color: #252525 !important;
 }
@@ -226,7 +231,9 @@ nav {
   .preferences-btn-text {
     display: inline;
   }
-
+    .nav-title {
+      font-size: 1.5rem !important;
+    }
 }
 
 /* fixed table header https://stackoverflow.com/questions/21168521/table-fixed-header-and-scrollable-body 2nd */

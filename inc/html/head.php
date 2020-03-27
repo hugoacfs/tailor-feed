@@ -24,6 +24,8 @@ if (!defined('CONFIG_PROTECTION')) {
     <link rel="stylesheet" href="css/all.min.css">
     <!-- ROBOTO Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <!-- BALOO Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
     <!-- TOGGLE CSS -->
     <link rel="stylesheet" href="vendor/bootstrap4-toggle-master/css/bootstrap4-toggle.css">
     <?php

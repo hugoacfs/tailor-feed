@@ -111,7 +111,7 @@ function displayFeedbackLink($pageId)
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
-            uoc news
+            <span class="nav-title pr-2">uoc news </span>
         </a>
         <?php
         if (isLoggedIn() && $pageId === 'timeline') {
