@@ -108,7 +108,17 @@ unset($_POST);
                         <a href="admin.php" class="nav nav-link text-uppercase text-light">Admin Menu</a>
                     </li>
                     <li class="nav-item">
-
+                        <a href="?table=articles" class="nav-link">
+                            <i class="fas fa-table" aria-hidden="true"></i>
+                            <span class="text-light">
+                                Articles
+                            </span>
+                            <?php
+                            if ($table === 'articles') echo '<i class="fas fa-arrow-left"></i>';
+                            ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <?php
                         $url = 'admin.php?table=sources';
                         echo '<a href="' . $url . '" class="nav-link">';
@@ -131,17 +141,6 @@ unset($_POST);
                             </span>
                             <?php
                             if ($table === 'topics') echo '<i class="fas fa-arrow-left"></i>';
-                            ?>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="?table=articles" class="nav-link">
-                            <i class="fas fa-table" aria-hidden="true"></i>
-                            <span class="text-light">
-                                Articles
-                            </span>
-                            <?php
-                            if ($table === 'articles') echo '<i class="fas fa-arrow-left"></i>';
                             ?>
                         </a>
                     </li>
