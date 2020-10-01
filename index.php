@@ -42,7 +42,7 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
                                             That\'s all for now...
                                         </a>
                                     </h4>
-                                    <p class="card-text">To see more university news, go to your feed.
+                                    <p class="card-text">To see more news, go to your feed.
                                         <button onclick="location.href=\'feed.php\'" class="btn btn-dark btn-outline-light mr-1 ml-1 border">
                                             <i class="fas fa-stream" aria-hidden="true">
                                             </i> Feed

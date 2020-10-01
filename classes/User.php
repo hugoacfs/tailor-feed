@@ -242,9 +242,9 @@ class User
      * @param int page to return by, default is 1 meaning not offset
      * @return string JSON data.
      */
-    public function getArticlesJSON(int $page = 1): string
+    public function getArticlesJSON(int $page = 1)
     {
-        return json_encode($this->prepareArticlesBuilder($page));
+        return json_encode($this->prepareArticlesBuilder($page), JSON_HEX_QUOT | JSON_HEX_TAG); // There was an issue with "message": in the json object, anchor tags problem https://stackoverflow.com/questions/9764598/json-encode-not-working-with-a-html-string-as-value 
     }
     /**
      * HTML builder method for displaying the articles.
@@ -282,7 +282,7 @@ class User
                     <p class="card-text">' . $message . '</p>
                     <span style="display: none;">newscode:340</span>
             </div>
-            <hr class="thin-hr">'; //newscode:340 means stop refreshing ajax
+            <hr class="thin-hr">'; //newscode:340 means stop refreshing ajax VERY BAD need changing
             return $endMessage;
         }
         if (!$builder) {
@@ -411,11 +411,12 @@ class User
                 'message' => $message,
                 'screen_name' => strtolower($screen_name),
                 'timestamp' => $timestamp,
+                'timeago' => timeAgo($timestamp),
                 'originalUrl' => $originalUrl,
                 'media' => $article->media
             );
         }
-        if ($lastArticles) $builder[] = array('lastArticle' => true);
+        if ($lastArticles) $builder['lastArticle'] = true;
         return $builder;
     }
     /**

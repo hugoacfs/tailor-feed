@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2020 at 02:58 PM
+-- Generation Time: Mar 05, 2020 at 11:38 AM
 -- Server version: 10.1.35-MariaDB
 -- PHP Version: 7.2.9
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -19,7 +20,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `chinews`
+-- Database: `tailor_feed`
 --
 
 -- --------------------------------------------------------
@@ -66,6 +67,40 @@ CREATE TABLE `articles_topics` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `config`
+--
+
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `value` varchar(155) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `config`
+--
+
+INSERT INTO `config` (`id`, `name`, `value`) VALUES
+(16, 'authorised_cors', 'your-website.com,another-website.com'),
+(15, 'api_url', 'your-website.com'),
+(14, 'users_recycle_cron', '86400'),
+(13, 'users_recycle_interval', '2592000'),
+(12, 'users_recycle_last_cron', '0'),
+(11, 'users_recycle_mode', 'on'),
+(10, 'articles_recycle_cron', '86400'),
+(9, 'articles_recycle_interval', '2592000'),
+(8, 'articles_recycle_last_cron', '0'),
+(7, 'articles_recycle_mode', 'on'),
+(1, 'auth_method', 'default'),
+(4, 'debug_mode', 'off'),
+(6, 'g_analytics_id', 'default'),
+(5, 'g_analytics_mode', 'off'),
+(3, 'json_public', 'default'),
+(2, 'json_secret', 'default');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `media_links`
 --
 
@@ -85,11 +120,58 @@ CREATE TABLE `media_links` (
 CREATE TABLE `sources` (
   `id` int(11) NOT NULL,
   `reference` varchar(55) NOT NULL,
-  `screenname` varchar(45) NOT NULL DEFAULT 'Update this name',
+  `screenname` varchar(55) NOT NULL DEFAULT 'Update this name',
   `type` varchar(45) NOT NULL,
   `status` varchar(12) NOT NULL DEFAULT 'active',
-  `imagesource` varchar(255) DEFAULT NULL
+  `imagesource` varchar(255) DEFAULT 'img / default_user_icon.jpg'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sources_config`
+--
+
+CREATE TABLE `sources_config` (
+  `id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `value` varchar(155) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `sources_config`
+--
+
+INSERT INTO `sources_config` (`id`, `type`, `name`, `value`) VALUES
+(1, 'twitter', 'update_articles', 'true'),
+(2, 'twitter', 'update_sources', 'true'),
+(3, 'twitter', 'class', 'Twitter'),
+(4, 'twitter', 'articles_cron', '60'),
+(5, 'twitter', 'articles_last_cron', '0'),
+(6, 'twitter_api', 'oauth_access_token', 'default'),
+(7, 'twitter_api', 'oauth_access_token_secret', 'default'),
+(8, 'twitter_api', 'consumer_key', 'default'),
+(9, 'twitter_api', 'consumer_secret', 'default'),
+(10, 'facebook', 'update_articles', 'false'),
+(11, 'facebook', 'update_sources', 'false'),
+(12, 'facebook', 'class', 'Facebook'),
+(13, 'facebook', 'articles_cron', '120'),
+(14, 'facebook', 'articles_last_cron', '0'),
+(15, 'facebook_api', 'client_id', 'default'),
+(16, 'facebook_api', 'client_secret', 'default'),
+(17, 'facebook_api', 'access_token', 'default'),
+(18, 'rss', 'update_articles', 'false'),
+(19, 'rss', 'update_sources', 'false'),
+(20, 'rss', 'class', 'Rss'),
+(21, 'rss', 'articles_cron', '3600'),
+(22, 'rss', 'articles_last_cron', '0'),
+(23, 'twitter', 'sources_cron', '86400'),
+(24, 'twitter', 'sources_last_cron', '0'),
+(25, 'facebook', 'sources_cron', '86400'),
+(26, 'facebook', 'sources_last_cron', '0'),
+(27, 'rss', 'sources_cron', '86400'),
+(28, 'rss', 'sources_last_cron', '0');
 
 -- --------------------------------------------------------
 
@@ -139,8 +221,17 @@ CREATE TABLE `users` (
   `username` varchar(45) NOT NULL,
   `givenname` varchar(55) DEFAULT NULL,
   `role` varchar(1) NOT NULL DEFAULT 'u',
-  `lastlogin` int(11) DEFAULT NULL
+  `lastlogin` int(11) DEFAULT NULL,
+  `password` char(60) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `givenname`, `role`, `lastlogin`, `password`) VALUES
+(1, 'default', 'Guest', 'u', 0, '$2y$10$eiwKgjEQgxM5af.iAqz26uw94fsRXvpgItag26BYSUZ3XZCNfc8jq'),
+(2, 'admin', 'Admin', 'a', 1583406268, '$2y$10$eiwKgjEQgxM5af.iAqz26uw94fsRXvpgItag26BYSUZ3XZCNfc8jq');
 
 --
 -- Indexes for dumped tables
@@ -159,7 +250,7 @@ ALTER TABLE `admin_logs`
 --
 ALTER TABLE `articles`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `identifier` (`id`,`uniqueidentifier`),
+  ADD UNIQUE KEY `idx_articles_uniqueidentifier` (`uniqueidentifier`),
   ADD KEY `fk_articles_sources1_idx` (`sourceid`),
   ADD KEY `idx_creationdate` (`creationdate`);
 
@@ -168,9 +259,16 @@ ALTER TABLE `articles`
 --
 ALTER TABLE `articles_topics`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `articles_topics` (`articleid`,`topicid`),
-  ADD KEY `fk_articles_has_topics_topics1_idx` (`topicid`),
-  ADD KEY `fk_articles_has_topics_articles1_idx` (`articleid`);
+  ADD UNIQUE KEY `idx_articles_topics_articleid_topicid` (`articleid`,`topicid`),
+  ADD KEY `fk_art_top_topicid_topics_id` (`topicid`);
+
+--
+-- Indexes for table `config`
+--
+ALTER TABLE `config`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idx_config_name_value` (`name`,`value`),
+  ADD UNIQUE KEY `idx_config_name` (`name`);
 
 --
 -- Indexes for table `media_links`
@@ -184,36 +282,47 @@ ALTER TABLE `media_links`
 --
 ALTER TABLE `sources`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_ref_type` (`reference`,`type`);
+  ADD UNIQUE KEY `idx_sources_reference_type` (`reference`,`type`),
+  ADD KEY `idx_sources_reference` (`reference`);
+
+--
+-- Indexes for table `sources_config`
+--
+ALTER TABLE `sources_config`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `type_name_uq` (`type`,`name`),
+  ADD UNIQUE KEY `idx_sources_config_type_name` (`type`,`name`);
 
 --
 -- Indexes for table `subscribed_sources`
 --
 ALTER TABLE `subscribed_sources`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_sourceid_sources_id` (`sourceid`),
-  ADD KEY `fk_subs_sources_userid_users_id` (`userid`);
+  ADD UNIQUE KEY `idx_subscribed_sources_userid_sourceid` (`userid`,`sourceid`),
+  ADD KEY `fk_sub_src_sourceid_sources_id` (`sourceid`);
 
 --
 -- Indexes for table `subscribed_topics`
 --
 ALTER TABLE `subscribed_topics`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_subs_topics_userid_users_id` (`userid`),
-  ADD KEY `fk_topicid_topics_id` (`topicid`);
+  ADD UNIQUE KEY `idx_subscribed_topics_userid_topicid` (`userid`,`topicid`),
+  ADD KEY `fk_sub_top_topicid_topics_id` (`topicid`);
 
 --
 -- Indexes for table `topics`
 --
 ALTER TABLE `topics`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idx_topics_name` (`name`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username_idx` (`username`);
+  ADD UNIQUE KEY `username_idx` (`username`),
+  ADD KEY `idx_users_lastlogin` (`lastlogin`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -238,6 +347,12 @@ ALTER TABLE `articles_topics`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `config`
+--
+ALTER TABLE `config`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `media_links`
 --
 ALTER TABLE `media_links`
@@ -248,6 +363,12 @@ ALTER TABLE `media_links`
 --
 ALTER TABLE `sources`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sources_config`
+--
+ALTER TABLE `sources_config`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `subscribed_sources`
@@ -271,43 +392,47 @@ ALTER TABLE `topics`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `admin_logs`
---
-ALTER TABLE `admin_logs`
-  ADD CONSTRAINT `fk_admin_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`);
-
---
 -- Constraints for table `articles`
 --
 ALTER TABLE `articles`
-  ADD CONSTRAINT `fk_articles_sources1` FOREIGN KEY (`sourceid`) REFERENCES `sources` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_articles_sources1` FOREIGN KEY (`sourceid`) REFERENCES `sources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `articles_topics`
+--
+ALTER TABLE `articles_topics`
+  ADD CONSTRAINT `fk_art_top_articleid_articles_id` FOREIGN KEY (`articleid`) REFERENCES `articles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_art_top_topicid_topics_id` FOREIGN KEY (`topicid`) REFERENCES `topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `media_links`
 --
 ALTER TABLE `media_links`
-  ADD CONSTRAINT `fk_articleid_article_id` FOREIGN KEY (`articleid`) REFERENCES `articles` (`id`);
+  ADD CONSTRAINT `fk_articleid_article_id` FOREIGN KEY (`articleid`) REFERENCES `articles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `subscribed_sources`
 --
 ALTER TABLE `subscribed_sources`
-  ADD CONSTRAINT `fk_sourceid_sources_id` FOREIGN KEY (`sourceid`) REFERENCES `sources` (`id`),
-  ADD CONSTRAINT `fk_subs_sources_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `fk_sub_src_sourceid_sources_id` FOREIGN KEY (`sourceid`) REFERENCES `sources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_sub_src_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `subscribed_topics`
 --
 ALTER TABLE `subscribed_topics`
-  ADD CONSTRAINT `fk_subs_topics_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `fk_topicid_topics_id` FOREIGN KEY (`topicid`) REFERENCES `topics` (`id`);
+  ADD CONSTRAINT `fk_sub_top_topicid_topics_id` FOREIGN KEY (`topicid`) REFERENCES `topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_sub_top_userid_users_id` FOREIGN KEY (`userid`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
