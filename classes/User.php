@@ -66,12 +66,12 @@ class User
             $id = $row['id'];
             $name = $row['screenname'];
             $builder = null;
-            $builder = array(
+            $builder = [
                 'dbId' => $id,
                 'reference' => $reference,
                 'type' => $type,
                 'name' => $name
-            );
+            ];
             $this->subscribedList[] = new Source($builder);
         }
         $fetched = null;
@@ -154,12 +154,12 @@ class User
         return !$isPreferenceSubscribed;
     }
     /**
-     * Makes changes to the DB user's preferences accordin to the new preferences list.
+     * Makes changes to the DB user's preferences according to the new preferences list.
      * @param array $preferencesList a list of preferences to update as requested by HTML form.
      * @param string $type of preference, could be 'source' or 'topic'
      * @return void
      */
-    public function updatePreferences(array $preferencesList, string $type): void
+    public function updatePreferences(array $preferencesList, string $type): void //TODO: perhaps improve this
     {
         $toAddList = $toRemoveList = $currentList = [];
         switch ($type) {
@@ -196,55 +196,13 @@ class User
         $this->updateUserTopicsList();
     }
     /**
-     * Returns an array of Articles.
-     * According to user preferences, it fetches the relevant articles to show the user.
-     * @param int page to return by, default is 1 meaning not offset
-     * @return array $articlesList array of Article objects which the user is subscribed to.
-     */
-    private function buildSubscribedArticles(int $page = 1): array
-    {
-        global $DB;
-        $articlesList = [];
-        $timeInterval = weeksAgo(8);
-        $subscribedList = $this->subscribedList ?? [];
-        $topicsList = $this->topicsList ?? [];
-        $fetched = $DB->fetchUserSubscribedArticles($subscribedList, $topicsList, $timeInterval, $page);
-        if ($fetched == null) return $articlesList;
-        foreach ($fetched as $row) {
-            $fetchMedia = $DB->fetchMediaUrlsPerArticleId($row['id']);
-            $media = [];
-            foreach ($fetchMedia as $m) {
-                $media[] = array(
-                    'url' => $m['url'],
-                    'type' => $m['type']
-                );
-            }
-            $builder = array(
-                'dbId' => $row['id'],
-                'uniqueId' => $row['uniqueidentifier'],
-                'ownerReference' => $row['reference'],
-                'ownerName' => $row['screenname'],
-                'ownerId' => $row['sourceid'],
-                'creationDate' => $row['creationdate'],
-                'body' => $row['body'],
-                'url' => '',
-                'type' => $row['type'],
-                'imageSource' => $row['imagesource'],
-                'topics' => extractHashtags($row['body']),
-                'media' => $media
-            );
-            $articlesList[] = new Article($builder);
-        }
-        return $articlesList;
-    }
-    /**
      * Turns Array of objects into JSON
      * @param int page to return by, default is 1 meaning not offset
      * @return string JSON data.
      */
     public function getArticlesJSON(int $page = 1)
     {
-        return json_encode($this->prepareArticlesBuilder($page), JSON_HEX_QUOT | JSON_HEX_TAG); // There was an issue with "message": in the json object, anchor tags problem https://stackoverflow.com/questions/9764598/json-encode-not-working-with-a-html-string-as-value 
+        return json_encode($this->constructArticles($page), JSON_HEX_QUOT | JSON_HEX_TAG); // There was an issue with "message": in the json object, anchor tags problem https://stackoverflow.com/questions/9764598/json-encode-not-working-with-a-html-string-as-value 
     }
     /**
      * HTML builder method for displaying the articles.
@@ -355,13 +313,13 @@ class User
             <a href="' . $builder['accountUrl'] . '" target="uni_news" class=" card-link">
                 <div class="timeline-badge mt-1 ml-1">
                     <img class="timeline-img"
-                        src="' . $builder['profile_image'] . '" width="50">
+                        src="' . $builder['profileImage'] . '" width="50">
                     <span class="img-spinner spinner-border text-primary"></span>
                 </div>
             </a>
             <h5 class="card-subtitle mb-2 text-muted">
                 <a title="' . $builder['name'] . '" href="' . $builder['accountUrl'] . '" target="uni_news" class=" card-link">
-                    @' . $builder['screen_name'] . '
+                    @' . $builder['referenceName'] . '
                     <i class="fab fa-twitter-square"></i>
                 </a>
             </h5>
@@ -379,7 +337,55 @@ class User
         </div>
         <hr class="thin-hr">';
     }
+
     /**
+     * @deprecated
+     * Returns an array of Article objects.
+     * According to user preferences, it fetches the relevant articles to show the user.
+     * @param int page to return by default is 1 meaning not offset
+     * @return array $articlesList array of Article objects which the user is subscribed to.
+     */
+    private function buildSubscribedArticles(int $page = 1): array
+    {
+        global $DB;
+        // $timeInterval = weeksAgo(8); //for now will allow users to go back as far as desired
+        $timeInterval = '0';
+        $meta = [];
+        $meta['page'] = $page;
+        $meta['since'] = $timeInterval;
+        $fetchedArticles = $DB->fetchUserSubscribedArticles($this->subscribedList ?? [], $this->topicsList ?? [], $timeInterval, $page);
+        if ($fetchedArticles == null) return [];
+        $articlesList = [];
+        foreach ($fetchedArticles as $article) {
+            $fetchMedia = $DB->fetchMediaUrlsPerArticleId($article['id']);
+            $media = [];
+            foreach ($fetchMedia as $m) {
+                $media[] = [
+                    'url' => $m['url'],
+                    'type' => $m['type']
+                ];
+            }
+            $builder = [
+                'dbId' => $article['id'],
+                'uniqueId' => $article['uniqueidentifier'],
+                'ownerReference' => $article['reference'],
+                'ownerName' => $article['screenname'],
+                'ownerId' => $article['sourceid'],
+                'creationDate' => $article['creationdate'],
+                'body' => $article['body'],
+                'url' => '',
+                'type' => $article['type'],
+                'imageSource' => $article['imagesource'],
+                'topics' => extractHashtags($article['body']),
+                'media' => $media
+            ];
+            $articlesList[] = new Article($builder);
+        }
+        debug_to_console($articlesList);
+        return $articlesList;
+    }
+    /**
+     * @deprecated
      * Prepares an array with all article data requested.
      * @param int $page The page which the articles will be built, 1 being the first (most recent) articles.
      * @return array $builder - An associative array which holds the data for all the articles prepared.
@@ -387,38 +393,117 @@ class User
     public function prepareArticlesBuilder(int $page = 1): array
     {
         $builder = [];
-        $articlesToDisplay = $this->buildSubscribedArticles($page);
+        $articlesToDisplay = $this->constructArticles($page);
         $lastArticles = false;
         if (count($articlesToDisplay) < 10 && count($articlesToDisplay) > 0) $lastArticles = true;
         foreach ($articlesToDisplay as $article) {
             $message = convertHashtags(convertMentions(convertLinks($article->body)));
             $timestamp = $article->creationDate;
             $name = $article->ownerName;
-            $screen_name = $article->ownerReference;
-            $profile_image = $article->imageSource;
+            $referenceName = $article->ownerReference;
+            $profileImage = $article->imageSource;
             switch ($article->type) {
                 case 'twitter':
-                    $originalUrl = 'https://twitter.com/' . $screen_name . '/status/' . $article->uniqueId;
-                    $accountUrl = 'https://twitter.com/' . $screen_name;
+                    $originalUrl = 'https://twitter.com/' . $referenceName . '/status/' . $article->uniqueId;
+                    $accountUrl = 'https://twitter.com/' . $referenceName;
                     break;
             }
-            $builder[] = array(
+            $builder[] = [
                 'articleId' => $article->dbId,
                 'type' => ucfirst($article->type),
-                'profile_image' => $profile_image,
+                'profileImage' => $profileImage,
                 'accountUrl' => $accountUrl,
                 'name' => $name,
                 'message' => $message,
-                'screen_name' => strtolower($screen_name),
+                'referenceName' => strtolower($referenceName),
                 'timestamp' => $timestamp,
                 'timeago' => timeAgo($timestamp),
                 'originalUrl' => $originalUrl,
                 'media' => $article->media
-            );
+            ];
         }
         if ($lastArticles) $builder['lastArticle'] = true;
         return $builder;
     }
+
+    public function constructArticles(int $page = 1, int $since = 0)
+    {
+        global $DB;
+        $fetchedArticles = $DB->fetchUserSubscribedArticles($this->subscribedList ?? [], $this->topicsList ?? [], $since, $page);
+        $finalarticles = (count($fetchedArticles) < 10 && count($fetchedArticles) >= 0);
+        $meta = [
+            "page" => $page,
+            "since" => $since,
+            "finalarticles" => $finalarticles
+        ];
+        $prepArticles = [];
+        foreach ($fetchedArticles as $rawArticle) {
+            $fetchMedia = $DB->fetchMediaUrlsPerArticleId($rawArticle['id']);
+            $rawMedia = [];
+            foreach ($fetchMedia as $m) {
+                $rawMedia[] = [
+                    'url' => $m['url'],
+                    'type' => $m['type']
+                ];
+            }
+            $prepArticles[] = new Article(
+                [
+                    'dbId' => $rawArticle['id'],
+                    'uniqueId' => $rawArticle['uniqueidentifier'],
+                    'ownerReference' => $rawArticle['reference'],
+                    'ownerName' => $rawArticle['screenname'],
+                    'ownerId' => $rawArticle['sourceid'],
+                    'creationDate' => $rawArticle['creationdate'],
+                    'body' => $rawArticle['body'],
+                    'url' => '',
+                    'type' => $rawArticle['type'],
+                    'imageSource' => $rawArticle['imagesource'],
+                    'topics' => extractHashtags($rawArticle['body']),
+                    'media' => $rawMedia
+                ]
+            );
+        }
+        $fineArticles = [];
+        foreach ($prepArticles as $article) {
+            $message = convertHashtags(convertMentions(convertLinks($article->body)));
+            $timestamp = $article->creationDate;
+            $name = $article->ownerName;
+            $reference = $article->ownerReference;
+            $profileImage = $article->imageSource;
+            switch ($article->type) {
+                case 'twitter':
+                    $originalUrl = 'https://twitter.com/' . $reference . '/status/' . $article->uniqueId;
+                    $accountUrl = 'https://twitter.com/' . $reference;
+                    break;
+            }
+            $raw = new stdClass;
+            foreach ($article as $key => $rawData) {
+                $raw->$key = $rawData;
+            }
+            $fineArticles[] = [
+                'articleId' => $article->dbId,
+                'type' => ucfirst($article->type),
+                'profileImage' => $profileImage,
+                'accountUrl' => $accountUrl,
+                'name' => $name,
+                'message' => $message,
+                'referenceName' => strtolower($reference),
+                'timestamp' => $timestamp,
+                'timeago' => timeAgo($timestamp),
+                'originalUrl' => $originalUrl,
+                'media' => $article->media,
+                'raw' => $raw
+            ];
+        }
+        $data = [
+            "articles" => $fineArticles,
+            "meta" => $meta
+        ];
+        debug_to_console($data);
+        return $data;
+    }
+
+
     /**
      * Returns html for the articles to be displayed
      * @param int page to return by, default is 1 meaning not offset
@@ -427,7 +512,8 @@ class User
     public function displaySubscribedArticles(int $page = 1): string
     {
         $htmlHolder = '';
-        $blocks = $this->prepareArticlesBuilder($page);
+        $data = $this->constructArticles($page);
+        $blocks = $data;
         if (!$blocks) return $this->buildTimelineHtml([]);
         foreach ($blocks as $builder) $htmlHolder .= $this->buildTimelineHtml($builder);
         return $htmlHolder;

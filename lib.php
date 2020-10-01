@@ -438,3 +438,21 @@ function loadPreferences(string $type, string $userName): string
 
     return $html;
 }
+
+function renderFromTemplate(string $location, array $options): string
+{
+    $m = new Mustache_Engine;
+    ob_start();
+    require($CFG->dirroot . $location);
+    $template = ob_get_clean();
+    return $m->render($template, $options);
+}
+/**
+ * Debug methods only
+ * from stackoverflow
+ * to help with dev
+ */
+function debug_to_console($data)
+{
+    echo "<script>console.log(" . json_encode($data) . ");</script>";
+}

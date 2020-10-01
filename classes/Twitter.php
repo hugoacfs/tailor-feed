@@ -46,7 +46,7 @@ class Twitter extends Source
         $getfield = '?screen_name=' . $this->reference . $this->requestExtraSettings . $lastArticleUniqueId;
         $apiUrl = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
         $this->tweets = $this->twitterQuery($apiUrl, $getfield);
-        $this->articles = array();
+        $this->articles = [];
         if (!$this->tweets || count($this->tweets) === 0) return;
         $this->name = $this->tweets[0]->user->name;
         foreach ($this->tweets as $tweet) {
@@ -102,7 +102,7 @@ class Twitter extends Source
     public static function getAllSources($active = null): array
     {
         global $DB;
-        $sources = array();
+        $sources = [];
         /** Getting the account handles from db to request from twitter **/
         $type = 'twitter';
         $fetched = $DB->fetchAllSourcesByType($type, $active);

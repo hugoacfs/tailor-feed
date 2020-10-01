@@ -106,7 +106,7 @@ class Article
             echo ".";
             $fetched = $DB->fetchArticleByUniqueId($article->uniqueId);
             $uniqueIdExists = !(count($fetched) === 0);
-            if ($uniqueIdExists) continue;
+            if ($uniqueIdExists) continue; //preventing duplicates being inserted
             $insertSuccess = $DB->insertNewArticleEntry(
                 $article->ownerId,
                 $article->uniqueId,
@@ -137,7 +137,7 @@ class Article
     {
         global $DB;
         if (!$id) return 0;
-        $fetched = $DB->fetchLatestTwitterArticle($id);
+        $fetched = $DB->fetchLatestTwitterArticle($id); //TODO: will this work with facebook and rss?
         $fetched = $fetched[0]; //gets the first row
         if (!$fetched) return 0;
         return intval($fetched['MAX(a.uniqueidentifier)']);
@@ -148,12 +148,12 @@ class Article
      * @param int $id The id of the Article as found in the DB.
      * @return bool True on all links successfully added, False on failure to add all links. False on array is empty.
      */
-    static public function linkTopics(array $topics, int $id): bool
+    public static function linkTopics(array $topics, int $id): bool
     {
         global $DB;
         if (empty($topics)) return false;
         $fetchedtopics = $DB->fetchAllTopics();
-        $topicsList = array();
+        $topicsList = [];
         foreach ($fetchedtopics as $row) {
             $topicsList[$row['id']] = $row['name'];
         }
@@ -167,7 +167,7 @@ class Article
      * @param int $id The id of the Article as found in the DB.
      * @return bool True on all links successfully added, False on failure to add all links. False on array is empty.
      */
-    static public function linkMedia(array $media, int $id): bool
+    public static function linkMedia(array $media, int $id): bool
     {
         global $DB;
         if (empty($media)) return false;
@@ -180,7 +180,7 @@ class Article
     public static function getAllTopics(): array
     {
         global $DB;
-        $topics = array();
+        $topics = [];
         $result = $DB->fetchAllTopics(true);
         foreach ($result as $row) {
             $thisTopic = new stdClass();
@@ -198,7 +198,7 @@ class Article
     public static function getAllTopicsIds(): array
     {
         global $DB;
-        $topicsIds = array();
+        $topicsIds = [];
         $fetched = $DB->fetchAllTopics();
         foreach ($fetched as $row) $topicsIds[] = $row['id'];
         return $topicsIds;
