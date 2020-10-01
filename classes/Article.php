@@ -70,7 +70,7 @@ class Article
      */
     public $topics;
     /**
-     * 
+     * Array of media objects which has attributes ["url" : "https..", "type": "video|photo"]
      * @var array 
      */
     public $media;
