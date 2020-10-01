@@ -104,8 +104,8 @@ function displayFeedbackLink($pageId)
 <body data-pageid="<?php echo $pageId; ?>" class="no-gutters pb-0 overflow-hidden">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <?php
-        $homeLink = $CFG->api_url . '/index.php';
-        if (isLoggedIn()) $homeLink = $CFG->api_url . '/feed.php';
+        $homeLink = $CFG->dirroot . '/index.php';
+        if (isLoggedIn()) $homeLink = $CFG->dirroot . '/feed.php';
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">

@@ -133,10 +133,10 @@ class Twitter extends Source
         global $CFG;
         // TODO CHECK EXIST BEFORE CONTINUE
         require_once($CFG->dirroot . '/vendor/TwitterAPIExchange/TwitterAPIExchange.php');
-        $settings = $CFG->sources['twitter']['api_settings'];
+        $api_settings = (array) $CFG->twitter->api; //turning into array for TwitterAPIExchange to handle
         $requestMethod = 'GET';
         try {
-            $twitter = new TwitterAPIExchange($settings);
+            $twitter = new TwitterAPIExchange($api_settings);
             $json_data = $twitter->setGetfield($getfield)
                 ->buildOauth($apiUrl, $requestMethod)
                 ->performRequest();
@@ -206,28 +206,27 @@ class Twitter extends Source
         $start = time();
         $type = 'twitter';
         Cron::cronHeader($type, $start);
-        $config = $CFG->sources[$type] ?? false;
-        if ($config) {
-            self::updateSources($config);
-            self::updateArticles($config);
+        $settings = $CFG->twitter ?? false;
+        if ($settings) {
+            self::updateSources($settings);
+            self::updateArticles($settings);
         }
         $end = time();
         Cron::cronFooter('twitter', $start, $end);
     }
 
-
     /**
      * Run by cron to update the Twitter sources.
      * @param array $config Settings required to determine what and when to run.
      */
-    private static function updateSources(array $config) {
+    private static function updateSources($twitter_settings) {
         global $DB;
-        if ($config['update_sources'] != 'true') {
+        if (intval($twitter_settings->sourcescronenabled) != 1) {// if cron is enabled(1|0)
             echo " Updating sources not enabled\n";
             return;
         }
-        $lastrun = intval($config['sources_last_cron']); //last time run
-        $interval = intval($config['sources_cron']); //cron interval
+        $lastrun = intval($twitter_settings->sourceslastupdated); //last time run
+        $interval = intval($twitter_settings->sourcescroninterval); //cron interval
         if (!Cron::runNow($lastrun, $interval)) {
             echo " Not time to update Sources.\n";
             return;
@@ -235,7 +234,7 @@ class Twitter extends Source
 
         echo " Updating all Twitter source details...\n";
         if (self::updateSourcesDetails()) {
-            $DB->updateLastCronTimeByType('twitter', 'sources');
+            $DB->updateLastCronTime('twitter_sourceslastupdated');
         }
     }
 
@@ -243,17 +242,17 @@ class Twitter extends Source
      * Run by Cron to update Articles.
      * @param array $config Settings require to determine what and when to run.
      */
-    private static function updateArticles(array $config) {
+    private static function updateArticles($twitter_settings) {
         global $DB;
-        if ($config['update_articles'] != 'true') {
-            echo " Updating Articles not enabled\n";
+        if (intval($twitter_settings->articlescronenabled) != 1) {
+            echo " Updating articles not enabled\n";
             return;
         }
 
-        $lastrun = intval($config['articles_last_cron']); //last time run
-        $interval = intval($config['articles_cron']); //cron interval
+        $lastrun = intval($twitter_settings->articleslastupdated); //last time run
+        $interval = intval($twitter_settings->articlescroninterval); //cron interval
         if (!Cron::runNow($lastrun, $interval)) {
-            echo " Not time to update Articles.\n";
+            echo " Not time to update articles.\n";
             return;
         }
 
@@ -272,6 +271,6 @@ class Twitter extends Source
                 error_log(Cron::error('Twitter', 'Failed to publish articles for ' . $source->getReference()));
             }
         }
-        $DB->updateLastCronTimeByType('twitter', 'articles');
+        $DB->updateLastCronTime('twitter_articleslastupdated');
     }
 }

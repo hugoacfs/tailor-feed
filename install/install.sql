@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `tailor_feed`
+-- Database: `thefeed`
 --
 
 -- --------------------------------------------------------
@@ -81,22 +81,54 @@ CREATE TABLE `config` (
 --
 
 INSERT INTO `config` (`id`, `name`, `value`) VALUES
-(16, 'authorised_cors', 'your-website.com,another-website.com'),
-(15, 'api_url', 'your-website.com'),
-(14, 'users_recycle_cron', '86400'),
-(13, 'users_recycle_interval', '2592000'),
-(12, 'users_recycle_last_cron', '0'),
-(11, 'users_recycle_mode', 'on'),
-(10, 'articles_recycle_cron', '86400'),
-(9, 'articles_recycle_interval', '2592000'),
-(8, 'articles_recycle_last_cron', '0'),
-(7, 'articles_recycle_mode', 'on'),
-(1, 'auth_method', 'default'),
-(4, 'debug_mode', 'off'),
-(6, 'g_analytics_id', 'default'),
-(5, 'g_analytics_mode', 'off'),
-(3, 'json_public', 'default'),
-(2, 'json_secret', 'default');
+-- Twitter basic config
+(1, 'twitter_classname', 'Twitter');
+(2, 'twitter_articlescroninterval', '60');
+(3, 'twitter_sourcescroninterval', '500');
+(4, 'twitter_articleslastupdated', '0');
+(5, 'twitter_sourceslastupdated', '0');
+(6, 'twitter_articlescronenabled', '0');
+(36, 'twitter_sourcescronenabled', '0');
+-- Facebook basic config
+(7, 'facebook_classname', 'Facebook');
+(8, 'facebook_articlescroninterval', '60');
+(9, 'facebook_sourcescroninterval', '500');
+(10, 'facebook_articleslastupdated', '0');
+(11, 'facebook_sourceslastupdated', '0');
+(12, 'facebook_articlescronenabled', '0');
+(37, 'facebook_sourcescronenabled', '0');
+-- RSS basic config
+(13, 'rss_classname', 'Rss');
+(14, 'rss_articlescroninterval', '60');
+(15, 'rss_sourcescroninterval', '500');
+(16, 'rss_articleslastupdated', '0');
+(17, 'rss_sourceslastupdated', '0');
+(18, 'rss_articlescronenabled', '0');
+(38, 'rss_sourcescronenabled', '0');
+-- Twitter api config
+(19, 'twitter_api_consumerkey', '');
+(20, 'twitter_api_consumersecret', '');
+(21, 'twitter_api_oauthaccesstoken', '');
+(22, 'twitter_api_oauthaccesstokensecret', '');
+-- Facebook api config
+(23, 'facebook_api_accesstoken', '');
+(24, 'facebook_api_clientid', '');
+(25, 'facebook_api_clientsecret', '');
+
+(26, 'recycle_userscroninterval', '31556952'); -- Run once per year
+(27, 'recycle_userslastupdated', '0');
+(28, 'recycle_userscronenabled', '0');
+(29, 'recycle_articlescroninterval', '31556952'); -- Run once per year
+(30, 'recycle_articleslastupdated', '0');
+(31, 'recycle_articlescronenabled', '0');
+
+(32, 'auth_method', 'default');
+(33, 'debug_enabled', '0');
+(34, 'googleanalytics_id', '');
+(35, 'googleanalytics_enabled', '0');
+
+
+
 
 -- --------------------------------------------------------
 
@@ -125,53 +157,6 @@ CREATE TABLE `sources` (
   `status` varchar(12) NOT NULL DEFAULT 'active',
   `imagesource` varchar(255) DEFAULT 'img / default_user_icon.jpg'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `sources_config`
---
-
-CREATE TABLE `sources_config` (
-  `id` int(11) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `value` varchar(155) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `sources_config`
---
-
-INSERT INTO `sources_config` (`id`, `type`, `name`, `value`) VALUES
-(1, 'twitter', 'update_articles', 'true'),
-(2, 'twitter', 'update_sources', 'true'),
-(3, 'twitter', 'class', 'Twitter'),
-(4, 'twitter', 'articles_cron', '60'),
-(5, 'twitter', 'articles_last_cron', '0'),
-(6, 'twitter_api', 'oauth_access_token', 'default'),
-(7, 'twitter_api', 'oauth_access_token_secret', 'default'),
-(8, 'twitter_api', 'consumer_key', 'default'),
-(9, 'twitter_api', 'consumer_secret', 'default'),
-(10, 'facebook', 'update_articles', 'false'),
-(11, 'facebook', 'update_sources', 'false'),
-(12, 'facebook', 'class', 'Facebook'),
-(13, 'facebook', 'articles_cron', '120'),
-(14, 'facebook', 'articles_last_cron', '0'),
-(15, 'facebook_api', 'client_id', 'default'),
-(16, 'facebook_api', 'client_secret', 'default'),
-(17, 'facebook_api', 'access_token', 'default'),
-(18, 'rss', 'update_articles', 'false'),
-(19, 'rss', 'update_sources', 'false'),
-(20, 'rss', 'class', 'Rss'),
-(21, 'rss', 'articles_cron', '3600'),
-(22, 'rss', 'articles_last_cron', '0'),
-(23, 'twitter', 'sources_cron', '86400'),
-(24, 'twitter', 'sources_last_cron', '0'),
-(25, 'facebook', 'sources_cron', '86400'),
-(26, 'facebook', 'sources_last_cron', '0'),
-(27, 'rss', 'sources_cron', '86400'),
-(28, 'rss', 'sources_last_cron', '0');
 
 -- --------------------------------------------------------
 

@@ -6,7 +6,7 @@ if (!defined('CONFIG_PROTECTION')) {
 }
 ?>
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $CFG->g_analytics_id; ?>"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $CFG->googleanalytics->id; ?>"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
 
@@ -14,5 +14,5 @@ if (!defined('CONFIG_PROTECTION')) {
         dataLayer.push(arguments);
     }
     gtag('js', new Date());
-    gtag('config', '<?php echo $CFG->g_analytics_id; ?>');
+    gtag('config', '<?php echo $CFG->googleanalytics->id; ?>');
 </script>

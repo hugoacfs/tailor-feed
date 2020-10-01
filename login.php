@@ -8,7 +8,7 @@ require_once($CFG->dirroot . '/inc/html/head.php');
 require_once($CFG->dirroot . '/inc/html/nav.php');
 $isLoggedIn = $_SESSION['signedIn'] ?? false;
 if (!$isLoggedIn) {
-    if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
+    if ($CFG->auth->method === 'SSAML') $_SESSION['USER'] = new SSAML();
     else {
         if ($_POST) {
             try {
@@ -33,7 +33,7 @@ if (!$isLoggedIn) {
     }
 }
 if (!isset($_SESSION['signedIn'])) {
-    if ($CFG->auth_method === 'SSAML') {
+    if ($CFG->auth->method === 'SSAML') {
         header('Location: feed.php');
         exit();
     } else {
@@ -62,7 +62,7 @@ if (!isset($_SESSION['signedIn'])) {
     };
 } elseif (!$_SESSION['signedIn']) {
     session_unset();
-    if ($CFG->auth_method === 'SSAML') $_SESSION['USER'] = new SSAML();
+    if ($CFG->auth->method === 'SSAML') $_SESSION['USER'] = new SSAML();
     redirectGuestToLogin();
 } else redirectUserToFeed();
 

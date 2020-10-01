@@ -36,45 +36,25 @@ require_once($CFG->dirroot . '/lib.php');
  * Global DB and CONNECTION objects.
  */
 $DB = new Connection($CFG->hostname, $CFG->username, $CFG->password);
+unset($CFG->username);
+unset($CFG->password);
+unset($CFG->hostname);
 /**
  * This is the MAIN configuration from DB.
  */
 $config = $DB->fetchConfiguration();
-$source_types = [
-    'twitter',
-    'facebook',
-    'rss'
-];
 
 /**
  * Populating MAIN configuration from DB
  */
 foreach ($config as $c) {
-    $name = $c['name'];
-    $value = $c['value'];
-    $CFG->$name = $value;
+    $components = (array) explode('_', $c['name']);
+    $config_builder = '$CFG';
+    foreach ($components as $key => $value) {
+        $value = preg_replace('/[^a-z]/i','',$value); //removing everything but a-z
+        $config_builder .=  '->' . $value;
+    }  
+    $config_builder .= ' = $setting;'; 
+    $setting = $c['value'];
+    eval($config_builder);
 }
-/**
- * API Configuration Adjustment
- */
-$CFG->authorised_cors_array = explode(',', $CFG->authorised_cors);
-/**
- * Populating SOURCES configuration from DB
- */
-$configArr = array();
-foreach ($source_types as $source) {
-    $config = $DB->fetchSourcesConfiguration($source);
-    foreach ($config as $c) {
-        $name = $c['name'];
-        $value = $c['value'];
-        $configArr[$source][$name] = $value;
-    }
-    $apiArr = array();
-    $config = $DB->fetchSourcesConfiguration($source . '_api');
-    foreach ($config as $c) {
-        $name = $c['name'];
-        $value = $c['value'];
-        $configArr[$source]['api_settings'][$name] = $value;;
-    }
-}
-$CFG->sources = $configArr;

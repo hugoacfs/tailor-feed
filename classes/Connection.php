@@ -132,6 +132,9 @@ class Connection
         $stmt = $this->PDOprepare("SELECT * FROM `config`;");
         return $this->ExecuteAndFetchArray($stmt);
     }
+    /**
+     * @deprecated wont work with new DB configuration
+     */
     public function fetchSourcesConfiguration(string $type): array
     {
         $stmt = $this->PDOprepare("SELECT * FROM `sources_config` WHERE `type` = '$type';");
@@ -509,7 +512,7 @@ class Connection
         );
         $stmt->bindValue('username', $username, PDO::PARAM_STR);
         $stmt->bindValue('givenname', $givenname, PDO::PARAM_STR);
-        if($password != '') $stmt->bindValue('password', $password, PDO::PARAM_STR);
+        if ($password != '') $stmt->bindValue('password', $password, PDO::PARAM_STR);
         else $stmt->bindValue('password', null, PDO::PARAM_NULL);
         return $this->PDOexecute($stmt);
     }
@@ -719,38 +722,38 @@ class Connection
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
         return $this->PDOexecute($stmt);
     }
+
     public function updateCronConfiguration(array $post): bool
     {
-        $filter = ['twitter', 'facebook', 'rss'];
+        // $filter = ['twitter', 'facebook', 'rss'];
         foreach ($post as $name => $value) {
-            if (contains($name, $filter)) {
-                // do twitter/rss/facebook stuff
-                $arr = restructureString($name);
-                $type = $arr[0];
-                $name = $arr[1];
-                $stmt = $this->PDoprepare("UPDATE `sources_config` SET `value` = :value WHERE `name` = :name AND `type` = :type;");
-                $stmt->bindValue('value', $value, PDO::PARAM_STR);
-                $stmt->bindValue('type', $type, PDO::PARAM_STR);
-                $stmt->bindValue('name', $name, PDO::PARAM_STR);
-                if (!$this->PDOexecute($stmt)) return false;
-            } else {
-                // do normal stuff like
-                $stmt = $this->PDoprepare("UPDATE `config` SET `value` = :value WHERE `name` = :name;");
-                $stmt->bindValue('value', $value, PDO::PARAM_STR);
-                $stmt->bindValue('name', $name, PDO::PARAM_STR);
-                if (!$this->PDOexecute($stmt)) return false;
-            }
+            // if (contains($name, $filter)) {
+            //     // do twitter/rss/facebook stuff
+            //     $arr = restructureString($name);
+            //     $type = $arr[0];
+            //     $name = $arr[1];
+            //     $stmt = $this->PDoprepare("UPDATE `sources_config` SET `value` = :value WHERE `name` = :name;");
+            //     $stmt->bindValue('value', $value, PDO::PARAM_STR);
+            //     $stmt->bindValue('type', $type, PDO::PARAM_STR);
+            //     $stmt->bindValue('name', $name, PDO::PARAM_STR);
+            //     if (!$this->PDOexecute($stmt)) return false;
+            // } else {
+            // do normal stuff like
+            $stmt = $this->PDoprepare("UPDATE `config` SET `value` = :value WHERE `name` = :name;");
+            $stmt->bindValue('value', $value, PDO::PARAM_STR);
+            $stmt->bindValue('name', $name, PDO::PARAM_STR);
+            if (!$this->PDOexecute($stmt)) return false;
+            // }
         }
         return true;
     }
     /** END ADMIN QUERIES */
     /** CRON QUERIES */
-    public function updateLastCronTimeByType(string $type, string $which): bool
+    public function updateLastCronTime(string $which, int $timestamp = -1): bool
     {
-        $which .= '_last_cron';
-        $stmt = $this->PDOprepare("UPDATE `sources_config` SET `value` = :time WHERE `type` = :type AND `name` = :name;");
-        $stmt->bindValue('time', time(), PDO::PARAM_STR);
-        $stmt->bindValue('type', $type, PDO::PARAM_STR);
+        if ($timestamp < 0) $timestamp = time();
+        $stmt = $this->PDOprepare("UPDATE `config` SET `value` = :time WHERE `name` = :name;");
+        $stmt->bindValue('time', $timestamp, PDO::PARAM_STR);
         $stmt->bindValue('name', $which, PDO::PARAM_STR);
         return $this->PDOexecute($stmt);
     }

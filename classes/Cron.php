@@ -57,13 +57,12 @@ class Cron {
      */
     public static function pruneArticles() {
         global $CFG, $DB;
-        if ($CFG->articles_recycle_mode !== 'on') {
+        if (intval($CFG->recycle->articlescronenabled) != 1) {//enabled = 1, disabled = not 1
             echo "Article pruning disabled.\n";
             return;
         }
-
-        $lastrun = intval($CFG->articles_recycle_last_cron); //last time run
-        $interval = intval($CFG->articles_recycle_cron); //cron interval
+        $lastrun = intval($CFG->recycle->articleslastupdated); //last time run
+        $interval = intval($CFG->recycle->articlescroninterval); //cron interval
         if (!Cron::runNow($lastrun, $interval)) {
             echo "Not time to prune Articles.\n";
             return;
@@ -71,7 +70,7 @@ class Cron {
         $start = time();
         self::cronHeader('Articles', $start);
         echo " Deleting old articles\n";
-        $since = time() - $CFG->articles_recycle_interval;
+        $since = time() - $CFG->recycle->articlescroninterval;
         if($DB->deleteArticlesOlderThan($since)) {
             $DB->updateRecycleCronTime('articles');
         }
@@ -83,13 +82,13 @@ class Cron {
      */
     public static function pruneUsers() {
         global $CFG, $DB;
-        if ($CFG->users_recycle_mode !== 'on') {
+        if (intval($CFG->recycle->userscronenabled) != 1) {//enabled = 1, disabled = not 1
             echo "User pruning not enabled.\n";
             return;
         }
 
-        $lastrun = intval($CFG->users_recycle_last_cron); //last time run
-        $interval = intval($CFG->users_recycle_cron); //cron interval
+        $lastrun = intval($CFG->recycle->userslastupdated); //last time run
+        $interval = intval($CFG->recycle->userscroninterval); //cron interval
         if (!Cron::runNow($lastrun, $interval)) {
             echo "Not time to prune Users.\n";
             return;
@@ -98,7 +97,7 @@ class Cron {
         $start = time();
         self::cronHeader('Users', $start);
         echo " Deleting old users\n";
-        $since = time() - $CFG->users_recycle_interval;
+        $since = time() - $CFG->recycle->userscroninterval;
         if($DB->deleteUsersOlderThan($since)) {
             $DB->updateRecycleCronTime('users');
         }

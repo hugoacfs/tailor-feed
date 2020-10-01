@@ -21,7 +21,7 @@ function cors()
     // Allow from any origin
     if (isset($_SERVER['HTTP_ORIGIN'])) {
         // Decide if the origin in $_SERVER['HTTP_ORIGIN'] is one
-        if (!in_array($_SERVER['HTTP_ORIGIN'], $CFG->authorised_cors_array)) exit('Your site is not whitelisted!');
+        // if (!in_array($_SERVER['HTTP_ORIGIN'], $CFG->authorised_cors_array)) exit('Your site is not whitelisted!'); this is pointless
         // you want to allow, and if so:
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
         header('Access-Control-Allow-Credentials: true');
@@ -227,7 +227,7 @@ function handleException($ex, $message = 'Please contact support to let us know 
     $EXCEPTION = new stdClass;
     $EXCEPTION->code = '500';
     $EXCEPTION->message = $message ?? 'Please contact support to let us know about this problem.';
-    if ($CFG->debug_mode === 'on') {
+    if ($CFG->debug->enabled === '1') {
         echo '<h5>' . $message . '</h5>';
         echo '<pre>';
         print_r($ex);

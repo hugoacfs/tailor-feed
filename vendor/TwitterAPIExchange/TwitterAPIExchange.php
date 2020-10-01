@@ -83,7 +83,12 @@ class TwitterAPIExchange
         {
             throw new RuntimeException('TwitterAPIExchange requires cURL extension to be loaded, see: http://curl.haxx.se/docs/install.html');
         }
-
+        // Adapting config names to API handler names for curl
+        $settings['oauth_access_token'] = $settings['oauthaccesstoken'];
+        $settings['oauth_access_token_secret'] = $settings['oauthaccesstokensecret'];
+        $settings['consumer_key'] = $settings['consumerkey'];
+        $settings['consumer_secret'] = $settings['consumersecret'];
+        // Below is the default name for the tokens and keys
         if (!isset($settings['oauth_access_token'])
             || !isset($settings['oauth_access_token_secret'])
             || !isset($settings['consumer_key'])
