@@ -13,7 +13,7 @@ $CFG = new stdClass();
  */
 $CFG->username = 'root';
 $CFG->password = '';
-$CFG->hostname = 'mysql:host=localhost;dbname=week_6';
+$CFG->hostname = 'mysql:host=localhost;dbname=thefeed';
 $CFG->dirroot = __DIR__;
 /**
  * The autoloader for the News API classes.
