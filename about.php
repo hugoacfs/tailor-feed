@@ -73,5 +73,5 @@ require_once($CFG->dirroot . '/inc/html/nav.php');
     </div>
 </div>
 </body>
-
+<?php require_once('inc/html/footer.php');?>
 </html>
