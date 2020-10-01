@@ -155,6 +155,14 @@ unset($_POST);
                             ?>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="<?php echo './admin/cron.php'; ?>" class="nav-link">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                            <span class="text-light">
+                                Run Cron Now
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
