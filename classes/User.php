@@ -443,9 +443,10 @@ class User
             foreach ($fetchMedia as $m) {
                 $rawMedia[] = [
                     'url' => $m['url'],
-                    'type' => $m['type']
+                    $m['type'] => True
                 ];
             }
+            debug_to_console($rawMedia);
             $prepArticles[] = new Article(
                 [
                     'dbId' => $rawArticle['id'],
@@ -479,6 +480,11 @@ class User
             $raw = new stdClass;
             foreach ($article as $key => $rawData) {
                 $raw->$key = $rawData;
+            }
+            $mediaItems = [];
+            foreach ($article->media as $key => $media) {
+                $mediaItems[$key] = $media;
+
             }
             $fineArticles[] = [
                 'articleId' => $article->dbId,

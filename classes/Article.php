@@ -70,10 +70,15 @@ class Article
      */
     public $topics;
     /**
-     * Array of media objects which has attributes ["url" : "https..", "type": "video|photo"]
+     * Array of media objects which have attributes ["url" : "https..", "type": "video|photo|link"]
      * @var array 
      */
     public $media;
+    /**
+     * Array of link objects which have attributes ["url" : "https..", "type": "link"]
+     * @var array 
+     */
+    public $links;
     /**
      * Constructor for Articles.
      * Dynamic constructor, it will build the Article object depending on 
@@ -122,6 +127,7 @@ class Article
             $article->dbId = intval($lastInsertId);
             Article::linkTopics($article->topics, $article->dbId);
             Article::linkMedia($article->media, $article->dbId);
+            Article::linkMedia($article->links, $article->dbId);
         }
         echo "\n";
         return $success;
