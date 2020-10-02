@@ -1,68 +1,25 @@
 <?php
 define('CONFIG_PROTECTION', false);
-$title = 'Feed';
-$pageId = 'feed';
 require_once(__DIR__ . '/config.php');
 session_start();
-require_once($CFG->dirroot . '/inc/php/authenticate.php');
-require_once($CFG->dirroot . '/inc/html/head.php');
-require_once($CFG->dirroot . '/inc/html/nav.php');
-if (isset($_POST['submitpages'])) {
-    unset($_POST['submitpages']);
-    $sourcesIds = Source::getAllSourcesIds();
-    $newSubscribeList = [];
-    foreach ($sourcesIds as $id) {
-        $idString = strval($id);
-        $isInArray = in_array($idString, $_POST, true);
-        if ($isInArray) $newSubscribeList[] = $id;
-    }
-    $CURRENTUSER->updatePreferences($newSubscribeList, 'source');
-    $CURRENTUSER->updateUserSubcribedList();
-    $CURRENTUSER = new User($_SESSION['userName']);
-}
-if (isset($_POST['submittopics'])) {
-    unset($_POST['submittopics']);
-    $topicsIds = Article::getAllTopicsIds();
-    $newTopicsList = [];
-    foreach ($topicsIds as $id) {
-        $idString = strval($id);
-        $isInArray = in_array($idString, $_POST, true);
-        if ($isInArray) $newTopicsList[] = $id;
-    }
-    $CURRENTUSER->updatePreferences($newTopicsList, 'topic');
-    $CURRENTUSER->updateUserTopicsList();
-    $CURRENTUSER = new User($_SESSION['userName']);
-}
-?>
-<div class="row ">
-    <?php
-    require_once($CFG->dirroot . '/inc/html/toast-message.php');
-    ?>
-    <div class="container-fluid">
-        <div class="spacer d-flex justify-content-center align-items-center">
-        </div>
-        <div id='news-feed' class="container card">
-            <!-- articles -->
-        </div>
-    </div>
-    <div class="row mx-auto pt-3">
-        <span class="load-feed-spinner spinner-border text-primary"></span>
-    </div>
-
-    <?php if (isset($_SESSION['signedIn'])) require_once($CFG->dirroot . '/inc/html/identity.php'); ?>
-</div>
-<?php
-$_POST = [];
-echo buildModal('pages', "Following");
-echo buildModal('topics');
-require_once($CFG->dirroot . '/inc/html/modal-images.php');
-require_once('inc/html/footer.php');
-?>
-<div class="smooth-scroll position-fixed back-to-top p-1 m-5">
-    <a href="#" class="btn btn-primary pr-3 pl-3 pt-2 pb-2">
-        <i class="fa fa-arrow-up"></i>
-    </a>
-</div>
-</body>
-
-</html>
+// debug_to_console($_SESSION);
+$pageUser = new User($_SESSION['userName'] ?? 'default');
+$PAGE = [
+    "pagetitle" => 'Test',
+    "signedin" => $_SESSION['signedIn'] ?? false,
+    "name" => $_SESSION['givenName'] ?? '',
+    "isadmin" => ($_SESSION['role'] === 'a') ?? false,
+    "modals" => [
+        [
+            "type" => "pages",
+            "title" => "Following"
+        ],
+        [
+            "type" => "topics",
+            "title" => "Topics"
+        ]
+    ],
+    "articles" => $pageUser->constructArticles()['articles']
+];
+$location = 'page';
+echo renderFromTemplate($location, $PAGE);
