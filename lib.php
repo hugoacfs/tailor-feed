@@ -44,7 +44,7 @@ function cors()
     //echo "You have CORS!";
 }
 // returns X weeks ago from Now
-function weeksAgo($numberOfWeeks)
+function weeksToUnixTime(int $numberOfWeeks)
 {
     $now = time();
     $oneWeekAgo = $now - ($numberOfWeeks * (60 * 60 * 24 * 7));
@@ -305,7 +305,9 @@ function makeSomeToast(int $userId, string $body, string $toastName, string $hea
     $myToast[$toastName] = $bread;
     setcookie($userId, serialize($myToast), 0, '/');
 }
-
+/**
+ * @deprecated
+ */
 function buildModal(string $type, string $title = ''): string
 {
     $title = (!empty($title)) ? $title : ucwords($type);
@@ -440,12 +442,12 @@ function loadPreferences(string $type, string $userName): string
 }
 
 function renderFromTemplate(string $location, array $options): string
-{
-    $m = new Mustache_Engine;
-    ob_start();
-    require($CFG->dirroot . $location);
-    $template = ob_get_clean();
-    return $m->render($template, $options);
+{  
+    global $CFG;
+    $m = new Mustache_Engine(
+        ['loader' => new Mustache_Loader_FilesystemLoader($CFG->dirroot . '/templates')]
+    );
+    return $m->render($location, $options);
 }
 /**
  * Debug methods only
