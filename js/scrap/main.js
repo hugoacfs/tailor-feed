@@ -1,9 +1,13 @@
 define([
     'jquery',
     'lodash',
+    'methods',
+    'modal',
+    'feed',
+    'admin',
     'bootstrap',
     'toggle'
-], function ($, _) {
+], function ($, _, methods, modal, feed) {
     $("body").tooltip({
         selector: '[data-toggle=tooltip]'
     });
@@ -12,6 +16,36 @@ define([
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+    var userid = methods.getUserId();
+    var safelock = methods.getSafeLock();
+    methods.showToast();
+    methods.deleteUserCookie(userid, safelock);
+    $(".search-me").on("keyup", methods.searchOnKeyUp);
+    if ($('body').attr("data-pageid") == 'login') {
+        //Login page js, toggles new account creation mode
+        if ($("#newaccount").length) {
+            $('#newaccount').click(function () {
+                $('#name-input').toggle();
+            });
+        };
+    }
+    if ($('body').attr("data-pageid") == 'feed') {
+        feed.moreNews(safelock);
+        document.addEventListener('scroll',
+            _.debounce(
+                function () {
+                    feed.moreNews(safelock);
+                }, 50, {
+                immediate: true
+            }
+            )
+        );
+        modal.refreshSubscribed(safelock, 'topics');
+        modal.refreshSubscribed(safelock, 'pages');
+    }
+    $(document).ready(function () {
+        feed.carouselPop();
+    });
     //video
     function playVisibleVideos() {
         document.querySelectorAll("video").forEach(video => elementIsVisible(video) ? video.play() : video.pause());
