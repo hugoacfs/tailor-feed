@@ -46,6 +46,7 @@ class Twitter extends Source
         $getfield = '?screen_name=' . $this->reference . $this->requestExtraSettings . $lastArticleUniqueId;
         $apiUrl = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
         $this->tweets = $this->twitterQuery($apiUrl, $getfield);
+        // debug_to_console($this->tweets);
         $this->articles = [];
         if (!$this->tweets || count($this->tweets) === 0) return;
         $this->name = $this->tweets[0]->user->name;
@@ -55,20 +56,28 @@ class Twitter extends Source
             if ($isQuote || $isReply) continue; //if not original content, ignore
             $creationDate = $tweet->created_at;
             $timestamp = strtotime($creationDate);
-            if ($timestamp < weeksAgo(8)) continue; //if older than 8 weeks, ignore
+            if ($timestamp < weeksToUnixTime(32)) continue; //if older than 32 weeks, ignore
             $idStr = $tweet->id_str;
             $message = $tweet->full_text;
-            $mediaLinksObj = $tweet->extended_entities->media ?? [];
-            $media = $this->createMediaArray($mediaLinksObj) ?? [];
+            $mediaObj = $tweet->extended_entities->media ?? [];
+            $linksObj = $tweet->extended_entities->urls ?? [];
+            if ($linksObj) {
+                foreach ($linksObj as $link) {
+                    $link['type'] = 'link';
+                }
+            }
+            $media = $this->createMediaArray($mediaObj) ?? [];
+            $links = $this->createMediaArray($linksObj) ?? [];
             $topics = extractHashtags($message) ?? [];
-            $builder = array(
+            $builder = [
                 'uniqueId' => $idStr,
                 'ownerId' => $this->dbId,
                 'creationDate' => $timestamp,
                 'body' => $message,
                 'topics' => $topics,
-                'media' => $media
-            );
+                'media' => $media,
+                'links' => $links
+            ];
             $this->articles[] = new Article($builder);
         }
     }
@@ -88,11 +97,15 @@ class Twitter extends Source
                 case 'photo':
                     $url = $media->media_url_https;
                     break;
+                case 'link':
+                    $url = $media->expanded_url;
+                    break;
                 default:
                     continue 2;
             }
-            $arr[] = array('url' => $url, 'type' => $media->type);
+            $arr[] = ['url' => $url, 'type' => $media->type];
         }
+        debug_to_console($arr);
         return $arr;
     }
     /**
@@ -110,12 +123,12 @@ class Twitter extends Source
         foreach ($fetched as $row) {
             if ($row['type'] != $type) continue;
             $builder = null;
-            $builder = array(
+            $builder = [
                 'dbId' => $row['id'],
                 'reference' => $row['reference'],
                 'name' => $row['screenname'],
                 'type' => 'twitter'
-            );
+            ];
             $sources[] = new Twitter($builder);
         }
         return $sources;
