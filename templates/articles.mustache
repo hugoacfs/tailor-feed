@@ -1,0 +1,32 @@
+{{#articles}}
+<div class="card-body ">
+            <a href="{{{accountUrl}}}" target="{{{type}}}" class=" card-link">
+                <div class="timeline-badge mt-1 ml-1">
+                    <img class="timeline-img" src="{{{profileImage}}}" width="50">
+                    <span class="img-spinner spinner-border text-primary" style="display: none;"></span>
+                </div>
+            </a>
+            <h5 class="card-subtitle mb-2 text-muted">
+                <a title="SkyNews" href="{{{accountUrl}}}" target="{{{type}}}" class=" card-link">
+                    @{{{referenceName}}}
+                    <i class="fab fa-{{{raw.type}}}-square"></i>
+                </a>
+            </h5>
+            <p>
+                <a title="Link to source." href="{{{originalUrl}}}" target="{{{type}}}">
+                    <small class="text-muted">
+                        <i class="glyphicon glyphicon-time"></i>
+                        <i class="far fa-clock"> </i> {{{timeago}}} via {{{type}}}
+                    </small>
+                    <i class="fas fa-link fa-xs"></i>
+                </a>
+            </p>
+            <p class="card-text">{{{message}}}</p>
+            <p></p>
+            <div class="text-center">
+            {{> media}}
+            </div>
+            <p></p>
+        </div>
+        <hr class="thin-hr">
+{{/articles}}

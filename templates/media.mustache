@@ -1,0 +1,15 @@
+<div class="d-flex flex-row flex-wrap overflow-hidden" style="max-height: 550px">
+    {{#media}}
+
+    {{#photo}}
+    <img class="img-fluid d-inline-block border rounded w-50" src="{{{url}}}" alt="Article Image">
+    {{/photo}}
+
+    {{#video}}
+    <video class="img-fluid mx-auto d-block rounded " controls="" muted="" loop="" alt="Article Video">
+        <source src="{{{url}}}">
+    </video>
+    {{/video}}
+
+    {{/media}}
+</div>
