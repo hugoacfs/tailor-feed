@@ -19,14 +19,14 @@ function displayReturnLink($pageId)
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <?php
         $homeLink = $CFG->dirroot . '/index.php';
-        if (isLoggedIn()) $homeLink = $CFG->dirroot . '/feed.php';
+        if ($_SESSION['signedIn']) $homeLink = $CFG->dirroot . '/feed.php';
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="../img/nav_logo.png" alt="Logo">
             <span class="nav-title pr-2">thefeed </span>
         </a>
         <?php
-        if (isLoggedIn() && $pageId === 'feed') {
+        if ($_SESSION['signedIn'] && $pageId === 'feed') {
             displayPagesBtn();
             displayTopicsBtn();
         }

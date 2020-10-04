@@ -10,8 +10,8 @@ function renderCron(bool $html = false)
         require_once('head.php');
         require_once('nav.php');
 
-        if (!isAdminLoggedIn()) {
-            redirectUserToFeed();
+        if (!$_SESSION['isAdmin']) {
+            header('Location: feed.php');
             exit;
         }
         echo '<div class="row "><div class="container-fluid"><div class="spacer d-flex justify-content-center align-items-center">

@@ -5,15 +5,11 @@ if (!defined('CONFIG_PROTECTION')) {
     exit;
 }
 
-if (!$_SESSION['signedIn']) {
+if (!$_SESSION['signedIn'] || !isset($_SESSION['userName'])) {
     session_unset();
-    redirectGuestToLogin();
+    header('Location: login.php');
     exit;
 }
 
-if (!isset($_SESSION['userName'])) {
-    redirectGuestToLogin();
-    exit;
-}
 $userName = $_SESSION['userName'] ?? '';
 $CURRENTUSER = new User($userName);

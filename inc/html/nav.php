@@ -33,7 +33,7 @@ function displayMyFeedLink($pageId)
 {
     $status = 'disabled';
     $user = '';
-    if (isLoggedIn()) {
+    if ($_SESSION['signedIn']) {
         $status = '';
         $user = $_SESSION['givenName'] . '\'s ' ?? 'My ';
     }
@@ -47,7 +47,7 @@ function displayMyFeedLink($pageId)
 function displayAdminLink($pageId)
 {
     $status = '';
-    if (!isLoggedIn()) $status = 'disabled';
+    if (!$_SESSION['signedIn']) $status = 'disabled';
     elseif ($pageId === 'admin') $status = 'active';
 
     echo '<li class="nav-item ">
@@ -62,7 +62,7 @@ function displayLoginLink($pageId)
     $text = 'Login';
     $status = '';
     if ($pageId === 'login') $status = 'active';
-    if (isLoggedIn()) {
+    if ($_SESSION['signedIn']) {
         $url = 'logout.php';
         if (isset($_SESSION['logout_url'])) $url = $_SESSION['logout_url']; //SSAML STUFF
         $text = 'Logout';
@@ -88,7 +88,7 @@ function displayAboutLink($pageId)
 function displayFeedbackLink($pageId)
 {
     $status = '';
-    if (isLoggedIn()) {
+    if ($_SESSION['signedIn']) {
         if ($pageId === 'feedback') $status = 'active';
         $url = 'feedback.php';
         $text = 'Feedback';
@@ -105,14 +105,14 @@ function displayFeedbackLink($pageId)
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
         <?php
         $homeLink = $CFG->dirroot . '/index.php';
-        if (isLoggedIn()) $homeLink = $CFG->dirroot . '/feed.php';
+        if ($_SESSION['signedIn']) $homeLink = $CFG->dirroot . '/feed.php';
         ?>
         <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
             <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
             <span class="nav-title pr-2">thefeed </span>
         </a>
         <?php
-        if (isLoggedIn() && $pageId === 'feed') {
+        if ($_SESSION['signedIn'] && $pageId === 'feed') {
             displayPagesBtn();
             displayTopicsBtn();
         }
@@ -125,7 +125,7 @@ function displayFeedbackLink($pageId)
                 <?php
                 displayHomeLink($pageId);
                 displayMyFeedLink($pageId);
-                if (isAdminLoggedIn()) {
+                if ($_SESSION['isAdmin']) {
                     displayAdminLink($pageId);
                 }
                 displayAboutLink($pageId); //disabled until needed

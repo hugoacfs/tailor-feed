@@ -149,23 +149,9 @@ function convertMentions($text)
 /**  LOGGING IN & REDIRECTING USERS
  *
  */
-function prepareUrlRedirect()
-{
-    if (isset($_SERVER['SCRIPT_NAME'])) {
-        return $_SERVER['SCRIPT_NAME'];
-    }
-}
-function isAdminLoggedIn()
-{
-    $role = $_SESSION['role'] ?? 'u';
-    if (!isLoggedIn()) {
-        return false;
-    } elseif (($role === 'a')) {
-        return true;
-    } else {
-        return false;
-    }
-}
+/**
+ * @deprecated
+ */
 function isLoggedIn()
 {
     if (isset($_SESSION['signedIn'])) {
@@ -174,17 +160,23 @@ function isLoggedIn()
         return false;
     }
 }
+/**
+ * @deprecated
+ */
 function redirectGuestToLogin()
 {
-    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
     header('Location: login.php');
 }
+/**
+ * @deprecated
+ */
 function redirectUserToFeed()
 {
-    // header('Location: login.php?redirecturl=' . urlencode(prepareUrlRedirect()));
     header('Location: feed.php');
 }
-
+/**
+ * @deprecated
+ */
 function getSubscribedIds(array $array): array
 {
     $listOfIds = [];
@@ -386,7 +378,8 @@ function loadPreferences(string $type, string $userName): string
         </div>                               	
     </div>	
     <hr class="mb-0" />';
-    $idsArray = getSubscribedIds($userPrefList);
+    $idsArray = [];
+    foreach ($userPrefList as $item) $idsArray[] = $item->dbId;
     foreach ($allPreferences as $pref) {
         $id = $pref->dbId;
         $isInArray = in_array($id, $idsArray, true);

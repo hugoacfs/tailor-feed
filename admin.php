@@ -8,8 +8,8 @@ session_start();
 require_once($CFG->dirroot . '/inc/php/authenticate.php');
 require_once($CFG->dirroot . '/inc/html/head.php');
 require_once($CFG->dirroot . '/inc/html/nav.php');
-if (!isAdminLoggedIn()) {
-    redirectUserToFeed();
+if (!$_SESSION['isAdmin']) {
+    header('Location: feed.php');
 }
 $adminCookie = $_COOKIE['adminMenu'] ?? false;
 $adminMenu = strip_tags($adminCookie);

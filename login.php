@@ -27,6 +27,9 @@ if (!$isLoggedIn) {
         $_SESSION['signedIn'] = $_SESSION['USER']->getSignedIn() ?? null;
         $_SESSION['givenName'] = $_SESSION['USER']->getGivenName() ?? null;
         $_SESSION['role'] = $_SESSION['USER']->getRole() ?? null;
+        if ($_SESSION['role'] === 'a') {
+            $_SESSION['isAdmin'] = true;
+        }
         $_SESSION['userId'] = $_SESSION['USER']->getUserId() ?? null;
         $_SESSION['userName'] = $_SESSION['USER']->getUserName() ?? null;
         $_SESSION['currentUser'] = new User($_SESSION['userName']);
@@ -63,7 +66,7 @@ if (!isset($_SESSION['signedIn'])) {
 } elseif (!$_SESSION['signedIn']) {
     session_unset();
     if ($CFG->auth->method === 'SSAML') $_SESSION['USER'] = new SSAML();
-    redirectGuestToLogin();
-} else redirectUserToFeed();
+    header('Location: login.php');
+} else header('Location: feed.php');
 
 require_once('inc/html/footer.php');
