@@ -1,0 +1,20 @@
+<div class="container-fluid">
+            <div class="spacer d-flex justify-content-center align-items-center">
+            </div>
+            <div id='news-feed' class="container card">
+                {{> articles}}
+            </div>
+        </div>
+        <div class="row mx-auto pt-3">
+            <span class="load-feed-spinner spinner-border text-primary"></span>
+        </div>
+        {{> modals}}
+        <div class="modal fade" id="carousel-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content mx-auto text-center">
+                    <div class="modal-body p-0 ">
+                        <div id="carousel-lander" class="carousel slide"></div>
+                    </div>
+                </div>
+            </div>
+        </div>

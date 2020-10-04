@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
+        <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
+            <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
+            <span class="nav-title pr-2">thefeed </span>
+        </a>
+        {{#signedIn}}
+        <button id="pages-btn" type="button" class="pages-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal"
+            data-target="#pagesModal">
+            <span class="fas fa-at menu-fa"></span>
+            <span class="preferences-btn-text">Following</span>
+        </button>
+        <button id="topics-btn" type="button" class="topics-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal"
+            data-target="#topicsModal">
+            <span class="menu-fa fas fa-hashtag"></span>
+            <span class="preferences-btn-text">Topics</span>
+        </button>
+        {{/signedIn}}
+        <button class="navbar-toggler btn btn-outline-light mr-1 ml-1 align-items-center" type="button"
+            data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="menu-fa burger fas fa-bars align-items-center"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto">
+                {{#signedIn}}
+                <li class="nav-item ">
+                    <a class="nav-link ' . $status . '" href="feed.php"><i class="fas fa-stream">
+                        </i> Feed
+                    </a>
+                </li>
+                {{/signedIn}}
+                <li title="Home link." class="nav-item ">
+                    <a class="nav nav-link ' . $status . ' ml-auto" href="index.php">
+                        <i class="fas fa-home">
+                        </i> Home
+                    </a>
+                </li>
+                {{#isadmin}}
+                <li class="nav-item ">
+                    <a class="nav-link ' . $status . '" href="admin.php"><i class="fas fa-users-cog">
+                        </i> Admin
+                    </a>
+                </li>
+                {{/isadmin}}
+                <li class="nav-item ">
+                    <a class="nav-link ' . $status . '" href="about.php"><i class="fas fa-info-circle">
+                        </i> About
+                    </a>
+                </li>
+                <li class="nav-item ' . $status . '">
+                    <a class="nav-link " href="{{^signedIn}}login{{/signedIn}}{{#signedIn}}logout{{/signedIn}}.php"><i
+                            class="fas fa-sign-out-alt">
+                        </i> {{^signedIn}}Login {{/signedIn}} {{#signedIn}}Logout {{/signedIn}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>

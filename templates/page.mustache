@@ -1,146 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1024">
-    <link rel="icon" href="img/favicon.ico" type="image/gif" sizes="16x16">
-    <title>{{pagetitle}}</title>
-    <!-- BOOTSTRAP CSS -->
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
-    <!-- CUSTOM CSS -->
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="css/all.min.css">
-    <!-- ROBOTO Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <!-- BALOO Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
-    <!-- TOGGLE CSS -->
-    <link rel="stylesheet" href="vendor/bootstrap4-toggle-master/css/bootstrap4-toggle.css">
-
-</head>
-
-<body data-pageid="<?php echo $pageId; ?>" class="no-gutters pb-0 overflow-hidden">
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark justify-content-end mynav">
-        <a class="navbar-brand mr-auto" href="<?php echo $homeLink; ?>">
-            <img class="navbar-logo" src="img/nav_logo.png" alt="University of Chichester News">
-            <span class="nav-title pr-2">thefeed </span>
-        </a>
-        {{#signedin}}
-        <button id="pages-btn" type="button" class="pages-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal"
-            data-target="#pagesModal">
-            <span class="fas fa-at menu-fa"></span>
-            <span class="preferences-btn-text">Following</span>
-        </button>
-        <button id="topics-btn" type="button" class="topics-btn btn btn-outline-light mr-1 ml-1" data-toggle="modal"
-            data-target="#topicsModal">
-            <span class="menu-fa fas fa-hashtag"></span>
-            <span class="preferences-btn-text">Topics</span>
-        </button>
-        {{/signedin}}
-        <button class="navbar-toggler btn btn-outline-light mr-1 ml-1 align-items-center" type="button"
-            data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="menu-fa burger fas fa-bars align-items-center"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav ml-auto">
-                {{#signedin}}
-                <li class="nav-item ">
-                    <a class="nav-link ' . $status . '" href="feed.php"><i class="fas fa-stream">
-                        </i> {{name}} Feed
-                    </a>
-                </li>
-                {{/signedin}}
-                <li title="Home link." class="nav-item ">
-                    <a class="nav nav-link ' . $status . ' ml-auto" href="index.php">
-                        <i class="fas fa-home">
-                        </i> Home
-                    </a>
-                </li>
-                {{#isadmin}}
-                <li class="nav-item ">
-                    <a class="nav-link ' . $status . '" href="admin.php"><i class="fas fa-users-cog">
-                        </i> Admin
-                    </a>
-                </li>
-                {{/isadmin}}
-                <li class="nav-item ">
-                    <a class="nav-link ' . $status . '" href="about.php"><i class="fas fa-info-circle">
-                        </i> About
-                    </a>
-                </li>
-                <li class="nav-item ' . $status . '">
-                    <a class="nav-link " href="{{^signedin}}login{{/signedin}}{{#signedin}}logout{{/signedin}}.php"><i
-                            class="fas fa-sign-out-alt">
-                        </i> {{^signedin}}Login {{/signedin}} {{#signedin}}Logout {{/signedin}}
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+{{#hasHead}}
+    {{> head}}
+{{/hasHead}}
+<body data-pageid="{{pageId}}" class="no-gutters pb-0 overflow-hidden">
+    {{#hasNav}}
+        {{> nav}}
+    {{/hasNav}}
     <div class="row ">
-        <div class="container-fluid">
-            <div class="spacer d-flex justify-content-center align-items-center">
-            </div>
-            <div id='news-feed' class="container card">
-                {{#signedin}}
-                {{> articles}}
-                {{/signedin}}
-            </div>
-        </div>
-        <div class="row mx-auto pt-3">
-            <span class="load-feed-spinner spinner-border text-primary"></span>
-        </div>
-        {{#signedin}}
-        {{> modals}}
-        {{/signedin}}
-        <div class="modal fade" id="carousel-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content mx-auto text-center">
-                    <div class="modal-body p-0 ">
-                        <div id="carousel-lander" class="carousel slide"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{#hasFeed}}
+            {{> feed}}
+        {{/hasFeed}}
+        {{#hasLogin}}
+            {{> login}}
+        {{/hasLogin}}
+        {{#has404}}
+            {{> 404}}
+        {{/has404}}
     </div>
-    <script data-main="js/main" src="js/dependencies/require.min.js" crossorigin="anonymous"></script>
-    <script>
-        requirejs.config({
-            baseUrl: 'js',
-            paths: {
-                jquery: ['https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min'],
-                fontawesome: ['https://kit.fontawesome.com/2a953cdc29'],
-                bootstrap: ['https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min', 'dependencies/bootstrap/bootstrap.min'],
-                popper: ['https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min', 'dependencies/popper.min'],
-                toggle: '../vendor/bootstrap4-toggle-master/js/bootstrap4-toggle',
-                lodash: '../vendor/lodash/lodash',
-                sortable: '../vendor/sortable/js/sortable.min',
-                methods: 'methods'
-            },
-            shim: {
-                // "lodash": "jquery",
-                'bootstrap': {
-                    'deps': ['jquery']
-                },
-                "toggle": ["jquery"],
-                "sortable": ["bootstrap"]
-            },
-            map: {
-                '*': {
-                    'popper.js': 'popper'
-                }
-            }
-        });
-    </script>
-
-    <div class="smooth-scroll position-fixed back-to-top p-1 m-5">
-        <a href="#" class="btn btn-primary pr-3 pl-3 pt-2 pb-2">
-            <i class="fa fa-arrow-up"></i>
-        </a>
-    </div>
+    {{#hasFooter}}
+        {{> footer}}
+    {{/hasFooter}}
 </body>
 
 </html>

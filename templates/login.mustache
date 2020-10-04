@@ -1,0 +1,22 @@
+<div class="text-center my-auto pt-5">
+    <form class="form-signin pt-5" action="login.php" method="POST">
+        <img class="login-logo mb-4" src="img/nav_logo.png" alt="">
+        <label for="username" class="sr-only">Username</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Username" required=""
+            autofocus="">
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="">
+        <div id="name-input" style="display:none">
+            <input type="text" name="givenname" id="givenname" class="form-control" placeholder="First Name">
+        </div>
+        <div class="checkbox mb-3">
+            <input class="form-check-input" type="checkbox" name="newaccount" value="on" id="newaccount">
+            <label class="form-check-label" for="newaccount">
+                Create New Account
+            </label>
+        </div>
+        <input class="btn btn-lg btn-primary btn-block" value="Login" type="submit" />
+        <p class="mt-5 mb-3 text-muted"><a href="https://github.com/hugoacfs/tailor-feed" target="github">Find us on
+                Github</a></p>
+    </form>
+</div>
