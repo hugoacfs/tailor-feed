@@ -381,7 +381,6 @@ class User
             ];
             $articlesList[] = new Article($builder);
         }
-        debug_to_console($articlesList);
         return $articlesList;
     }
     /**
@@ -446,7 +445,6 @@ class User
                     $m['type'] => True
                 ];
             }
-            debug_to_console($rawMedia);
             $prepArticles[] = new Article(
                 [
                     'dbId' => $rawArticle['id'],
@@ -505,7 +503,6 @@ class User
             "articles" => $fineArticles,
             "meta" => $meta
         ];
-        debug_to_console($data);
         return $data;
     }
 
