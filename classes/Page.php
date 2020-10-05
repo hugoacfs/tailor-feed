@@ -1,4 +1,9 @@
 <?php
+if (!defined('CLASS_LOADER')) {
+    header('HTTP/1.0 403 Forbidden', true, 403);
+    http_response_code(403);
+    exit;
+}
 // Page CLASS
 class Page
 {
@@ -20,6 +25,7 @@ class Page
 
     function __construct(string $target, string $title = 'theFeed')
     {
+        
         global $_SESSION;
         $this->title = $title;
         $this->hasHead = true;
