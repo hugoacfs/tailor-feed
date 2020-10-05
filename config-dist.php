@@ -58,3 +58,5 @@ foreach ($config as $c) {
     $setting = $c['value'];
     eval($config_builder);
 }
+require_once($CFG->dirroot . '/mustache/src/Mustache/Autoloader.php');
+Mustache_Autoloader::register();
